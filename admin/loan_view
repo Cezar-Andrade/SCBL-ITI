@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Centro de Información en Línea</title>
+
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="../stylesheets/style.css">
+        <link rel="stylesheet" href="../stylesheets/menu_style.css">
+
+        <script>user_type = "admin";</script>
+        <script src="../javascripts/authentication.js"></script>
+
+        <!--Selective.js, Combobox-->
+        <link rel="stylesheet" href="../stylesheets/selectize.css">
+        <script src="../javascripts/jquery.js"></script>
+        <script src="../javascripts/selectize.js"></script>
+        
+        <script src="../javascripts/admin_loan_view_functions.js"></script>
+    </head>
+    <body>
+        <div id="content_div" class="loan_menu">
+            <h1>Prestamo</h1>
+            <div id="book_leftside" class="book_leftside"></div>
+            <div id="book_rightside" class="book_rightside"></div>
+            <h2>Datos del prestamo</h2>
+            <div id="last_part"></div>
+            <div class="vertical_spacing">
+                <button id="confirm" onclick="confirm_return()">Confirmar<br>Devolución</button>
+                <button id="generate" onclick="generate_fine()">Generar<br>Multa</button>
+                <button onclick="history.back()">Volver</button>
+            </div>
+        </div>
+    </body>
+</html>

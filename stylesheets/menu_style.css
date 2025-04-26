@@ -1,0 +1,637 @@
+input {
+    display: inline;
+    font-size: 1.25vw;
+}
+
+button {
+    margin: 0 max(1.5vw, 5.5px);
+}
+
+.selectize-control.single .selectize-input, .selectize-dropdown .active, .selectize-dropdown [data-selectable].option, .selectize-input>input {
+    font-size: 1.25vw;
+}
+
+.overlayed_window {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	position: fixed;
+    overflow: auto;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(0,0,0,0.25);
+	z-index: 99999;
+}
+
+.second_container_overlay {
+    width: 30%;
+    min-width: min(346px, 92%);
+    padding: 0 2vw;
+    padding-bottom: 2vw;
+    text-align: center;
+    color: white;
+    background-color: #007BFF;
+    border-style: solid;
+    border-color: #0064CC;
+}
+
+.container_overlay {
+    width: 40%;
+    min-width: min(346px, 92%);
+    padding: 0 2vw;
+    padding-bottom: 2vw;
+    text-align: center;
+    background-color: yellow;
+    border-style: solid;
+    border-color: orange;
+}
+
+.container_overlay_black {
+    width: 40%;
+    min-width: min(346px, 92%);
+    padding: 0 2vw;
+    padding-bottom: 2vw;
+    text-align: center;
+    background-color: white;
+    border-style: solid;
+    border-color: black;
+}
+
+.menu_option {
+    text-align: left;
+    margin: 1.5vw 0;
+}
+
+.menu_option[report] {
+    width: 80%;
+    font-size: 2vw;
+    text-align: center;
+}
+
+.user_image {
+    margin-top: 2vw;
+    width: 8vw;
+    height: 8vw;
+}
+
+.vertical_spacing {
+    margin: 0.9vw 0;
+}
+
+.vertical_spacing[top] {
+    margin-top: 3vw;
+}
+
+.cross_button {
+    padding:0;
+    margin:0;
+    width:max(3.5vw, 20px);
+    height:max(3.5vw, 20px);
+    background:none;
+    background-color: red;
+    background-image:url('../images/Cross.png');
+    background-size: cover;
+}
+
+.search_button {
+    padding:0;
+    margin:0;
+    width:max(3.5vw, 20px);
+    height:max(3.5vw, 20px);
+    background:none;
+    background-color: #007bff;
+    background-image:url('../images/Search.png');
+    background-size: cover;
+}
+
+.plus_button {
+    padding:0;
+    margin:0;
+    width:max(3.5vw, 20px);
+    height:max(3.5vw, 20px);
+    background:none;
+    background-color: #007bff;
+    background-image:url('../images/Plus.png');
+    background-size: cover;
+}
+
+.book_menu {
+    background-size: cover;
+    margin: 3vw auto;
+    width: 65vw;
+    height: 42.25vw;
+    text-align: center;
+    min-width: 500px;
+    min-height: 325px;
+}
+
+.book_menu[varient] {
+    height: 41.75vw;
+}
+
+.user_menu {
+    background-size: cover;
+    margin: 3vw auto;
+    width: 65vw;
+    height: 45.7vw;
+    text-align: center;
+    min-width: 500px;
+    min-height: 350px;
+}
+
+.loan_menu {
+    background-size: cover;
+    margin: 3vw auto;
+    width: 65vw;
+    height: 56vw;
+    text-align: center;
+    min-width: 500px;
+    min-height: 430px;
+    background-color: #ffd800;
+    border-color: #c4a300;
+    border-style:solid;
+    border-width: 0.2vw;
+}
+
+.loan_menu[small] {
+    height: 47vw;
+    min-height: 370px;
+}
+
+.fine_menu {
+    background-size: cover;
+    margin: 3vw auto;
+    width: 65vw;
+    height: 43vw;
+    text-align: center;
+    min-width: 500px;
+    min-height: 370px;
+    background-color: white;
+    border-color: lightgray;
+    border-style:solid;
+    border-width: 0.2vw;
+}
+
+.fine_menu_2 {
+    background-size: cover;
+    margin: 3vw auto;
+    width: 65vw;
+    text-align: center;
+    min-width: 500px;
+    background-color: white;
+    border-color: lightgray;
+    border-style:solid;
+    border-width: 0.2vw;
+}
+
+.reservation_menu {
+    background-size: cover;
+    margin: 3vw auto;
+    width: 65vw;
+    height: 42.9vw;
+    text-align: center;
+    min-width: 500px;
+    min-height: 330px;
+}
+
+.report_menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-size: cover;
+    margin: 3vw auto;
+    width: 52vw;
+    height: 69vw;
+    text-align: center;
+    min-width: 300px;
+    min-height: 397px;
+}
+
+.student {
+    margin-top: max(5vw, 27.5px);
+    margin-bottom: max(5.5vw, 30.25px);
+}
+
+.student2 {
+    margin-top: max(2.5vw, 19.5px);
+    margin-bottom: max(2vw, 17.25px);
+}
+
+.result_table {
+    width: 80%;
+    height: 28%;
+    border-color: black;
+    border-style: solid;
+    border-width: 0.3vw;
+    overflow-y: scroll;
+}
+
+.result_table table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.result_table td, .result_table th {
+    overflow: hidden;
+}
+
+.result_table p {
+    font-size: 1.3vw;
+    margin:0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+p[data] {
+    margin: max(1.5vw, 9px) 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 100%;
+    display: -webkit-box;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.book_list {
+    background-image: url("../images/OpenYellowBook.png");
+    background-size: cover;
+    margin: auto;
+    padding: 2vw;
+    width: 80vw;
+    height: 48vw;
+    text-align: center;
+    min-width: 600px;
+    min-height: 390px;
+}
+
+.book_list[rules] {
+    height: 50.5vw;
+}
+
+.rules_book_grid {
+    display: grid;
+    grid-template-areas:
+    "blank1 blank1 title title title title blank4 blank4 blank4"
+    "side1 side1 side1 side1 side2 side2 side2 side2 side2"
+    "blank2 prev prev button button next next blank3 blank3";
+    grid-template-columns: 20% 5% 15% 10% 10% 15% 5% 13% 7%;
+    grid-template-rows: auto 37vw auto;
+}
+
+.search_grid {
+    display: grid;
+    grid-template-areas:
+    "blank1 blank1 title title title button button trash"
+    "content content content content content content content content"
+    "blank2 prev prev textpage next next blank3 blank3";
+    grid-template-columns: 20% 5% 15% 20% 15% 5% 13% 7%;
+    grid-template-rows: auto 34vw auto;
+}
+
+.search_user_grid {
+    display: grid;
+    grid-template-areas:
+    "blank1 blank1 title title title button button button trash"
+    "content content content content content content content content content"
+    "blank2 prev prev textpage next next blank3 blank3 blank3";
+    grid-template-columns: 20% 5% 15% 20% 15% 5% 3% 10% 7%;
+    grid-template-rows: auto 34vw auto;
+}
+
+.search_loan_grid {
+    display: grid;
+    grid-template-areas:
+    "blank1 blank1 title title title blank4 blank4"
+    "content content content content content content content"
+    "blank2 prev prev textpage next next blank3";
+    grid-template-columns: 20% 5% 15% 20% 15% 5% 20%;
+    grid-template-rows: auto 34vw auto;
+}
+
+.search_user_result {
+    display: grid;
+    grid-template-areas:
+    "photo content checkout checkbox";
+    grid-template-columns: 11% 72% 10% 7%;
+}
+
+.search_book_result {
+    display: grid;
+    grid-template-areas:
+    "content checkout checkbox";
+    grid-template-columns: 83% 10% 7%;
+}
+
+.search_loan_result {
+    display: grid;
+    grid-template-areas:
+    "content checkout";
+    grid-template-columns: 90% 10%;
+}
+
+.vertical_spacing[date-range]{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.date_container {
+    display:inline-flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.photo_user {
+    grid-area: photo;
+}
+
+.photo_user img {
+    width: 6vw;
+    height: 6vw;
+    min-width: 45px;
+    min-height: 45px;
+}
+
+.search_title {
+    grid-area: title;
+}
+
+.delete_button {
+    grid-area: button;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page_text {
+    grid-area: textpage;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.result_left {
+    grid-area: side1;
+    padding: 0 10px;
+    overflow-y: scroll;
+    height: 97%;
+}
+
+.result_right {
+    grid-area: side2;
+    padding: 0 10px;
+    overflow-y: scroll;
+    height: 97%;
+}
+
+.result_left p, .result_right p {
+    text-align: justify;
+}
+
+.trash_button {
+    grid-area: trash;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trash_button button {
+    min-width: 30px;
+    min-height: 30px;
+    background:none;
+    background-color: red;
+    background-image:url('../images/Trash.png');
+    background-size: cover;
+}
+
+.search_content {
+    display: flex;
+    flex-direction: column;
+    grid-area: content;
+}
+
+.search_content p {
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    font-size: 2vw;
+}
+
+.view_button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    grid-area: checkout;
+}
+
+.view_button button {
+    padding: 0 2vw;
+    margin: max(0.24vw, 2px);
+}
+
+.mark_box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    grid-area: checkbox;
+}
+
+.mark_box input {
+    min-width: 13px;
+    min-height: 13px;
+    cursor: pointer;
+    width: 2.5vw;
+    height: 2.5vw;
+    margin: 0.3vw;
+}
+
+.page_button_prev {
+    grid-area: prev;
+}
+
+.page_button_next {
+    grid-area: next;
+}
+
+.book_leftside {
+    display: inline-block;
+    vertical-align: top;
+    width: 42%;
+    margin: 0 2.3vw;
+}
+
+.book_rightside {
+    display: inline-block;
+    vertical-align: top;
+    width: 42%;
+    margin: 0 2.3vw;
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: max(3.8vw, 20px);
+    }
+
+    .result_table p {
+        font-size: max(1.5vw, 10px);
+    }
+
+    .student2 {
+        margin-top: max(4.5vw, 29.5px);
+        margin-bottom: max(4vw, 24.5px);
+    }
+
+    .photo_user img {
+        width: 7.5vw;
+        height: 7.5vw;
+    }
+
+    .container_overlay {
+        width: 60%;
+    }
+
+    .rules_book_grid {
+        grid-template-rows: auto max(43vw, 290px) auto;
+    }
+
+    .search_grid, .search_user_grid, .search_loan_grid {
+        grid-template-rows: auto max(43vw, 270px) auto;
+    }
+    
+    .search_loan_grid {
+        grid-template-rows: auto max(40vw, 270px) auto;
+    }
+
+    .book_list[rules] {
+        width: 95vw;
+        height: 60.25vw;
+    }
+
+    .book_menu {
+        left: 5%;
+        top: calc(50% - 29.25vw);
+        width: 90vw;
+        height: 58.5vw;
+    }
+
+    .book_menu[varient] {
+        top: calc(50% - 29vw);
+        height: 58vw;
+    }
+
+    .user_menu {
+        left: 5%;
+        top: calc(50% - 31.7vw);
+        width: 90vw;
+        height: 63.4vw;
+    }
+
+    .loan_menu {
+        left: 5%;
+        top: calc(50% - 37.5vw);
+        width: 90vw;
+        height: 75vw;
+    }
+
+    .loan_menu[small] {
+        top: calc(50% - 32vw);
+        height: 64vw;
+    }
+
+    .fine_menu {
+        left: 5%;
+        top: calc(50% - 28.5vw);
+        width: 90vw;
+        height: 57vw;
+    }
+
+    .fine_menu_2 {
+        left: 5%;
+        width: 90vw;
+    }
+
+    .reservation_menu {
+        left: 5%;
+        top: calc(50% - 29.65vw);
+        width: 90vw;
+        height: 59.3vw;
+    }
+
+    .report_menu {
+        left: 5%;
+        top: calc(50% - 29.15vw);
+        width: 59.5vw;
+        height: 78.4vw;
+    }
+
+    .book_list {
+        width: 100vw;
+        height: 63.5vw;
+    }
+
+    .book_leftside {
+        margin: 0 2.5vw;
+    }
+
+    .book_rightside {
+        margin: 0 2.5vw;
+    }
+
+    .user_image {
+        margin-top: max(2vw, 11px);
+        width: max(11vw, 61.2px);
+        height: max(11vw, 61.2px);
+    }
+
+    .menu_option {
+        margin: max(1.5vw, 8.3px) 0;
+    }
+
+    .vertical_spacing {
+        margin: max(1vw, 5.5px) 0;
+    }
+
+    .vertical_spacing[top] {
+        margin-top: max(4.5vw, 25px);
+    }
+
+    .mark_box input {
+        cursor: pointer;
+        width: 2.5vw;
+        height: 2.5vw;
+        margin: max(0.87vw, 5.5px);
+    }
+
+    h2 {
+        font-size: max(3.35vw, 18.7px);
+    }
+
+    .search_content p {
+        font-size: max(2.8vw, 17px);;
+    }
+
+    .selectize-dropdown .active, input, .selectize-dropdown [data-selectable].option, .selectize-control.multi .selectize-input [data-value].active, .selectize-control.single .selectize-input, .selectize-input>input, .selectize-control.multi .selectize-input [data-value] {
+        font-size: max(2vw, 12px);
+    }
+
+    p, a, label, button, .menu_option[report] {
+        font-size: max(2.4vw, 13.4px);
+    }
+
+    button[yellow] {
+        font-size: max(1.97vw, 11px);
+        line-height: max(2.6vw, 14px);
+    }
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Centro de Información en Línea</title>
+
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="../stylesheets/style.css">
+        <link rel="stylesheet" href="../stylesheets/menu_style.css">
+
+        <script>user_type = "admin";</script>
+        <script src="../javascripts/authentication.js"></script>
+
+        <!--Selective.js, Combobox-->
+        <link rel="stylesheet" href="../stylesheets/selectize.css">
+        <script src="../javascripts/jquery.js"></script>
+        <script src="../javascripts/selectize.js"></script>
+
+        <script src="../javascripts/admin_books_career_functions.js"></script>
+    </head>
+    <body>
+        <div id="content_div" style="background-image: url('../images/Report.png');" class="report_menu">
+            <h1 style="width:80%; margin-bottom: 0;"><u>Reporte de libros más consultados por carrera</u></h1>
+            <p style="margin:5px;">Selecciona un rango de fechas a usar:</p>
+            <div style="width: 80%;">
+                <label for="fechainicio">Fecha inicio: </label>
+                <input type="date" id="fechainicio" name="fechainicio" style="width:33.5%">
+            </div>
+            <div style="width: 80%;">
+                <label for="fechainicio">Fecha final: </label>
+                <input type="date" id="fechafinal" name="fechafinal" style="width:36%">
+            </div>
+            <div style="width: 80%;">
+                <label for="carrera">Carrera: </label>
+                <div style="display:inline-block; width: 46%;">
+                    <select id="carrera" placeholder="Carrera...">
+                        <option value="">Selecciona una opción...</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                    </select>
+                </div>
+            </div>
+            <p style="margin:5px;">La tabla automaticamente se actualiza.</p>
+            <div class="vertical_spacing result_table" style="height: 24%;">
+                <table id="table_info">
+                    <tr>
+                        <th style="width:10%">
+                            <p>Rank</p>
+                        </th>
+                        <th style="width:30%">
+                            <p>Titulo</p>
+                        </th>
+                        <th style="width:30%">
+                            <p>Autores</p>
+                        </th>
+                        <th style="width:20%">
+                            <p>Carrera</p>
+                        </th>
+                        <th style="width:10%">
+                            <p>#</p>
+                        </th>
+                    </tr>
+                </table>
+            </div>
+            <div class="horizontal_alignment">
+                <button id="generate" onclick="generate_report()" disabled>Generar</button>
+                <button id="back" onclick="window.location.href = 'reports'">Volver</button>
+            </div>
+        </div>
+    </body>
+</html>

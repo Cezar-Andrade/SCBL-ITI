@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Centro de Información en Línea</title>
+
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="../stylesheets/style.css">
+        <link rel="stylesheet" href="../stylesheets/menu_style.css">
+
+        <script>user_type = "admin";</script>
+        <script src="../javascripts/authentication.js"></script>
+
+        <script src="../javascripts/admin_debtors_functions.js"></script>
+    </head>
+    <body>
+        <div id="content_div" style="background-image: url('../images/Report.png');" class="report_menu">
+            <h1 style="width:80%; margin-bottom: 0;"><u>Reporte de deudores</u></h1>
+            <p>Selecciona un rango de fechas a usar:</p>
+            <div class="vertical_spacing" style="width: 80%;">
+                <label for="fechainicio">Fecha inicio: </label>
+                <input type="date" id="fechainicio" name="fechainicio" style="width:33.5%">
+            </div>
+            <div class="vertical_spacing" style="width: 80%;">
+                <label for="fechainicio">Fecha final: </label>
+                <input type="date" id="fechafinal" name="fechafinal" style="width:36%">
+            </div>
+            <p>La tabla automaticamente se actualiza.</p>
+            <div class="vertical_spacing result_table">
+                <table id="table_info">
+                    <tr>
+                        <th style="width:20%">
+                            <p>No. Control</p>
+                        </th>
+                        <th style="width:25%">
+                            <p>Nombre</p>
+                        </th>
+                        <th style="width:20%">
+                            <p>Razón</p>
+                        </th>
+                        <th style="width:20%">
+                            <p>Sanción</p>
+                        </th>
+                        <th style="width:15%">
+                            <p>Fecha</p>
+                        </th>
+                    </tr>
+                </table>
+            </div>
+            <div class="horizontal_alignment">
+                <button id="generate" onclick="generate_report()" disabled>Generar</button>
+                <button id="back" onclick="window.location.href = 'reports'">Volver</button>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Centro de Información en Línea</title>
+
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="../stylesheets/style.css">
+        <link rel="stylesheet" href="../stylesheets/menu_style.css">
+
+        <script>user_type = "admin";</script>
+        <script src="../javascripts/authentication.js"></script>
+        
+        <!--Selective.js, Combobox-->
+        <link rel="stylesheet" href="../stylesheets/selectize.css">
+        <script src="../javascripts/jquery.js"></script>
+        <script src="../javascripts/selectize.js"></script>
+        
+        <script src="../javascripts/admin_loans_functions.js"></script>
+    </head>
+    <body>
+        <div class="loan_menu" id="content_div">
+            <form method="POST" id="loan_form" style="padding-top: 0.1vw;">
+                <div class="vertical_spacing">
+                    <h1 style="margin: 0;">Gestión de préstamos</h1>
+                </div>
+                <div id="book_leftside" class="book_leftside">
+                    <h2 style="margin: 0 auto;">Datos del usuario</h2>
+                    <div class="vertical_spacing">
+                        <input type="radio" name="same" id="student" value="estudiante" checked required>
+                        <label for="student">Estudiante</label>
+                        <input type="radio" name="same" id="teacher" value="docente" required>
+                        <label for="teacher">Docente</label>
+                    </div>
+                    <div id="number_div" class="vertical_spacing">
+                        <label for="numero">No. de control: </label>
+                        <input type="number" style="width: 44%;" min="1" id="numero" name="numero" placeholder="########...">
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="nombre">Nombre: </label>
+                        <input type="text" style="width: 63%;" id="nombre" name="nombre" disabled>
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="apeP">Apellido paterno: </label>
+                        <input type="text" style="width: 37%;" id="apeP" name="apeP" disabled>
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="apeM">Apellido materno: </label>
+                        <input type="text" style="width: 35%;" id="apeM" name="apeM" disabled>
+                    </div>
+                    <div class="vertical_spacing">
+                        <button orange id="search" type="submit" style="margin:0; padding-left:1vw; padding-right:1vw" onclick="return search_user_data()">Ver info usuario</button>
+                    </div>
+                </div>
+                <div id="book_rightside" class="book_rightside">
+                    <h2 style="margin:0 auto;">Datos del ejemplar</h2>
+                    <div class="vertical_spacing">
+                        <label for="folio">Folio: </label>
+                        <input type="text" style="width: 76%;" id="folio" name="folio" placeholder="########...">
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="titulo">Titulo: </label>
+                        <input type="text" style="width: 73%;" id="titulo" name="titulo" disabled>
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="isbn">ISBN: </label>
+                        <input type="text" style="width: 78%;" id="isbn" name="isbn" disabled>
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="autores">Autores: </label>
+                        <input type="text" style="width: 68%;" id="autores" name="autores" disabled>
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="disponible">Disponibilidad:</label>
+                        <input type="text" style="width: 47%;" id="disponible" name="disponible" disabled>
+                    </div>
+                    <div class="vertical_spacing">
+                        <button orange id="search" type="submit" style="margin:0; padding-left:1vw; padding-right:1vw" onclick="return search_sample_data()">Ver info ejemplar</button>
+                    </div>
+                </div>
+                <div class="horizontal_alignment">
+                    <div class="vertical_spacing">
+                        <div>
+                            <label for="FechaEntregaInicio">Rango fecha de entregado: </label><input type="date" style="width:19%" id="FechaEntregaInicio"><label> - </label><input type="date" style="width:22%" id="FechaEntregaFinal">
+                        </div>
+                        <div>
+                            <label for="FechaLimiteInicio">Rango fecha de límite: </label><input type="date" style="width:24.8%" id="FechaLimiteInicio"><label> - </label><input type="date" style="width:22%" id="FechaLimiteFinal">
+                        </div>
+                        <div>
+                            <label for="FechaDevolucionInicio">Rango fecha de devolución: </label><input type="date" style="width:18%" id="FechaDevolucionInicio"><label> - </label><input type="date" style="width:22%" id="FechaDevolucionFinal">
+                        </div>
+                    </div>
+                    <div class="horizontal_alignment" style="display:flex; justify-content: center; align-items: center;">
+                        <button id="search_active" type="submit" style="padding-left:1vw; padding-right:1vw" onclick="return search_query(true)">Buscar<br>Pendientes</button>
+                        <button id="search_all" type="submit" style="padding-left:1vw; padding-right:1vw" onclick="return search_query(false)">Buscar<br>Todos</button>
+                        <button id="registrar_prestamo" type="submit" style="padding-left:1vw; padding-right:1vw" onclick="return open_loan_window()">Realizar<br>Prestamo</button>
+                        <button id="clear" type="cancel" style="padding-left:1vw; padding-right:1vw" onclick="return clear_data()">Limpiar</button>
+                        <button id="back" type="cancel" style="padding-left:1vw; padding-right:1vw" onclick="window.location.href = 'menu'">Volver</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="book_list">
+            <div class="search_loan_grid">
+                <div class="search_title"><h1>Lista de prestamos</h1></div>
+                <div id="result_area" class="search_content"></div>
+                <div class="page_button_prev">
+                    <button onclick="change_page(-1)">Anterior</button>
+                </div>
+                <div class="page_text">
+                    <p id="pages_available">Pagina 0 de 0</p>
+                </div>
+                <div class="page_button_next">
+                    <button onclick="change_page(1)">Siguiente</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

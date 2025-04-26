@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Centro de Información en Línea</title>
+
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="../stylesheets/style.css">
+        <link rel="stylesheet" href="../stylesheets/menu_style.css">
+
+        <script>user_type = "admin";</script>
+        <script src="../javascripts/authentication.js"></script>
+    </head>
+    <body>
+        <div id="content_div" style="background-image: url('../images/Report.png');" class="report_menu">
+            <h1>Generar reportes</h1>
+            <a class="menu_option" report href="debtors">Reporte de deudores</a>
+            <a class="menu_option" report href="books_consulted">Reporte de libros más consultados</a>
+            <a class="menu_option" report href="books_career">Reporte de libros más consultados por carrera</a>
+            <br>
+            <button id="back" onclick="window.location.href = 'menu'">Volver</button>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Centro de Información en Línea</title>
+
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="../stylesheets/style.css">
+        <link rel="stylesheet" href="../stylesheets/menu_style.css">
+
+        <script>user_type = "admin";</script>
+        <script src="../javascripts/authentication.js"></script>
+        
+        <script src="../javascripts/admin_menu_functions.js"></script>
+    </head>
+    <body>
+        <div id="content_div" style="background-image: url('../images/OpenBlueBook.png');" class="book_menu">
+            <div id="book_leftside" class="book_leftside">
+                <h2>Menú Administrador</h2>
+                <a class="menu_option" href="books">Gestionar libros, autores, editoriales y ejemplares...........5</a>
+                <a class="menu_option" href="users">Gestionar usuario....................8</a>
+                <a class="menu_option" href="loans">Gestionar prestamos.............14</a>
+                <a class="menu_option" href="fines">Gestionar multas...................20</a>
+                <a class="menu_option" href="reservations">Gestionar reservaciones........37</a>
+                <p id="bloqueados">Usuarios bloqueados: 0</p>
+            </div>
+            <div id="book_rightside" class="book_rightside">
+                <image id="pfp" class="user_image">
+                <p style="color: #FFCF42; margin: 1.25vw;"><b id="user_greet">¡Bienvenido [Usuario]!</b></p>
+                <a class="menu_option" href="reports">Generar reportes...................45</a>
+                <a class="menu_option" href="profile">Ver perfil de usuario..............61</a>
+                <a class="menu_option" href="../php/logout.php">Cerrar sesión.........................99</a>
+                <p id="conteo" style="margin-top: 1.7vw;">Prestamos expirados: 0<br>Reservaciones expiradas: 0<br>Multas NO saldadas: 0</p>
+            </div>
+        </div>
+    </body>
+</html>

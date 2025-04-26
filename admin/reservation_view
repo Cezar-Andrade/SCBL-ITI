@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Centro de Información en Línea</title>
+
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="../stylesheets/style.css">
+        <link rel="stylesheet" href="../stylesheets/menu_style.css">
+
+        <script>user_type = "admin";</script>
+        <script src="../javascripts/authentication.js"></script>
+
+        <!--Selective.js, Combobox-->
+        <link rel="stylesheet" href="../stylesheets/selectize.css">
+        <script src="../javascripts/jquery.js"></script>
+        <script src="../javascripts/selectize.js"></script>
+        
+        <script src="../javascripts/admin_reservation_view_functions.js"></script>
+    </head>
+    <body>
+        <div class="reservation_menu" id="content_div" style="background-image:url('../images/GreenTicket.png');">
+            <h1 style="margin: 0; display:inline;">Reservación</h1>
+            <p data id="id" style="margin-bottom: 0;"></p>
+            <div id="book_leftside" class="book_leftside"></div>
+            <div id="book_rightside" class="book_rightside"></div>
+            <p data id="expiracion" style="color: red; opacity: 0;">[EXPIRADO]</p>
+            <div id="buttons" class="vertical_spacing" style="display: flex; align-items: center; justify-content: center;"></div>
+        </div>
+    </body>
+</html>

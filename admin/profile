@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Centro de Información en Línea</title>
+
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="../stylesheets/style.css">
+        <link rel="stylesheet" href="../stylesheets/menu_style.css">
+
+        <script>user_type = "admin";</script>
+        <script src="../javascripts/authentication.js"></script>
+        
+        <script src="../javascripts/admin_profile_functions.js"></script>
+    </head>
+    <body>
+        <div id="content_div" style="background-image: url('../images/UserCard.png');" class="user_menu">
+            <div id="book_leftside" class="book_leftside"></div>
+            <div id="book_rightside" class="book_rightside"></div>
+            <div class="horizontal_alignment">
+                <button id="contrasena" onclick="change_password()">Cambiar contraseña</button>
+                <button id="back" onclick="window.location.href = 'menu'">Volver</button>
+            </div>
+        </div>
+    </body>
+</html>

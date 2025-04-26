@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Centro de Información en Línea</title>
+        
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="../stylesheets/style.css">
+        <link rel="stylesheet" href="../stylesheets/menu_style.css">
+
+        <script>user_type = "admin";</script>
+        <script src="../javascripts/authentication.js"></script>
+        
+        <!--Selective.js, Combobox-->
+        <link rel="stylesheet" href="../stylesheets/selectize.css">
+        <script src="../javascripts/jquery.js"></script>
+        <script src="../javascripts/selectize.js"></script>
+        
+        <script src="../javascripts/admin_books_functions.js"></script>
+    </head>
+    <body>
+        <div class="book_menu" id="content_div" style="background-image: url('../images/OpenBlueBook.png');">
+            <form method="POST" id="title_form">
+                <div id="book_leftside" class="book_leftside">
+                    <h2>Datos título</h2>
+                    <div class="vertical_spacing">
+                        <label for="title">Título: </label>
+                        <input type="text" style="width: 73%;" id="title" name="title" placeholder="Título...">
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="editor">Editorial:</label>
+                        <div style="display:inline-block; width: 69%;">
+                            <select id="editor" placeholder="Editor...">
+                                <option value="">Selecciona una opción...</option>
+                                <option value="a">A</option>
+                                <option value="b">B</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="place">Lugar publicación: </label>
+                        <input type="text" autocomplete="country-name" style="width: 36.5%;" id="place" name="place" placeholder="Lugar...">
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="clasification">Clasificación:</label>
+                        <div style="display:inline-block; width: 56%;">
+                            <select id="clasification" placeholder="Clasificación...">
+                                <option value="">Selecciona una opción...</option>
+                                <option value="a">A</option>
+                                <option value="b">B</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="edition">Edición: </label>
+                        <input type="text" style="width: 69%;" id="edition" name="edition" placeholder="Edición...">
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="author">Autores:</label>
+                        <div style="display:inline-block; width: 70.5%;">
+                            <select id="author" placeholder="Autores..." multiple>
+                                <option value="a">A</option>
+                                <option value="b">B</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="horizontal_alignment">
+                        <button id="search" type="submit" style="margin:0; padding-left:1vw; padding-right:1vw" onclick="return search_query()">Buscar</button>
+                        <button id="clear" type="cancel" style="margin:0; padding-left:1vw; padding-right:1vw" onclick="clear_data()">Limpiar</button>
+                        <button id="back" type="cancel" style="margin:0; padding-left:1vw; padding-right:1vw" onclick="window.location.href = 'menu'">Volver</button>
+                    </div>
+                </div>
+                <div id="book_rightside" class="book_rightside">
+                    <div class="vertical_spacing" top>
+                        <label for="folio">Folio: </label>
+                        <input type="text" style="width: 73.5%;" id="folio" name="folio" placeholder="########...">
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="ISBN">ISBN: </label>
+                        <input type="text" style="width: 75%;" id="ISBN" name="ISBN" placeholder="###-###-###...">
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="language">Idioma:</label>
+                        <div style="display:inline-block; width: 70.5%;">
+                            <select id="language" placeholder="Idioma...">
+                                <option value="">Selecciona una opción...</option>
+                                <option value="Español">Español</option>
+                                <option value="Inglés">Inglés</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="year">Año de publicación: </label>
+                        <input type="number" style="width: 31%;" min="1" id="year" name="year" placeholder="####...">
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="tome">Tomo: </label>
+                        <input type="number" style="width: 15%;" min="1" id="tome" name="tome" placeholder="##...">
+                        <label for="tome_name"> : </label>
+                        <input type="text" style="width: 48.5%;" id="tome_name" name="tome_name" placeholder="Nombre del tomo...">
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="volume">Volumen: </label>
+                        <input type="number" style="width: 15%;" min="1" id="volume" name="volume" placeholder="##...">
+                        <label for="volume_name"> : </label>
+                        <input type="text" style="width: 39.5%;" id="volume_name" name="volume_name" placeholder="Nombre del volumen...">
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="state">Estado físico:</label>
+                        <div style="display:inline-block; width: 53.5%;">
+                            <select id="state" placeholder="Estado físico...">
+                                <option value="">Selecciona una opción...</option>
+                                <option value="Buena condicion">Buena condición</option>
+                                <option value="Maltratado">Maltratado</option>
+                                <option value="Roto">Roto</option>
+                                <option value="Perdido">Perdido</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="horizontal_alignment">
+                        <button yellow type="submit" style="margin: 0; padding: 0 1vw;" id="register_title" onclick="return title_register()">Registrar<br>títulos</button></a>
+                        <button yellow type="cancel" style="margin: 0; padding: 0 1vw;" id="register_author">Registrar<br>autores</button></a>
+                        <button yellow type="cancel" style="margin: 0; padding: 0 1vw;" id="register_editor">Registrar<br>editoriales</button></a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="book_list">
+            <div class="search_grid">
+                <div class="search_title"><h1>Lista de Libros</h1></div>
+                <div class="trash_button">
+                    <button red style="margin:0; height:4.5vw;" onclick="open_delete_titles()"></button>
+                </div>
+                <div id="result_area" class="search_content"></div>
+                <div class="page_button_prev">
+                    <button onclick="change_page(-1)">Anterior</button>
+                </div>
+                <div class="page_text">
+                    <p id="pages_available">Pagina 0 de 0</p>
+                </div>
+                <div class="page_button_next">
+                    <button onclick="change_page(1)">Siguiente</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

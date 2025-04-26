@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Centro de Información en Línea</title>
+
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="../stylesheets/style.css">
+        <link rel="stylesheet" href="../stylesheets/menu_style.css">
+
+        <script>user_type = "admin";</script>
+        <script src="../javascripts/authentication.js"></script>
+        
+        <!--Selective.js, Combobox-->
+        <link rel="stylesheet" href="../stylesheets/selectize.css">
+        <script src="../javascripts/jquery.js"></script>
+        <script src="../javascripts/selectize.js"></script>
+        
+        <script src="../javascripts/admin_users_functions.js"></script>
+    </head>
+    <body>
+        <div class="user_menu" id="content_div" style="background-image: url('../images/UserCard.png');">
+            <form method="POST" id="user_form">
+                <div id="book_leftside" class="book_leftside">
+                    <h2 style="margin-bottom: 0;">Datos usuario</h2>
+                    <div class="vertical_spacing" style="margin:0">
+                        <label for="name">Nombre: </label>
+                    </div>
+                    <div class="vertical_spacing" style="margin-top:0">
+                        <input type="text" autocomplete="given-name" style="width: 90%;" id="name" name="name" placeholder="Nombre...">
+                    </div>
+                    <div class="vertical_spacing" style="margin:0">
+                        <label for="apeP">Apellido paterno: </label>
+                    </div>
+                    <div class="vertical_spacing" style="margin-top:0">
+                        <input type="text" autocomplete="family-name" style="width: 90%;" id="apeP" name="apeP" placeholder="Apellido paterno...">
+                    </div>
+                    <div class="vertical_spacing" style="margin:0">
+                        <label for="apeM">Apellido materno: </label>
+                    </div>
+                    <div class="vertical_spacing" style="margin-top:0">
+                        <input type="text" autocomplete="family-name" style="width: 90%;" id="apeM" name="apeM" placeholder="Apellido materno...">
+                    </div>
+                    <div class="vertical_spacing" style="margin:0">
+                        <label for="username">Nombre de usuario: </label>
+                    </div>
+                    <div class="vertical_spacing" style="margin-top:0">
+                        <input type="text" autocomplete="username" style="width: 90%;" id="username" name="username" placeholder="Nombre de usuario...">
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="gender">Género: </label>
+                        <div style="display:inline-block; width: 67.5%;">
+                            <select id="gender" placeholder="Género...">
+                                <option value="">Selecciona una opción...</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="horizontal_alignment">
+                        <button id="search" type="submit" style="margin:0; padding-left:1vw; padding-right:1vw" onclick="return search_query()">Buscar</button>
+                        <button id="clear" type="cancel" style="margin:0; padding-left:1vw; padding-right:1vw" onclick="clear_data()">Limpiar</button>
+                        <button id="back" type="cancel" style="margin:0; padding-left:1vw; padding-right:1vw" onclick="window.location.href = 'menu'">Volver</button>
+                    </div>
+                </div>
+                <div id="book_rightside" class="book_rightside">
+                    <h2>Datos estudiante</h2>
+                    <div class="vertical_spacing" top>
+                        <label for="nocontrol">No. de control: </label>
+                        <input type="number" style="width: 45%;" min="1" id="nocontrol" name="nocontrol" placeholder="########...">
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="career">Carrera: </label>
+                        <input type="text" style="width: 66%;" id="career" name="career" placeholder="Carrera...">
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="semester">Semestre:</label>
+                        <input type="number" style="width: 61%;" min="1" id="semester" name="semester" placeholder="##">
+                    </div>
+                    <h2>Datos docente</h2>
+                    <div class="vertical_spacing">
+                        <label for="nocard">No. de Tarjeta: </label>
+                        <input type="number" style="width: 45%;" min="1" id="nocard" name="nocard" placeholder="########...">
+                    </div>
+                    <div class="vertical_spacing">
+                        <label for="career">Departamento: </label>
+                        <input type="text" style="width: 44%;" id="department" name="department" placeholder="Departamento...">
+                    </div>
+                    <div class="horizontal_alignment">
+                        <button yellow type="submit" style="padding: 0 1vw;" id="register_user" onclick="return user_register()">Registrar<br>usuario</button></a>
+                        <button yellow type="cancel" style="padding: 0 1vw;" id="load_xlsx" onclick="return excel_load()">Cargar<br>.xlsx</button></a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="book_list">
+            <div class="search_user_grid">
+                <div class="search_title"><h1>Lista de Usuarios</h1></div>
+                <div class="delete_button">
+                    <button red style="padding: 0.2vw; margin:0;" onclick="open_delete_search()">Borrar todos los buscados</button>
+                </div>
+                <div class="trash_button">
+                    <button red style="margin:0; height:4.5vw;" onclick="open_delete_users()"></button>
+                </div>
+                <div id="result_area" class="search_content"></div>
+                <div class="page_button_prev">
+                    <button onclick="change_page(-1)">Anterior</button>
+                </div>
+                <div class="page_text">
+                    <p id="pages_available">Pagina 0 de 0</p>
+                </div>
+                <div class="page_button_next">
+                    <button onclick="change_page(1)">Siguiente</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

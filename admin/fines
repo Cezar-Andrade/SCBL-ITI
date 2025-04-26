@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Centro de Información en Línea</title>
+
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="../stylesheets/style.css">
+        <link rel="stylesheet" href="../stylesheets/menu_style.css">
+
+        <script>user_type = "admin";</script>
+        <script src="../javascripts/authentication.js"></script>
+        
+        <!--Selective.js, Combobox-->
+        <link rel="stylesheet" href="../stylesheets/selectize.css">
+        <script src="../javascripts/jquery.js"></script>
+        <script src="../javascripts/selectize.js"></script>
+        
+        <script src="../javascripts/admin_fines_functions.js"></script>
+    </head>
+    <body>
+        <div class="fine_menu" id="content_div">
+            <form method="POST" id="fine_form" style="padding-top: 0.1vw;">
+                <div class="vertical_spacing">
+                    <img src="../images/RedCross.png" style="width: 4%; height: 4%; margin-right: 10%">
+                    <h1 style="margin: 0; display:inline;">Gestión de multas</h1>
+                    <img src="../images/RedCross.png" style="width: 4%; height: 4%; margin-left: 10%">
+                </div>
+                <div id="book_leftside" class="book_leftside">
+                    <h2 style="margin: 0 auto;">Datos de la multa</h2>
+                    <div class="vertical_spacing">
+                        <label for="sancion">Sanción: </label>
+                        <div style="display:inline-block; width: 67.5%;">
+                            <select id="sancion" placeholder="Sanción...">
+                                <option value="">Selecciona una opción...</option>
+                                <option value="Servicio social">Servicio social obligatorio</option>
+                                <option value="Pago en forma económica">Pago en forma económica</option>
+                                <option value="Acordado por el jefe o secretario">Acuerdado por el jefe o secretario</option>
+                                <option value="Sin sanción, ha sido justificado">Sin sanción por justificación</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="vertical_spacing" date-range>
+                        <label>Fecha Multado: </label>
+                        <div class="date_container" style="width: 50%">
+                            <input type="date" style="width:94%" id="FechaMultaInicio">
+                            <p style="margin:0;"><b>|</b></p>
+                            <input type="date" style="width:94%" id="FechaMultaFinal">
+                        </div>
+                    </div>
+                </div>
+                <div id="book_rightside" class="book_rightside">
+                    <h2 style="margin:0 auto;">Datos del préstamo</h2>
+                    <div class="vertical_spacing" date-range>
+                        <label>Fecha Entregado: </label>
+                        <div class="date_container" style="width: 46%">
+                            <input type="date" style="width:94%" id="FechaEntregaInicio">
+                            <p style="margin:0;"><b>|</b></p>
+                            <input type="date" style="width:94%" id="FechaEntregaFinal">
+                        </div>
+                    </div>
+                    <div class="vertical_spacing" date-range>
+                        <label>Fecha Devuelto: </label>
+                        <div class="date_container" style="width: 50%">
+                            <input type="date" style="width:94%" id="FechaDevolucionInicio">
+                            <p style="margin:0;"><b>|</b></p>
+                            <input type="date" style="width:94%" id="FechaDevolucionFinal">
+                        </div>
+                    </div>
+                </div>
+                <hr style="width: 93%">
+                <div>
+                    <input type="radio" name="same" id="student" value="estudiante" checked required>
+                    <label for="student">Estudiante</label>
+                    <input type="radio" name="same" id="teacher" value="docente" required>
+                    <label for="teacher">Docente</label>
+                </div>
+                <div id="book_leftside number_div" class="book_leftside">
+                    <label for="numero">No. de control: </label>
+                    <input type="number" style="width:47%" id="numero" placeholder="########...">
+                </div>
+                <div id="book_rightside" class="book_rightside">
+                    <label for="folio">Folio: </label>
+                    <input type="text" style="width:70%" id="folio" placeholder="########...">
+                </div>
+                <div class="horizontal_alignment">
+                    <button id="search_active" type="submit" onclick="return search_query()">Buscar</button>
+                    <button id="clear" type="cancel" onclick="return clear_data()">Limpiar</button>
+                    <button id="back" type="cancel" onclick="window.location.href = 'menu'">Volver</button>
+                </div>
+            </form>
+        </div>
+        <div class="book_list">
+            <div class="search_loan_grid"> <!--La clase usada para este es la misma que la de los prestamos, para que crear otro nombre si funciona el mismo-->
+                <div class="search_title"><h1>Lista de multas</h1></div>
+                <div id="result_area" class="search_content"></div>
+                <div class="page_button_prev">
+                    <button onclick="change_page(-1)">Anterior</button>
+                </div>
+                <div class="page_text">
+                    <p id="pages_available">Pagina 0 de 0</p>
+                </div>
+                <div class="page_button_next">
+                    <button onclick="change_page(1)">Siguiente</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
