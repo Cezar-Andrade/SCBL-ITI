@@ -43,16 +43,16 @@ async function search_sample_data(){
     }
 
     datos = await get_data_folio();
-
-    if (datos["Titulo"] === undefined){
+    
+    if (datos["Titulo"] === null){
         document.getElementById("titulo").value = "No se encontro...";
-        document.getElementById("isbn").value = "";
-        document.getElementById("autores").value = "";
-        document.getElementById("disponible").value = "";
+        document.getElementById("isbn").value = "---";
+        document.getElementById("autores").value = "---";
+        document.getElementById("disponible").value = "---";
     }else{
         document.getElementById("titulo").value = datos["Titulo"];
-        document.getElementById("isbn").value = datos["ISBN"];
-        document.getElementById("autores").value = datos["Autores"];
+        document.getElementById("isbn").value = ((datos["ISBN"] === null) ? "---" : datos["ISBN"]);
+        document.getElementById("autores").value = ((datos["Autores"] === null) ? "---" : datos["Autores"]);
         document.getElementById("disponible").value = datos["EstadoDisponible"];
     }
 }
@@ -109,7 +109,7 @@ async function get_data_folio(){
     });
 }
 
-async function open_loan_window(){
+async function open_loan_window(window=false){
     numero = document.getElementById("numero");
     folio = document.getElementById("folio");
 
@@ -123,22 +123,40 @@ async function open_loan_window(){
     user = await get_data_user();
     sample = await get_data_folio();
 
-    open_overlayed_window();
+    if (!window){
+        open_overlayed_window();
+    }
+
+    container = document.getElementById("container_overlay");
     if (user["Nombre"] === undefined){
-        document.getElementById("container_overlay").innerHTML = `<h1>Usuario inexistente</h1>
+        container.innerHTML = `<h1>Usuario no encontrado...</h1>
             <p>El número de control que se ingreso no corresponde a algun usuario, verifique que lo haya escrito bien y que el usuario tenga ese número de control asignado.</p>
             <button type="cancel" onclick="close_window()">Cerrar</button>`;
     }else if (sample["Titulo"] === undefined){
-        document.getElementById("container_overlay").innerHTML = `<h1>Titulo inexistente</h1>
+        container.innerHTML = `<h1>Titulo no encontrado...</h1>
             <p>El folio que se ingreso no corresponde a algun titulo, verifique que lo haya escrito bien y que el titulo tenga ese folio asignado.</p>
             <button type="cancel" onclick="close_window()">Cerrar</button>`;
+    }else if (user["YaPrestado"] == 1){
+        container.innerHTML = `<h1>Libro ya prestado</h1>
+            <p id="temp_text"></p>
+            <button onclick="close_window()">Cerrar</button>`;
+        let temp = document.getElementById("temp_text");
+        temp.removeAttribute("id");
+        temp.appendChild(document.createTextNode("El usuario: " + user["Nombre"] + " " + user["ApellidoPaterno"] + " " + user["ApellidoMaterno"] + " ya tiene el libro prestado, no puede llevarse más de uno."));
     }else if (sample["EstadoDisponible"] !== "Disponible"){
-        document.getElementById("container_overlay").innerHTML = `<h1>Ejemplar no disponible</h1>
+        container.innerHTML = `<h1>Ejemplar no disponible</h1>
             <p>El folio que se ingreso se encuentra actualmente no disponible, verifique si hay otro ejemplar disponible para el mismo titulo, o cheque en los prestamos o gestión de libros el estado de este folio en especifico.</p>
             <button type="cancel" onclick="close_window()">Cerrar</button>`;
+    }else if (user["Multado"] == 1 || user["Expirado"] == 1 || user["Bloqueado"] == 1){
+        container.innerHTML = `<h1>Acción no permitida</h1>
+            <p id="temp_text"></p>
+            <p>Asegurese de que no tenga multas pendientes, prestamos expirados o que no este bloqueado para que pueda pedir un ejemplar prestado.</p>
+            <button onclick="close_window()">Cerrar</button>`;
+        let temp = document.getElementById("temp_text");
+        temp.removeAttribute("id");
+        temp.appendChild(document.createTextNode("El usuario: " + user["Nombre"] + " " + user["ApellidoPaterno"] + " " + user["ApellidoMaterno"] + " tiene una multa no saldada, un prestamo expirado o esta bloqueado."));
     }else{
         folio = folio.value;
-        let container = document.getElementById("container_overlay");
         container.innerHTML = `<h1>Registrar prestamo</h1>
             <p>Esta por asignar el ejemplar:</p>
             <p><b class="folio">Folio: </b><br>
@@ -149,7 +167,7 @@ async function open_loan_window(){
             <p><b class="numero"></b><br>
             <b class="nombre">Nombre: </b></p>
             <p>¿Desea continuar?</p>
-            <button onclick="realizar_prestamo()">Continuar</button>
+            <button onclick="tipo_prestamo()">Continuar</button>
             <button onclick="close_window()">Cerrar</button>`;
         let temp = container.querySelector(".folio");
         temp.insertAdjacentText("afterend", folio);
@@ -158,7 +176,7 @@ async function open_loan_window(){
         temp = container.querySelector(".isbn");
         temp.insertAdjacentText("afterend", ((sample["ISBN"] === null) ? "---" : sample["ISBN"]));
         temp = container.querySelector(".autores");
-        temp.insertAdjacentText("afterend", sample["Autores"]);
+        temp.insertAdjacentText("afterend", ((sample["Autores"] === null) ? "---" : sample["Autores"]));
         temp = container.querySelector(".numero");
         temp.insertAdjacentText("afterbegin", "No. de " + ((document.getElementById("student").checked) ? "control" : "tarjeta") + ": ");
         temp.insertAdjacentText("afterend", numero.value);
@@ -167,24 +185,38 @@ async function open_loan_window(){
     }
 }
 
-function realizar_prestamo(){
+function tipo_prestamo(){
+    domicilio = 0;
+    let container = document.getElementById("container_overlay");
+    container.innerHTML = `<h1>Tipo de prestamo</h1>
+        <p>Seleccione el tipo de préstamo que esta realizando.</p>
+        <button onclick="realizar_prestamo(0)">En sala</button>
+        <button onclick="realizar_prestamo(1)">A domicilio</button>
+        <button style="margin-top: 0.2vw" onclick="open_loan_window(true)">Cancelar</button>`;
+}
+
+function realizar_prestamo(domicilio){
     today2 = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
     fecha = today2.toISOString().split('T')[0];
     today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
-    today.setDate(today.getDate() + 2);
-    if (today.getDay() == 0){
-        today.setDate(today.getDate() + 1);
-    }else if (today.getDay() == 6){
+    if (domicilio == 1){
         today.setDate(today.getDate() + 2);
+        if (today.getDay() == 0){
+            today.setDate(today.getDate() + 1);
+        }else if (today.getDay() == 6){
+            today.setDate(today.getDate() + 2);
+        }
     }
     fechaLimite = today.toISOString().split('T')[0];
+    estudiante = document.getElementById("student").checked;
 
     var dict = {
         "IDUsuario": user["IDUsuario"],
         "Folio": folio,
         "Fecha": fecha,
         "FechaLimite": fechaLimite,
-        "estudiante": document.getElementById("student").checked
+        "estudiante": estudiante,
+        "domicilio": domicilio
     }
 
     var formData = new FormData();
@@ -194,12 +226,15 @@ function realizar_prestamo(){
     var replacements = {
         "temp_b1": user["Nombre"] + " " + user["ApellidoPaterno"] + " " + user["ApellidoMaterno"],
         "temp_b2": folio,
-        "temp_b3": sample["Titulo"],
-        "temp_b4": format_date(today2),
-        "temp_b5": format_date(today)
+        "temp_b3": sample["Titulo"]
     }
 
-    send_query("<h1>Prestamo realizado</h1><p>El usuario: <b class='temp_b1'></b>.</p><p>Se le asigno prestado el ejemplar con folio: <b class='temp_b2'></b> del titulo: <b class='temp_b3'></b>.</p><p>Con fecha de entregado siendo: <b class='temp_b4'></b> para ser devuelto a más tardar la fecha: <b class='temp_b5'></b>.</p><button type='cancel' onclick='return close_window()'>Cerrar</button>", formData, replacements);
+    if (domicilio == 1){
+        replacements["temp_b4"] = format_date(today2);
+        replacements["temp_b5"] = format_date(today);
+    }
+
+    send_query("<h1>Prestamo realizado</h1><p>El usuario: <b class='temp_b1'></b>.</p><p>Se le asigno prestado el ejemplar con folio: <b class='temp_b2'></b> del titulo: <b class='temp_b3'></b>.</p><p>" + ((domicilio == 1) ? "Con fecha de entregado siendo: <b class='temp_b4'></b> para ser devuelto a más tardar la fecha: <b class='temp_b5'></b>." : "Ya se encuentra registrado con éxito.") + "</p><button type='cancel' onclick='return close_window()'>Cerrar</button>", formData, domicilio, estudiante, replacements);
 }
 
 function search_query(active){
@@ -213,6 +248,7 @@ function search_query(active){
         "numero": numero.value,
         "estudiante": document.getElementById("student").checked,
         "folio": folio.value,
+        "domicilio": domicilio_combobox.getValue(),
         "fechaentregainicio": document.getElementById("FechaEntregaInicio").value,
         "fechalimiteinicio": document.getElementById("FechaLimiteInicio").value,
         "fechadevolucioninicio": document.getElementById("FechaDevolucionInicio").value,
@@ -242,10 +278,12 @@ function search_query(active){
     .then(data => {
         prestamos_data = JSON.parse(data.data);
         prestamos_length = Object.keys(prestamos_data).length;
-        prestamos_max_page = Math.ceil(prestamos_length/5);
+        prestamos_max_page = Math.ceil(prestamos_length/7);
         prestamos_page = Math.min(1, prestamos_max_page);
         
         update_search();
+
+        window.location.href = "#search_list";
     });
     
     return true;
@@ -272,13 +310,13 @@ function format_date(today){
 
 function update_search(){
     prestamos_length = Object.keys(prestamos_data).length;
-    prestamos_max_page = Math.ceil(prestamos_length/5);
+    prestamos_max_page = Math.ceil(prestamos_length/7);
     prestamos_page = Math.min(prestamos_page, prestamos_max_page);
 
     let result = document.getElementById("result_area");
     result.innerHTML = "";
     if (prestamos_length > 0){
-        for (let i = 5*prestamos_page - 5; i < Math.min(prestamos_length, 5*prestamos_page); i++){
+        for (let i = 7*prestamos_page - 7; i < Math.min(prestamos_length, 7*prestamos_page); i++){
             item = prestamos_data[i];
             fechaEntregado = new Date(item["FechaEntregado"] + "T00:00:00");
             fechaLimite = new Date(item["FechaLimite"] + "T23:59:59");
@@ -335,6 +373,13 @@ function update_search(){
             });
             result.appendChild(result_div);
         };
+    }else{
+        let result_div = document.createElement("div");
+        result_div.className = "search_loan_result";
+        result_div.innerHTML += `<div class="search_content">
+                <p>Sin resultados...</p>
+            </div>`;
+        result.appendChild(result_div);
     }
     let pages = document.getElementById("pages_available");
     pages.innerHTML = "";
@@ -351,6 +396,7 @@ function clear_data(){
     document.getElementById("isbn").value = "";
     document.getElementById("autores").value = "";
     document.getElementById("disponible").value = "";
+    domicilio_combobox.clear();
     document.getElementById("FechaEntregaInicio").value = "";
     document.getElementById("FechaLimiteInicio").value = "";
     document.getElementById("FechaDevolucionInicio").value = "";
@@ -361,7 +407,7 @@ function clear_data(){
     return false;
 }
 
-function send_query(text, formData, replacements={}){
+function send_query(text, formData, domicilio, estudiante, replacements={}){
     document.getElementById("container_overlay").innerHTML = `<h1>Procesando...</h1>
         <p>Por favor espere...</p>`;
     
@@ -378,7 +424,7 @@ function send_query(text, formData, replacements={}){
             return response.text().then(text => { throw new Error(text) });
         }
     })
-    .then(data => {
+    .then(async data => {
         if (data.status === "user-not-authenticated"){
             document.getElementById("container_overlay").innerHTML = `<h1>Usuario no autenticado</h1>
                 <p>El usuario no ha iniciado sesión, solo el usuario administrador autenticado puede hacer estas operaciones.</p>
@@ -397,21 +443,34 @@ function send_query(text, formData, replacements={}){
                 <p>Si crees que es un error, verifique el titulo en cuestión para gestionar los ejemplares que se encuentran registrados en el sistema y verifique que se hayan marcado como devuelto los prestamos adecuadamente.</p>
                 <button type="cancel" onclick="return close_window()">Cerrar</button>`;
         }else if (data.status === "book-unavailable"){
-            document.getElementById("container_overlay").innerHTML = `<h1>Titulo reservado</h1>
-                <p>El titulo solicitado esta en estado de reservado, por lo cual el préstamo no puede ser efectuado.</p>
-                <p>Revise las reservaciones hechas y de ser necesario, cancelé las reservaciones como sea necesario para permitir la disponibilidad de este título.</p>
+            document.getElementById("container_overlay").innerHTML = `<h1>Titulo perdido</h1>
+                <p>El titulo solicitado no tiene libros disponibles ya que los registrados se encuentran marcados como perdidos, por lo cual el préstamo no puede ser efectuado.</p>
+                <p>Revise los ejemplares del titulo y corriga o elimine del sistema los ejemplares perdidos de dicho titulo para evitar más problemas.</p>
                 <button type="cancel" onclick="return close_window()">Cerrar</button>`;
         }else if (data.status === "duplicate-entry"){
             document.getElementById("container_overlay").innerHTML = `<h1>Entrada duplicada</h1>
                 <p>El dato que intentaste registrar ya se encuentra registrado, si por alguna razón no lo puede visualizar intente refrescar la página.</p>
                 <button type="cancel" onclick="return close_window()">Cerrar</button>`;
         }else if (data.status === "success"){
-            let container = document.getElementById("container_overlay");
-            container.innerHTML = text;
-            Object.keys(replacements).forEach((item) => {
-                let temp = container.querySelector("." + item);
-                temp.appendChild(document.createTextNode(replacements[item]));
-            });
+            impresion = 1;
+            if (domicilio == 1){
+                await print_ticket(JSON.parse(data.message));
+                impresion = await print_ticket(JSON.parse(data.message));
+            }
+            if (impresion == -1){
+                let container = document.getElementById("container_overlay");
+                container.innerHTML = `<h1>Problema de conexión a impresión</h1><p>El software QZ Tray para conectar con la impresora no responde o no esta iniciado, verifique que este iniciado en el sistema, reinicia la computadora de ser necesario o si no, reinstale el programa.</p><p>Comuniquese con un ingeniero en sistemas computacionales si el problema persiste.</p><p>El préstamo se hizo con éxito, verifique la impresora y pruebe a imprimir el ticket al visualizar el préstamo.</p><button type="cancel" onclick="return close_window()">Cerrar</button>`;
+            }else if (impresion == 1){
+                let container = document.getElementById("container_overlay");
+                container.innerHTML = text;
+                Object.keys(replacements).forEach((item) => {
+                    let temp = container.querySelector("." + item);
+                    temp.appendChild(document.createTextNode(replacements[item]));
+                });
+            }else{
+                let container = document.getElementById("container_overlay");
+                container.innerHTML = `<h1>Problema de impresión</h1><p>La impresora se desconecto, no esta respondiendo o no esta funcionando apropiadamente.</p><p>El préstamo se hizo con éxito, verifique la impresora y pruebe a imprimir el ticket al visualizar el préstamo.</p><button type="cancel" onclick="return close_window()">Cerrar</button>`;
+            }
         }else if (data.status === "error"){
             let container = document.getElementById("container_overlay");
             container.innerHTML = `<h1>Error del servidor</h1>
@@ -420,15 +479,47 @@ function send_query(text, formData, replacements={}){
             let temp = container.querySelector(".temp_p");
             temp.appendChild(document.createTextNode(data.message));
         }
-    })
-    .catch(error => {
-        let container = document.getElementById("container_overlay");
-        container.innerHTML = `<h1>Error del servidor</h1>
-            <p class="temp_p">Ocurrio un error del lado del servidor, comuniquese con el Centro de Información al respecto o vuelva a intentarlo más tarde:<br><br></p>
-            <button type="cancel" onclick="return close_window()">Volver</button>`;
-        let temp = container.querySelector(".temp_p");
-        temp.appendChild(document.createTextNode(error));
     });
+}
+
+async function print_ticket(datos){
+    try{
+        if (!qz.websocket.isActive()) {
+            await qz.websocket.connect();
+        }
+    }catch{
+        return -1;
+    }
+
+    try{
+        const config = qz.configs.create("Epson");
+        
+        const datos2 = [
+            "\x1B\x40",
+            " ___________________________________\n",
+            "         Firma de recibido\n\n",
+            "  Institituto Tecnologico de Iguala\n",
+            "         Ticket de prestamo\n\n",
+            "Telefono:\n\n",
+            "Datos del usuario:\n",
+            ((datos["NoControl"] !== null) ? "No. de Control: " + datos["NoControl"] : "No. de Tarjeta: " + datos["NoTarjeta"]) + "\n",
+            "Nombre: " + datos["Nombre"] + "\n",
+            ((datos["NoControl"] !== null) ? "Carrera: " + datos["Carrera"] : "Departamento: " + datos["Departamento"]) + "\n\n",
+            "Datos del libro:\n",
+            "Folio: " + datos["Folio"] + "\n",
+            "Titulo: " + datos["Titulo"] + "\n\n",
+            "Datos del prestamo:\n",
+            "Fecha de prestado: " + datos["FechaEntregado"] + "\n",
+            "Fecha de entrega limite: " + datos["FechaLimite"] + "\n\n\n\n\n\n\n\n",
+            "\x1D\x56\x00"
+        ];
+
+        await qz.print(config, datos2);
+
+        return 1;
+    }catch{
+        return 0;
+    }
 }
 
 function open_overlayed_window(){
@@ -442,14 +533,18 @@ function open_overlayed_window(){
 document.addEventListener("DOMContentLoaded", () => {
     loan_data = [];
 
+    domicilio_combobox = $('#domicilio').selectize({
+        sortField: 'text',
+        normalize: true
+    })[0].selectize;
     document.getElementById("loan_form").onsubmit = form_prevent;
     document.getElementById("student").addEventListener('change', function() {
         document.getElementById("number_div").innerHTML = `<label for="numero">No. de control: </label>
-            <input type="number" style="width: 44%;" id="numero" name="numero" placeholder="########...">`;
+            <input type="text" style="width: 44%;" id="numero" name="numero" placeholder="########...">`;
     });
     document.getElementById("teacher").addEventListener('change', function() {
         document.getElementById("number_div").innerHTML = `<label for="numero">No. de tarjeta: </label>
-            <input type="number" style="width: 46%;" id="numero" name="numero" placeholder="########...">`;
+            <input type="text" style="width: 46%;" id="numero" name="numero" placeholder="########...">`;
     });
     document.getElementById("FechaEntregaInicio").addEventListener('change', function() {
         document.getElementById("FechaEntregaFinal").min = document.getElementById("FechaEntregaInicio").value;

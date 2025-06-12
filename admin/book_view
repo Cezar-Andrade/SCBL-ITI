@@ -19,12 +19,19 @@
         <script src="../javascripts/jquery.js"></script>
         <script src="../javascripts/selectize.js"></script>
         
+        <script src="../javascripts/SHA.js"></script>
+        <script src="../javascripts/RSVP.js"></script>
+        <script src="../javascripts/jsrsasign.js"></script>
+        <script src="../javascripts/qz_tray.js"></script>
+        <script src="../javascripts/qz_tray_signing.js"></script>
         <script src="../javascripts/admin_book_view_functions.js"></script>
     </head>
     <body>
         <div id="content_div" style="background-image: url('../images/OpenYellowBook.png');" class="book_menu">
-            <div id="book_leftside" class="book_leftside"></div>
-            <div id="book_rightside" class="book_rightside"></div>
+            <form method="POST" id="book_view_form">
+                <div id="book_leftside" class="book_leftside"></div>
+                <div id="book_rightside" class="book_rightside"></div>
+            </form>
         </div>
     </body>
 </html>

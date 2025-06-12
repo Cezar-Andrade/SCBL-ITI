@@ -1,23 +1,24 @@
 function generate_report(){
-    document.getElementById("generate").text = "Generando...";
+    document.getElementById("generate").textContent = "Generando...";
     document.getElementById("generate").disabled = true;
     rows = [["Rank", "Titulo", "Autores", "ISBN", "Editorial", "Clasificacion", "Carrera", "Total"]];
 
     for (var i = 0; i < deudores_length; i++) {
         row = [];
         
+        let editorial = deudores_data[i]["Editorial"];
+        let isbn = deudores_data[i]["ISBN"];
         row.push(i + 1);
         row.push(deudores_data[i]["Titulo"]);
         row.push(deudores_data[i]["Autores"]);
-        row.push('"' + deudores_data[i]["ISBN"] + '"');
-        row.push(deudores_data[i]["Editorial"]);
+        row.push(((isbn === null) ? "" : '"' + isbn + '"'));
+        row.push((editorial === null) ? "" : editorial);
         row.push(deudores_data[i]["Clasificacion"]);
         row.push(deudores_data[i]["Carrera"]);
         row.push(deudores_data[i]["Total"]);
         
         rows.push(row);
     }
-    console.log(rows);
     var formData = new FormData();
     formData.append("type", "libros_carrera");
     formData.append("inicio", document.getElementById("fechainicio").value);
@@ -56,13 +57,13 @@ function generate_report(){
         } else if (contentType && contentType.includes("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
             return response.blob();
         } else {
-            document.getElementById("generate").text = "Generar";
+            document.getElementById("generate").textContent = "Generar";
             document.getElementById("generate").disabled = false;
             return response.text().then(text => { throw new Error(text) });
         }
     })
     .then(blob => {
-        document.getElementById("generate").text = "Generar";
+        document.getElementById("generate").textContent = "Generar";
         document.getElementById("generate").disabled = false;
         
         if (blob == null){
@@ -173,7 +174,7 @@ function search_data_combobox(combobox, type_search){
     })
     .then(data => {
         if (data.status === "user-not-admin" || data.status === "user-not-authenticated"){
-            window.location.href = "../index";
+            window.location.href = "../index.html";
         }else if (data.status === "success"){
             combobox.clear();
             combobox.clearOptions();

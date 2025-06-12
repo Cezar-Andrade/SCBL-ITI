@@ -11,20 +11,98 @@
         echo json_encode(["status" => "user-not-authenticated"]);
         exit();
     }
-    $stmt = $mysqli->prepare("SELECT * FROM administradores WHERE IDUsuario = ?");
+    $stmt = $mysqli->prepare("SELECT * FROM administradores WHERE IDUsuario = ? AND Permisos = 1");
     $stmt->bindParam(1, $id);
     $stmt->execute();
 
     if ($stmt->rowCount() > 0){
         $type = $_POST["type"];
         switch ($type) {
-            case "reservation":
-                $stmt = $mysqli->prepare("DELETE FROM reservaciones WHERE IDReservacion = ?");
-                $stmt->bindParam(1, $_POST["id"]);
-                $stmt->execute();
+            case "editoriales":
+                $autoresLeft = [];
+                $autoresDeleted = [];
+                $ids = json_decode($_POST["ids"]);
 
-                header("Content-Type: application/json");
-                echo json_encode(["status" => "success"]);
+                try{
+                    for ($i = 0; $i < sizeof($ids); $i++){
+                        $stmt = $mysqli->prepare("SELECT * FROM editoriales
+                            WHERE IDEditorial = ?");
+                        $stmt->bindParam(1, $ids[$i]);
+                        $stmt->execute();
+                        $info = $stmt->fetch(PDO::FETCH_ASSOC)["Nombre"];
+
+                        $stmt = $mysqli->prepare("SELECT * FROM editoriales ed
+                            INNER JOIN titulos t ON ed.IDEditorial = t.IDEditorial
+                            INNER JOIN ejemplares e ON t.IDTitulo = e.IDTitulo
+                            WHERE e.EstadoDisponible = 'Prestado'
+                            AND ed.IDEditorial = ?");
+                        $stmt->bindParam(1, $ids[$i]);
+                        $stmt->execute();
+
+                        if ($stmt->rowCount() > 0){
+                            $autoresLeft[] = $info;
+                        }else{
+                            try{
+                                $stmt = $mysqli->prepare("DELETE FROM editoriales WHERE IDEditorial = ?");
+                                $stmt->bindParam(1, $ids[$i]);
+                                $stmt->execute();
+
+                                $autoresDeleted[] = $info;
+                            }catch (Exception $e){
+                                $autoresLeft[] = $info;
+                            }
+                        }
+                    }
+                    
+                    header("Content-Type: application/json");
+                    echo json_encode(["status" => "success", "autoresLeft" => json_encode($autoresLeft), "autoresDeleted" => json_encode($autoresDeleted)]);
+                }catch (Exception $e){
+                    header("Content-Type: application/json");
+                    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+                }
+            break;
+            case "autores":
+                $autoresLeft = [];
+                $autoresDeleted = [];
+                $ids = json_decode($_POST["ids"]);
+
+                try{
+                    for ($i = 0; $i < sizeof($ids); $i++){
+                        $stmt = $mysqli->prepare("SELECT * FROM autores a
+                            WHERE IDAutor = ?");
+                        $stmt->bindParam(1, $ids[$i]);
+                        $stmt->execute();
+                        $info = $stmt->fetch(PDO::FETCH_ASSOC)["Nombre"];
+
+                        $stmt = $mysqli->prepare("SELECT * FROM autores a
+                            INNER JOIN titulo_autores ta ON a.IDAutor = ta.IDAutor
+                            INNER JOIN ejemplares e ON ta.IDTitulo = e.IDTitulo
+                            WHERE e.EstadoDisponible = 'Prestado'
+                            AND a.IDAutor = ?");
+                        $stmt->bindParam(1, $ids[$i]);
+                        $stmt->execute();
+
+                        if ($stmt->rowCount() > 0){
+                            $autoresLeft[] = $info;
+                        }else{
+                            try{
+                                $stmt = $mysqli->prepare("DELETE FROM autores WHERE IDAutor = ?");
+                                $stmt->bindParam(1, $ids[$i]);
+                                $stmt->execute();
+
+                                $autoresDeleted[] = $info;
+                            }catch (Exception $e){
+                                $autoresLeft[] = $info;
+                            }
+                        }
+                    }
+                    
+                    header("Content-Type: application/json");
+                    echo json_encode(["status" => "success", "autoresLeft" => json_encode($autoresLeft), "autoresDeleted" => json_encode($autoresDeleted)]);
+                }catch (Exception $e){
+                    header("Content-Type: application/json");
+                    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+                }
             break;
             case "bloqueo":
                 $stmt = $mysqli->prepare("DELETE FROM usuarios_bloqueados WHERE IDUsuario = ?");
@@ -37,7 +115,10 @@
             case "user":
                 $usersLeft = [];
                 $usersDeleted = [];
+                $admin_id = $id;
                 $ids = json_decode($_POST["ids"]);
+                $count = 0;
+                $final_count = -1;
                 foreach ($ids as $x){
                     $id = $x;
 
@@ -50,6 +131,14 @@
                     $stmt->bindParam(1, $id);
                     $stmt->execute();
                     $info = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($id == $admin_id){ //Cannot delete yourself dummy
+                        $usersLeft[] = $info;
+                        $final_count = $count;
+                        $count++;
+
+                        continue;
+                    }
 
                     $stmt = $mysqli->prepare("SELECT *
                         FROM usuarios u
@@ -63,6 +152,7 @@
                     $stmt->execute();
                     if ($stmt->rowCount() > 0){
                         $usersLeft[] = $info;
+                        $count++;
 
                         continue;
                     }
@@ -74,7 +164,7 @@
                 }
 
                 header("Content-Type: application/json");
-                echo json_encode(["status" => "success", "usersLeft" => json_encode($usersLeft), "usersDeleted" => json_encode($usersDeleted)]);
+                echo json_encode(["status" => "success", "usersLeft" => json_encode($usersLeft), "usersDeleted" => json_encode($usersDeleted), "selfuser" => $final_count]);
             break;
             case "title":
                 $titlesLeft = [];
@@ -84,12 +174,11 @@
                     $id = $x;
                     $delete = true;
 
-                    $stmt = $mysqli->prepare("SELECT b.IDTitulo, b.Titulo, GROUP_CONCAT(DISTINCT CONCAT(a.Nombre, ' ', a.ApellidoPaterno, ' ', a.ApellidoMaterno) SEPARATOR ', ')
-                        AS Autores, CONCAT(c.CodigoClasificacion, ' - ', c.Nombre) AS Clasificacion
+                    $stmt = $mysqli->prepare("SELECT b.IDTitulo, b.Titulo, GROUP_CONCAT(DISTINCT a.Nombre SEPARATOR ', ')
+                        AS Autores, b.CodigoClasificacion AS Clasificacion
                         FROM titulos b
                         INNER JOIN titulo_autores ba ON b.IDTitulo = ba.IDTitulo
                         INNER JOIN autores a ON ba.IDAutor = a.IDAutor
-                        INNER JOIN clasificacion c ON b.CodigoClasificacion = c.CodigoClasificacion
                         WHERE b.IDTitulo = ?
                         GROUP BY b.IDTitulo");
                     $stmt->bindParam(1, $id);

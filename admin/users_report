@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Centro de Información en Línea</title>
+
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="../stylesheets/style.css">
+        <link rel="stylesheet" href="../stylesheets/menu_style.css">
+
+        <script>user_type = "admin";</script>
+        <script src="../javascripts/authentication.js"></script>
+
+        <script src="../javascripts/admin_users_report_functions.js"></script>
+    </head>
+    <body>
+        <div id="content_div" style="background-image: url('../images/Report.png');" class="report_menu">
+            <div class="report_content">
+                <h1 style="width:80%; margin-bottom: 0;"><u>Reporte de usuarios registrados</u></h1>
+                <p style="margin-bottom: 0; margin-left: 4vw; margin-right: 4vw;">Obten un documento de tipo Excel donde todos y cada uno de los usaurios registrados en este sistema se encuentran a su diposición para su observación separada.</p>
+                <p style="margin-bottom: 0; margin-left: 4vw; margin-right: 4vw; color: red;">NO USAR EL ARCHIVO GENERADO PARA REGISTRAR O DAR DE BAJA USUARIOS.</p>
+                <div class="horizontal_alignment">
+                    <button id="generate" onclick="generate_report()">Generar</button>
+                    <button id="back" onclick="window.location.href = 'reports'">Volver</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

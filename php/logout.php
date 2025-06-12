@@ -4,5 +4,5 @@
     unset($_SESSION["userID"]);
     unset($_SESSION["type"]);
 
-    header("Location: ../index");
+    header("Location: ../index.html");
 ?>

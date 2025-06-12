@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Centro de Información en Línea</title>
+
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="stylesheets/style.css">
+        <link rel="stylesheet" href="stylesheets/index_style.css">
+
+        <script src="javascripts/index_functions.js"></script>
+    </head>
+    <body>
+        <div class="leftside">
+            <svg class="leftside_bg">
+                <ellipse cx="0%" cy="50%" rx="95%" ry="100%" stroke="#FFCF42" stroke-width="4%" fill="#EEEEEE" />
+            </svg>
+            <img src="images/TecNM.png" type="image/png" class="image_tecnm">
+            <img src="images/ITI.png" type="image/png" class="image_iti">
+            <h1 style="position: absolute; left: 60px; top: calc(50cqh - 14vw); font-size: 3.5vw;">
+                ¡Bienvenido!<br><br>
+                TecNM - Iguala<br><br>
+                Centro de Información<br>en Línea
+            </h1>
+        </div>
+        <div class="upside">
+            <svg class="leftside_bg">
+                <ellipse cx="50%" cy="0%" rx="100%" ry="30%" stroke="#FFCF42" stroke-width="4%" fill="#EEEEEE" />
+            </svg>
+            <img src="images/TecNM.png" type="image/png" class="image_tecnm">
+            <img src="images/ITI.png" type="image/png" class="image_iti">
+            <h1 style="position: absolute; left: 15%; width: 70%; top: calc(45px - 3.5vw); font-size: 3.5vw;">
+                ¡Bienvenido!<span class="tab">TecNM - Iguala<br>
+                Centro de Información en Línea
+            </h1>
+        </div>
+        <div class="rightside" id="book">
+            <form method="POST" id="login_form">
+                <h1 style="color: white;" class="book_title">
+                    Inicio de Sesión
+                </h1>
+                <div class="vertical_spacing">
+                    <label style="color: white;" for="username">Usuario:</label><br>
+                    <input type="text" id="username" name="username" autocomplete="username" placeholder="Nombre de usuario..." required>
+                </div>
+                <div class="vertical_spacing">
+                    <label style="color: white;" for="password">Contraseña:</label><br>
+                    <input type="password" id="password" name="password" autocomplete="password" placeholder="Contraseña..." required>
+                </div>
+                <div class="horizontal_alignment">
+                    <button type="submit" id="login">Entrar</button>
+                </div>
+                <a href="javascript:void(0)" id="password-forgot">¿Olvidaste tu contraseña?</a>
+            </form>
+        </div>
+    </body>
+</html>

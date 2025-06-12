@@ -16,12 +16,17 @@
     </head>
     <body>
         <div id="content_div" style="background-image: url('../images/Report.png');" class="report_menu">
-            <h1>Generar reportes</h1>
-            <a class="menu_option" report href="debtors">Reporte de deudores</a>
-            <a class="menu_option" report href="books_consulted">Reporte de libros más consultados</a>
-            <a class="menu_option" report href="books_career">Reporte de libros más consultados por carrera</a>
-            <br>
-            <button id="back" onclick="window.location.href = 'menu'">Volver</button>
+            <div class="report_content">
+                <h1>Generar reportes</h1>
+                <a class="menu_option" style="margin: 0.5vw 0" report href="debtors">Reporte de deudores</a>
+                <a class="menu_option" style="margin: 0.5vw 0" report href="books_consulted">Reporte de libros más consultados</a>
+                <a class="menu_option" style="margin: 0.5vw 0" report href="books_career">Reporte de libros más consultados por carrera</a>
+                <a class="menu_option" style="margin: 0.5vw 0" report href="statistics">Estadisticas de la biblioteca</a>
+                <a class="menu_option" style="margin: 0.5vw 0" report href="books_report">Libros registrados</a>
+                <a class="menu_option" style="margin: 0.5vw 0" report href="users_report">Usuarios registrados</a>
+                <br>
+                <button id="back" onclick="window.location.href = 'menu'">Volver</button>
+            </div>
         </div>
     </body>
 </html>

@@ -2,9 +2,122 @@ function form_prevent(e){
     e.preventDefault();
 }
 
-function open_editorial(){
+function open_title(){
+    titulo = document.getElementById("title");
+    autor_req = document.getElementById("author-selectized");
+    idioma_req = document.getElementById("language-selectized");
+
+    titulo.required = false;
+    autor_req.required = false;
+    idioma_req.required = false;
+
     open_overlayed_window();
-    document.getElementById("container_overlay").innerHTML = `<h1>Registrar editorial</h1>
+    let container = document.getElementById("container_overlay");
+    container.style = "width:65%;"
+    container.innerHTML = `<h1>Registrar título</h1>
+        <form method="POST" id="title_register_form">
+            <div id="book_leftside" class="book_leftside">
+                <div class="vertical_spacing">
+                    <label for="title">Título: </label>
+                    <input type="text" style="width: 73%;" id="title2" name="title" placeholder="Título...">
+                </div>
+                <div class="vertical_spacing">
+                    <label for="editor">Editorial:</label>
+                    <div style="display:inline-block; width: 69%;">
+                        <select id="editor2" placeholder="Editor...">
+                            <option value="">Selecciona una opción...</option>
+                            <option value="a">A</option>
+                            <option value="b">B</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="vertical_spacing">
+                    <label for="clasification">Clasificación:</label>
+                    <input type="text" style="width: 52%;" id="clasification2" name="clasification" placeholder="Clasificación...">
+                </div>
+                <div class="vertical_spacing">
+                    <label for="edition">Edición: </label>
+                    <input type="text" style="width: 69%;" id="edition2" name="edition" placeholder="Edición...">
+                </div>
+                <div class="vertical_spacing">
+                    <label for="author">Autores:</label>
+                    <div style="display:inline-block; width: 70.5%;">
+                        <select id="author2" placeholder="Autores..." multiple>
+                            <option value="a">A</option>
+                            <option value="b">B</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div id="book_rightside" class="book_rightside">
+                <div class="vertical_spacing">
+                    <label for="ISBN">ISBN: </label>
+                    <input type="text" style="width: 75%;" id="ISBN2" name="ISBN" placeholder="###-###-###...">
+                </div>
+                <div class="vertical_spacing">
+                    <label for="language">Idioma:</label>
+                    <div style="display:inline-block; width: 70.5%;">
+                        <select id="language2" placeholder="Idioma...">
+                            <option value="">Selecciona una opción...</option>
+                            <option value="Español">Español</option>
+                            <option value="Inglés">Inglés</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="vertical_spacing">
+                    <label for="year">Año de publicación: </label>
+                    <input type="number" style="width: 31%;" min="1" id="year2" name="year" placeholder="####...">
+                </div>
+                <div class="vertical_spacing">
+                    <label for="tome">Tomo: </label>
+                    <input type="number" style="width: 15%;" min="1" id="tome2" name="tome" placeholder="##...">
+                    <label for="tome_name"> : </label>
+                    <input type="text" style="width: 48.5%;" id="tome_name2" name="tome_name" placeholder="Nombre del tomo...">
+                </div>
+                <div class="vertical_spacing">
+                    <label for="volume">Volumen: </label>
+                    <input type="number" style="width: 15%;" min="1" id="volume2" name="volume" placeholder="##...">
+                    <label for="volume_name"> : </label>
+                    <input type="text" style="width: 39.5%;" id="volume_name2" name="volume_name" placeholder="Nombre del volumen...">
+                </div>
+            </div>
+            <div class="horizontal_alignment">
+                <button type="submit" onclick="return title_register()">Registrar</button></a>
+                <button type="cancel" onclick="return close_window()">Cancelar</button></a>
+            </div>
+        </form>`;
+    document.getElementById("title_register_form").onsubmit = form_prevent;
+
+    editorial_combobox2 = $('#editor2').selectize({
+        sortField: 'text',
+        normalize: true
+    })[0].selectize;
+    author_combobox2 = $('#author2').selectize({
+        sortField: 'text',
+        normalize: true
+    })[0].selectize;
+    language_combobox2 = $('#language2').selectize({
+        sortField: 'text',
+        normalize: true
+    })[0].selectize;
+
+    search_data_combobox(editorial_combobox2, "editorial", false);
+    search_data_combobox(author_combobox2, "autores", false);
+}
+
+function open_editorial(){
+    titulo = document.getElementById("title");
+    autor_req = document.getElementById("author-selectized");
+    idioma_req = document.getElementById("language-selectized");
+
+    titulo.required = false;
+    autor_req.required = false;
+    idioma_req.required = false;
+
+    open_overlayed_window();
+    let container = document.getElementById("container_overlay");
+    container.style="top:0%";
+    container.innerHTML = `<h1>Registrar editorial</h1>
         <form method="POST" id="editorial_form">
             <div class="vertical_spacing">
                 <label for="editorial_name">Nombre:</label>
@@ -16,40 +129,596 @@ function open_editorial(){
             <div class="vertical_spacing">
                 <input type="text" autocomplete="country-name" style="width:90%;" id="editorial_location" name="editorial_location" placeholder="Ubicación (Opcional)...">
             </div>
-            <div class="horizontal_alignment">
-                <button type="submit" onclick="return register_editorial()">Registrar</button>
-                <button type="cancel" onclick="return close_window()">Cerrar</button>
+            <p>La tabla se actualiza con el campo de arriba para buscar.</p>
+            <div class="vertical_spacing result_table" style="background-color: white; width: 100%">
+                <table class="table_editorial">
+                    <tr>
+                        <th style="width: 60%">
+                            <p style="margin: 0.1vw 0">Editorial:</p>
+                        </th>
+                        <th style="width: 30%">
+                            <p style="margin: 0.1vw 0">Ubicación:</p>
+                        </th>
+                        <th style="width: 10%">
+                        </th>
+                    </tr>
+                </table>
+            </div>
+            <div class="horizontal_alignment" style="bottom:0%">
+                <button style="margin: 1vw 0; padding: 0.5vw" type="submit" onclick="return register_editorial()">Registrar</button>
+                <button style="margin: 1vw 0; padding: 0.5vw" type="cancel" onclick="return modify_editorial()">Modificar<br>Selección</button>
+                <button red style="margin: 1vw 0; padding: 0.5vw" type="cancel" onclick="return delete_editorial()">Borrar<br>Selección</button>
+                <button style="margin: 1vw 0; padding: 0.5vw" type="cancel" onclick="return close_window()">Cerrar</button>
             </div>
         </form>`;
+    table = container.querySelector(".table_editorial");
     document.getElementById("editorial_form").onsubmit = form_prevent;
+    document.getElementById("editorial_name").addEventListener("input", function(){
+        update_editorial_search(document.getElementById("editorial_name").value, document.getElementById("editorial_location").value);
+    })
+    document.getElementById("editorial_location").addEventListener("input", function(){
+        update_editorial_search(document.getElementById("editorial_name").value, document.getElementById("editorial_location").value);
+    })
+
+    update_editorial_search();
 }
 
 function open_author(){
+    titulo = document.getElementById("title");
+    autor_req = document.getElementById("author-selectized");
+    idioma_req = document.getElementById("language-selectized");
+
+    titulo.required = false;
+    autor_req.required = false;
+    idioma_req.required = false;
+
     open_overlayed_window();
-    document.getElementById("container_overlay").innerHTML = `<h1>Registrar editorial</h1>
+    let container = document.getElementById("container_overlay");
+    container.innerHTML = `<h1>Registrar autor</h1>
         <form method="POST" id="author_form">
             <div class="vertical_spacing">
                 <label for="author_name">Nombre:</label>
-                <input type="text" autocomplete="given-name" style="width:70%;" id="author_name" name="author_name" placeholder="Nombre..." required>
+                <input type="text" autocomplete="given-name" style="width:70%;" id="author_name" name="author_name" placeholder="Nombre...">
             </div>
-            <div class="vertical_spacing">
-                <label for="author_AP">Apellido paterno:</label>
+            <p>La tabla se actualiza con el campo de arriba para buscar.</p>
+            <div class="vertical_spacing result_table" style="background-color: white; width: 100%">
+                <table class="table_author">
+                    <tr>
+                        <th style="width: 90%">
+                            <p style="margin: 0.1vw 0">Autor:</p>
+                        </th>
+                        <th style="width: 10%">
+                        </th>
+                    </tr>
+                </table>
             </div>
-            <div class="vertical_spacing">
-                <input type="text" autocomplete="family-name" style="width:90%;" id="author_AP" name="author_AP" placeholder="Apellido paterno...">
-            </div>
-            <div class="vertical_spacing">
-                <label for="author_AM">Apellido materno:</label>
-            </div>
-            <div class="vertical_spacing">
-                <input type="text" autocomplete="family-name" style="width:90%;" id="author_AM" name="author_AM" placeholder="Apellido materno...">
-            </div>
-            <div class="horizontal_alignment">
-                <button type="submit" onclick="return register_author()">Registrar</button>
-                <button type="cancel" onclick="return close_window()">Cerrar</button>
+            <div class="horizontal_alignment" style="margin: 0">
+                <button style="margin: 1vw 0; padding: 0.5vw" type="submit" onclick="return register_author()">Registrar</button>
+                <button style="margin: 1vw 0; padding: 0.5vw" type="submit" onclick="return modify_author()">Modificar<br>Selección</button>
+                <button red style="margin: 1vw 0; padding: 0.5vw" type="submit" onclick="return delete_author()">Borrar<br>Selección</button>
+                <button style="margin: 1vw 0; padding: 0.5vw" type="cancel" onclick="return close_window()">Cerrar</button>
             </div>
         </form>`;
+    table = container.querySelector(".table_author");
     document.getElementById("author_form").onsubmit = form_prevent;
+    document.getElementById("author_name").addEventListener("input", function(){
+        update_autores_search(document.getElementById("author_name").value);
+    })
+
+    update_autores_search();
+}
+
+function update_editorial_search(filter="", filter2=""){
+    var formData = new FormData();
+    formData.append("type", "editorial_filtrado");
+    formData.append("filter", filter);
+    formData.append("filter2", filter2);
+
+    fetch("../php/admin_search_queries.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => {
+        const contentType = response.headers.get("content-type");
+        
+        if (contentType && contentType.includes("application/json")) {
+            return response.json();
+        } else {
+            return response.text().then(text => { throw new Error(text) });
+        }
+    })
+    .then(data => {
+        clear_table();
+
+        editorial_data = JSON.parse(data.data);
+        editorial_length = Object.keys(editorial_data).length;
+        
+        for (var i=0; i<editorial_length; i++){
+            item = editorial_data[i];
+            row = table.insertRow(table.rows.length);
+            row.IDEditorial = item["IDEditorial"];
+
+            cell1 = row.insertCell(0);
+            cell2 = row.insertCell(1);
+            cell3 = row.insertCell(2);
+
+            cell1.innerHTML = "<p style='margin: 0.1vw 0' class='temp_p1'></p>";
+            cell2.innerHTML = "<p style='margin: 0.1vw 0' class='temp_p2'></p>";
+            cell3.innerHTML = "<input type='checkbox' class='book_checkbox'>";
+            let temp = cell1.querySelector(".temp_p1");
+            temp.appendChild(document.createTextNode(item["Nombre"]));
+            temp = cell2.querySelector(".temp_p2");
+            temp.appendChild(document.createTextNode((item["Ubicacion"] === null) ? "---" : item["Ubicacion"]));
+            temp = cell3.querySelector(".book_checkbox");
+            temp.number = i;
+        }
+    });
+
+    search_data_combobox(editorial_combobox, "editorial");
+}
+
+function modify_editorial(){
+    open_second_overlayed_window();
+    let container = document.getElementById("second_container_overlay");
+
+    checkboxes = document.getElementsByClassName("book_checkbox");
+    checked = [];
+    for (let i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            checked.push(checkboxes[i].number);
+        }
+    }
+
+    if (checked.length <= 0){
+        container.innerHTML = `<h1>Selecciona editoriales</h1>
+            <p>Ningun editorial ha sido seleccionado, seleccione al menos uno para realizar esta operación.</p>
+            <button red style="margin: 1vw 0; padding: 0.5vw" type="cancel" onclick="return close_second_window()">Cancelar</button>`;
+    }else{
+        container.innerHTML = `<h1>Modificar editoriales</h1>
+            <form method="POST" id="editorial_edit_form">
+                <table class="table_editorial" style="width: 100%">
+                    <tr>
+                        <th style="width: 70%">
+                            <p style="margin: 0.1vw 0">Editorial:</p>
+                        </th>
+                        <th style="width: 30%">
+                            <p style="margin: 0.1vw 0">Ubicación:</p>
+                        </th>
+                    </tr>
+                </table>
+                <div class="horizontal_alignment" style="margin: 0">
+                    <button yellow style="margin: 1vw 0; padding: 0.5vw" type="submit" onclick="return guardar_editorial()">Guardar Cambios</button>
+                    <button red style="margin: 1vw 0; padding: 0.5vw" type="cancel" onclick="return close_second_window()">Cancelar</button>
+                </div>
+            </form>`;
+        document.getElementById("editorial_edit_form").onsubmit = form_prevent;
+        table2 = container.querySelector(".table_editorial");
+        for (let i = 0; i < checked.length; i++) {
+            item = editorial_data[checked[i]];
+            row = table2.insertRow(table2.rows.length);
+            row.IDEditorial = item["IDEditorial"];
+
+            cell1 = row.insertCell(0);
+            cell2 = row.insertCell(1);
+
+            cell1.innerHTML = "<input type='text' style='width: 90%' class='textbox' required>";
+            cell2.innerHTML = "<input type='text' style='width: 90%' class='textbox2'>";
+            let temp = cell1.querySelector(".textbox")
+            temp.value = item["Nombre"];
+            temp.placeholder = item["Nombre"];
+            temp = cell2.querySelector(".textbox2")
+            temp.value = ((item["Ubicacion"] === null) ? "" : item["Ubicacion"]);
+            temp.placeholder = ((item["Ubicacion"] === null) ? "" : item["Ubicacion"]);
+        }
+    }
+
+    return false;
+}
+
+function guardar_editorial(){
+    ids = [];
+    names = [];
+    places = [];
+    for (let i = 1; i < table2.rows.length; i++) {
+        row = table2.rows[i];
+        namee = row.querySelector(".textbox").value;
+        place = row.querySelector(".textbox2").value;
+
+        if (namee === ""){
+            return true;
+        }
+
+        ids.push(row.IDEditorial);
+        names.push(namee);
+        places.push((place === "") ? null : place);
+    }
+    
+    if (confirm("ACTUALIZANDO EDITORIALES\n\nEstas por actualizar los editoriales a continuación.\n¿Desea continuar?")){
+        var formData = new FormData();
+        formData.append("type", "update editoriales");
+        formData.append("ids", JSON.stringify(ids));
+        formData.append("names", JSON.stringify(names));
+        formData.append("places", JSON.stringify(places));
+        
+        fetch("../php/admin_insert_queries.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => {
+            const contentType = response.headers.get("content-type");
+            
+            if (contentType && contentType.includes("application/json")) {
+                return response.json();
+            } else {
+                return response.text().then(text => { throw new Error(text) });
+            }
+        })
+        .then(data => {
+            if (data.status === "user-not-authenticated"){
+                document.getElementById("second_container_overlay").innerHTML = `<h1>Usuario no autenticado</h1>
+                    <p>El usuario no ha iniciado sesión, solo el usuario administrador autenticado puede hacer estas operaciones.</p>
+                    <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
+            }else if (data.status === "user-not-admin"){
+                document.getElementById("second_container_overlay").innerHTML = `<h1>Usuario no administrador</h1>
+                    <p>El usuario con el que esta iniciado la sesión no tiene privilegios de administrador, por ende no puede realizar las siguientes acciones.</p>
+                    <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
+            }else if (data.status === "success"){
+                document.getElementById("second_container_overlay").innerHTML = `<h1>Editoriales actualizados</h1>
+                    <p>Los editoriales seleccionados han sido actualizados.</p>
+                    <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
+                update_editorial_search(document.getElementById("editorial_name").value, document.getElementById("editorial_location").value);
+                search_data_combobox(editorial_combobox, "editorial");
+            }else if (data.status === "error"){
+                let container = document.getElementById("second_container_overlay");
+                container.innerHTML = `<h1>Error del servidor</h1>
+                    <p class="temp_p">Ocurrio un error del lado del servidor, comuniquese con el Centro de Información al respecto o vuelva a intentarlo más tarde:<br><br></p>
+                    <button red type="cancel" onclick="return close_second_window()">Volver</button>`;
+                container.querySelector(".temp_p").appendChild(document.createTextNode(data.message));
+            }
+        })
+        .catch(error => {
+            let container = document.getElementById("second_container_overlay");
+            container.innerHTML = `<h1>Error del servidor</h1>
+                <p class="temp_p">Ocurrio un error del lado del servidor, comuniquese con el Centro de Información al respecto o vuelva a intentarlo más tarde:<br><br></p>
+                <button red type="cancel" onclick="return close_second_window()">Volver</button>`;
+            container.querySelector(".temp_p").appendChild(document.createTextNode(error));
+        });
+    }
+}
+
+function delete_editorial(){
+    open_second_overlayed_window();
+    let container = document.getElementById("second_container_overlay");
+
+    checkboxes = document.getElementsByClassName("book_checkbox");
+    checked = [];
+    for (let i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            checked.push(checkboxes[i].number);
+        }
+    }
+
+    if (checked.length <= 0){
+        container.innerHTML = `<h1>Selecciona editoriales</h1>
+            <p>Ningun editorial ha sido seleccionado, seleccione al menos uno para realizar esta operación.</p>
+            <button red style="margin: 1vw 0; padding: 0.5vw" type="cancel" onclick="return close_second_window()">Cancelar</button>`;
+    }else{
+        container.innerHTML = `<h1>Borrar editoriales</h1>
+            <p>¿Deseas borrar a los editoriales seleccionados?</p>
+            <div class="horizontal_alignment" style="margin: 0">
+                <button yellow style="margin: 1vw 0; padding: 0.5vw" type="submit" onclick="return borrar_editorial()">Borrar</button>
+                <button red style="margin: 1vw 0; padding: 0.5vw" type="cancel" onclick="return close_second_window()">Cancelar</button>
+            </div>`;
+    }
+    
+    return false;
+}
+
+function borrar_editorial(){
+    ids = [];
+    for (let i = 0; i < checked.length; i++) {
+        ids.push(table.rows[checked[i] + 1].IDEditorial);
+    }
+
+    var formData = new FormData();
+    formData.append("type", "editoriales");
+    formData.append("ids", JSON.stringify(ids));
+        
+    fetch("../php/admin_delete_queries.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => {
+        const contentType = response.headers.get("content-type");
+            
+        if (contentType && contentType.includes("application/json")) {
+            return response.json();
+        } else {
+            return response.text().then(text => { throw new Error(text) });
+        }
+    })
+    .then(data => {
+        if (data.status === "user-not-authenticated"){
+            document.getElementById("second_container_overlay").innerHTML = `<h1>Usuario no autenticado</h1>
+                <p>El usuario no ha iniciado sesión, solo el usuario administrador autenticado puede hacer estas operaciones.</p>
+                <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
+        }else if (data.status === "user-not-admin"){
+            document.getElementById("second_container_overlay").innerHTML = `<h1>Usuario no administrador</h1>
+                <p>El usuario con el que esta iniciado la sesión no tiene privilegios de administrador, por ende no puede realizar las siguientes acciones.</p>
+                <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
+        }else if (data.status === "success"){
+            Deleted = JSON.parse(data.autoresDeleted);
+            Left = JSON.parse(data.autoresLeft);
+            if (Deleted.length > 0){
+                document.getElementById("second_container_overlay").innerHTML = `<h1>Editoriales eliminados</h1>
+                    <p>Los editoriales seleccionados han sido eliminados.</p>
+                    ` + ((Left.length > 0) ? "<p>Algunos editoriales no pueden ser borrados porque el titulo al que estan vinculados ha sido préstado, resuelva el préstamo.</p>" : "") + `
+                    <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
+            }else{
+                document.getElementById("second_container_overlay").innerHTML = `<h1>Editoriales NO eliminados</h1>
+                    <p>Los editoriales seleccionados no han podido ser eliminados porque el titulo al que estan vinculados ha sido préstado, resuelva el préstamo.</p>
+                    <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
+            }
+            update_editorial_search(document.getElementById("editorial_name").value, document.getElementById("editorial_location").value);
+            search_data_combobox(editorial_combobox, "editorial");
+        }else if (data.status === "error"){
+            let container = document.getElementById("second_container_overlay");
+            container.innerHTML = `<h1>Error del servidor</h1>
+                <p class="temp_p">Ocurrio un error del lado del servidor, comuniquese con el Centro de Información al respecto o vuelva a intentarlo más tarde:<br><br></p>
+                <button red type="cancel" onclick="return close_second_window()">Volver</button>`;
+            container.querySelector(".temp_p").appendChild(document.createTextNode(data.message));
+        }
+    });
+}
+
+function update_autores_search(filter=""){
+    var formData = new FormData();
+    formData.append("type", "autores_filtrado");
+    formData.append("filter", filter);
+
+    fetch("../php/admin_search_queries.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => {
+        const contentType = response.headers.get("content-type");
+        
+        if (contentType && contentType.includes("application/json")) {
+            return response.json();
+        } else {
+            return response.text().then(text => { throw new Error(text) });
+        }
+    })
+    .then(data => {
+        clear_table();
+
+        autores_data = JSON.parse(data.data);
+        autores_length = Object.keys(autores_data).length;
+
+        for (var i=0; i<autores_length; i++){
+            item = autores_data[i];
+            row = table.insertRow(table.rows.length);
+            row.IDAutor = item["IDAutor"];
+
+            cell1 = row.insertCell(0);
+            cell2 = row.insertCell(1);
+
+            cell1.innerHTML = "<p style='margin: 0.1vw 0' class='temp_p1'></p>";
+            cell2.innerHTML = "<input type='checkbox' class='book_checkbox'>";
+            let temp = cell1.querySelector(".temp_p1");
+            temp.appendChild(document.createTextNode(item["Nombre"]));
+            temp = cell2.querySelector(".book_checkbox");
+            temp.number = i;
+        }
+    });
+}
+
+function delete_author(){
+    open_second_overlayed_window();
+    let container = document.getElementById("second_container_overlay");
+
+    checkboxes = document.getElementsByClassName("book_checkbox");
+    checked = [];
+    for (let i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            checked.push(checkboxes[i].number);
+        }
+    }
+
+    if (checked.length <= 0){
+        container.innerHTML = `<h1>Selecciona autores</h1>
+            <p>Ningun autor ha sido seleccionado, seleccione al menos uno para realizar esta operación.</p>
+            <button red style="margin: 1vw 0; padding: 0.5vw" type="cancel" onclick="return close_second_window()">Cancelar</button>`;
+    }else{
+        container.innerHTML = `<h1>Borrar autores</h1>
+            <p>¿Deseas borrar a los autores seleccionados?</p>
+            <div class="horizontal_alignment" style="margin: 0">
+                <button yellow style="margin: 1vw 0; padding: 0.5vw" type="submit" onclick="return borrar_author()">Borrar</button>
+                <button red style="margin: 1vw 0; padding: 0.5vw" type="cancel" onclick="return close_second_window()">Cancelar</button>
+            </div>`;
+    }
+    
+    return false;
+}
+
+function borrar_author(){
+    ids = [];
+    for (let i = 0; i < checked.length; i++) {
+        ids.push(table.rows[checked[i] + 1].IDAutor);
+    }
+
+    var formData = new FormData();
+    formData.append("type", "autores");
+    formData.append("ids", JSON.stringify(ids));
+        
+    fetch("../php/admin_delete_queries.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => {
+        const contentType = response.headers.get("content-type");
+            
+        if (contentType && contentType.includes("application/json")) {
+            return response.json();
+        } else {
+            return response.text().then(text => { throw new Error(text) });
+        }
+    })
+    .then(data => {
+        if (data.status === "user-not-authenticated"){
+            document.getElementById("second_container_overlay").innerHTML = `<h1>Usuario no autenticado</h1>
+                <p>El usuario no ha iniciado sesión, solo el usuario administrador autenticado puede hacer estas operaciones.</p>
+                <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
+        }else if (data.status === "user-not-admin"){
+            document.getElementById("second_container_overlay").innerHTML = `<h1>Usuario no administrador</h1>
+                <p>El usuario con el que esta iniciado la sesión no tiene privilegios de administrador, por ende no puede realizar las siguientes acciones.</p>
+                <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
+        }else if (data.status === "success"){
+            Deleted = JSON.parse(data.autoresDeleted);
+            Left = JSON.parse(data.autoresLeft);
+            if (Deleted.length > 0){
+                document.getElementById("second_container_overlay").innerHTML = `<h1>Autores eliminados</h1>
+                    <p>Los autores seleccionados han sido eliminados.</p>
+                    ` + ((Left.length > 0) ? "<p>Algunos autores no pueden ser borrados porque el titulo al que estan vinculados ha sido préstado, resuelva el préstamo.</p>" : "") + `
+                    <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
+            }else{
+                document.getElementById("second_container_overlay").innerHTML = `<h1>Autores NO eliminados</h1>
+                    <p>Los autores seleccionados no han podido ser eliminados porque el titulo al que estan vinculados ha sido préstado, resuelva el préstamo.</p>
+                    <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
+            }
+            update_autores_search(document.getElementById("author_name").value);
+            search_data_combobox(author_combobox, "autores");
+        }else if (data.status === "error"){
+            let container = document.getElementById("second_container_overlay");
+            container.innerHTML = `<h1>Error del servidor</h1>
+                <p class="temp_p">Ocurrio un error del lado del servidor, comuniquese con el Centro de Información al respecto o vuelva a intentarlo más tarde:<br><br></p>
+                <button red type="cancel" onclick="return close_second_window()">Volver</button>`;
+            container.querySelector(".temp_p").appendChild(document.createTextNode(data.message));
+        }
+    });
+}
+
+function modify_author(){
+    open_second_overlayed_window();
+    let container = document.getElementById("second_container_overlay");
+
+    checkboxes = document.getElementsByClassName("book_checkbox");
+    checked = [];
+    for (let i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            checked.push(checkboxes[i].number);
+        }
+    }
+
+    if (checked.length <= 0){
+        container.innerHTML = `<h1>Selecciona autores</h1>
+            <p>Ningun autor ha sido seleccionado, seleccione al menos uno para realizar esta operación.</p>
+            <button red style="margin: 1vw 0; padding: 0.5vw" type="cancel" onclick="return close_second_window()">Cancelar</button>`;
+    }else{
+        container.innerHTML = `<h1>Modificar autores</h1>
+            <form method="POST" id="author_edit_form">
+                <table class="table_author" style="width: 100%">
+                    <tr>
+                        <th style="width: 100%">
+                            <p style="margin: 0.1vw 0">Autores:</p>
+                        </th>
+                    </tr>
+                </table>
+                <div class="horizontal_alignment" style="margin: 0">
+                    <button yellow style="margin: 1vw 0; padding: 0.5vw" type="submit" onclick="return guardar_author()">Guardar Cambios</button>
+                    <button red style="margin: 1vw 0; padding: 0.5vw" type="cancel" onclick="return close_second_window()">Cancelar</button>
+                </div>
+            </form>`;
+        document.getElementById("author_edit_form").onsubmit = form_prevent;
+        table2 = container.querySelector(".table_author");
+        for (let i = 0; i < checked.length; i++) {
+            item = autores_data[checked[i]];
+            row = table2.insertRow(table2.rows.length);
+            row.IDAutor = item["IDAutor"];
+
+            cell1 = row.insertCell(0);
+
+            cell1.innerHTML = "<input type='text' style='width: 90%' class='textbox' required>";
+            let temp = cell1.querySelector(".textbox")
+            temp.value = item["Nombre"];
+            temp.placeholder = item["Nombre"];
+        }
+    }
+
+    return true;
+}
+
+function guardar_author(){
+    ids = [];
+    names = [];
+    for (let i = 1; i < table2.rows.length; i++) {
+        row = table2.rows[i];
+        namee = row.querySelector(".textbox").value;
+
+        if (namee === ""){
+            return true;
+        }
+
+        ids.push(row.IDAutor);
+        names.push(namee);
+    }
+    
+    if (confirm("ACTUALIZANDO AUTORES\n\nEstas por actualizar los autores a continuación.\n¿Desea continuar?")){
+        var formData = new FormData();
+        formData.append("type", "update autores");
+        formData.append("ids", JSON.stringify(ids));
+        formData.append("names", JSON.stringify(names));
+        
+        fetch("../php/admin_insert_queries.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => {
+            const contentType = response.headers.get("content-type");
+            
+            if (contentType && contentType.includes("application/json")) {
+                return response.json();
+            } else {
+                return response.text().then(text => { throw new Error(text) });
+            }
+        })
+        .then(data => {
+            if (data.status === "user-not-authenticated"){
+                document.getElementById("second_container_overlay").innerHTML = `<h1>Usuario no autenticado</h1>
+                    <p>El usuario no ha iniciado sesión, solo el usuario administrador autenticado puede hacer estas operaciones.</p>
+                    <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
+            }else if (data.status === "user-not-admin"){
+                document.getElementById("second_container_overlay").innerHTML = `<h1>Usuario no administrador</h1>
+                    <p>El usuario con el que esta iniciado la sesión no tiene privilegios de administrador, por ende no puede realizar las siguientes acciones.</p>
+                    <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
+            }else if (data.status === "success"){
+                document.getElementById("second_container_overlay").innerHTML = `<h1>Autores actualizados</h1>
+                    <p>Los autores seleccionados han sido actualizados.</p>
+                    <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
+                update_autores_search(document.getElementById("author_name").value);
+                search_data_combobox(author_combobox, "autores");
+            }else if (data.status === "error"){
+                let container = document.getElementById("second_container_overlay");
+                container.innerHTML = `<h1>Error del servidor</h1>
+                    <p class="temp_p">Ocurrio un error del lado del servidor, comuniquese con el Centro de Información al respecto o vuelva a intentarlo más tarde:<br><br></p>
+                    <button red type="cancel" onclick="return close_second_window()">Volver</button>`;
+                container.querySelector(".temp_p").appendChild(document.createTextNode(data.message));
+            }
+        })
+        .catch(error => {
+            let container = document.getElementById("second_container_overlay");
+            container.innerHTML = `<h1>Error del servidor</h1>
+                <p class="temp_p">Ocurrio un error del lado del servidor, comuniquese con el Centro de Información al respecto o vuelva a intentarlo más tarde:<br><br></p>
+                <button red type="cancel" onclick="return close_second_window()">Volver</button>`;
+            container.querySelector(".temp_p").appendChild(document.createTextNode(error));
+        });
+    }
+}
+
+function clear_table(){
+    for (var i=table.rows.length - 1; i>0; i--){
+        table.rows[i].parentNode.removeChild(table.rows[i]);
+    }
 }
 
 function open_delete_titles(){
@@ -75,7 +744,7 @@ function open_delete_titles(){
             spacingDiv.innerHTML = "<p><b class='bold_temp'></b></p>"
 
             let temp = spacingDiv.querySelector(".bold_temp");
-            temp.appendChild(document.createTextNode(item["Titulo"] + ", " + item["Clasificacion"] + ", por " + item["Autores"] + "."));
+            temp.appendChild(document.createTextNode(item["Titulo"] + ", " + ((item["Clasificacion"] === null) ? "---" : item["Clasificacion"]) + ", por " + item["Autores"] + "."));
 
             container.appendChild(spacingDiv);
         }
@@ -94,9 +763,13 @@ function close_window(){
     return false;
 }
 
+function close_two_window(){
+    close_second_window();
+    close_window();
+}
+
 function register_editorial(){
     nombre = document.getElementById("editorial_name").value;
-
     if (nombre === ""){
         return true;
     }
@@ -114,48 +787,38 @@ function register_editorial(){
     formData.append("type", "editorial");
     formData.append("data", JSON.stringify(dict));
 
-    send_query("<h1>Editorial registrado</h1><p>La editorial se registro con éxito.</p><button type='cancel' onclick='return close_window()'>Cerrar</button>", formData);
+    send_query("<h1>Editorial registrado</h1><p>La editorial se registro con éxito.</p><button red type='cancel' onclick='return close_two_window()'>Cerrar</button>", formData);
 }
 
 function register_author(){
-    nombre = document.getElementById("author_name").value;
-    apeP = document.getElementById("author_AP").value;
-    apeM = document.getElementById("author_AM").value;
-
-    if (nombre === ""){
+    nombre = document.getElementById("author_name");
+    nombre.required = true;
+    if (nombre.value === ""){
         return true;
     }
 
     var formData = new FormData();
     formData.append("type", "author");
-    formData.append("nombre", nombre);
-    formData.append("apeP", apeP);
-    formData.append("apeM", apeM);
+    formData.append("nombre", nombre.value);
 
-    send_query("<h1>Autor registrado</h1><p>El autor se registro con éxito.</p><button type='cancel' onclick='return close_window()'>Cerrar</button>", formData);
+    send_query("<h1>Autor registrado</h1><p>El autor se registro con éxito.</p><button red type='cancel' onclick='return close_two_window()'>Cerrar</button>", formData);
 }
 
 function title_register(){
-    titulo = document.getElementById("title");
-    clasificacion_req = document.getElementById("clasification-selectized");
-    autor_req = document.getElementById("author-selectized");
-    idioma_req = document.getElementById("language-selectized");
+    titulo = document.getElementById("title2");
+    autor_req = document.getElementById("author2-selectized");
+    idioma_req = document.getElementById("language2-selectized");
 
     titulo.required = true;
-    clasificacion_req.required = false;
     autor_req.required = false;
     idioma_req.required = false;
 
     titulo = titulo.value;
-    clasificacion = clasification_combobox.getValue();
-    autor = author_combobox.getValue();
-    idioma = language_combobox.getValue();
+    autor = author_combobox2.getValue();
+    idioma = language_combobox2.getValue();
 
-    if (titulo === "" || clasificacion === "" || author.length <= 0 || idioma === ""){
-        if (clasificacion === ""){
-            clasificacion_req.required = true;
-        }
-        if (author.length <= 0){
+    if (titulo === "" || autor.length <= 0 || idioma === ""){
+        if (autor.length <= 0){
             autor_req.required = true;
         }
         if (idioma === ""){
@@ -165,39 +828,42 @@ function title_register(){
         return true;
     }
 
-    editorial = editorial_combobox.getValue();
+    clasificacion = document.getElementById("clasification2").value;
+    if (clasificacion === ""){
+        clasificacion = null;
+    }
+    editorial = editorial_combobox2.getValue();
     if (editorial === ""){
         editorial = null;
     }
-    edicion = document.getElementById("edition").value;
+    edicion = document.getElementById("edition2").value;
     if (edicion === ""){
         edicion = null;
     }
-    ISBN = document.getElementById("ISBN").value;
+    ISBN = document.getElementById("ISBN2").value;
     if (ISBN === ""){
         ISBN = null;
     }
-    year = document.getElementById("year").value;
+    year = document.getElementById("year2").value;
     if (year === ""){
         year = null;
     }
-    tome = document.getElementById("tome").value;
+    tome = document.getElementById("tome2").value;
     if (tome === ""){
         tome = null;
     }
-    tome_name = document.getElementById("tome_name").value;
+    tome_name = document.getElementById("tome_name2").value;
     if (tome_name === ""){
         tome_name = null;
     }
-    volume = document.getElementById("volume").value;
+    volume = document.getElementById("volume2").value;
     if (volume === ""){
         volume = null;
     }
-    volume_name = document.getElementById("volume_name").value;
+    volume_name = document.getElementById("volume_name2").value;
     if (volume_name === ""){
         volume_name = null;
     }
-    state = document.getElementById("state").value;
 
     var formData = new FormData();
     var dict = {
@@ -217,13 +883,13 @@ function title_register(){
     formData.append("type", "title");
     formData.append("data", JSON.stringify(dict));
 
-    create_samples(state, formData);
+    create_samples("Buena condicion", formData);
 }
 
 function create_samples(state, formData){
-    open_overlayed_window();
-    editorial = document.getElementById("editor");
-    autores = Array.from(document.getElementById("author").options).filter(option => option.selected).map(option => option.text);
+    open_second_overlayed_window();
+    editorial = document.getElementById("editor2");
+    autores = Array.from(document.getElementById("author2").options).filter(option => option.selected).map(option => option.text);
     data = JSON.parse(formData.get("data"));
 
     folio = "";
@@ -244,7 +910,8 @@ function create_samples(state, formData){
     })
     .then(data2 => {
         folio = JSON.parse(data2.data)[0];
-        let container = document.getElementById("container_overlay");
+        let container = document.getElementById("second_container_overlay");
+        container.style = "width:40%; top:0%;"
         container.innerHTML = `<h1>Creación de ejemplares</h1>
             <div class="vertical_spacing">
                 <label for="book_title">Titulo: </label>
@@ -292,13 +959,13 @@ function create_samples(state, formData){
                         </tr>
                         <tr>
                             <td colspan="3">
-                                <button type="cancel" class="plus_button" onclick="return add_folio()"></button>
+                                <button yellow type="cancel" class="plus_button" onclick="return add_folio()"></button>
                             </td>
                         </tr>
                     </table>
                 </div>
-                <button id="title_button" type="submit">Registrar</button>
-                <button type="cancel" onclick="return close_window()">Cerrar</button>
+                <button yellow id="title_button" type="submit">Registrar</button>
+                <button yellow type="cancel" onclick="return close_second_window()">Cerrar</button>
             </form>`;
         let temp = document.getElementById("book_title");
         temp.value = data["titulo"];
@@ -401,6 +1068,8 @@ function open_second_overlayed_window(){
 
 function close_second_window(){
     second_overlay.remove();
+    second_overlay = false;
+
     return false;
 }
 
@@ -420,10 +1089,7 @@ function register_title(formData){
 
         for (var j = 0; j < folios.length; j++){
             if (folio == folios[j]){
-                open_second_overlayed_window();
-                document.getElementById("second_container_overlay").innerHTML = `<h1>Folios repetidos</h1>
-                    <p>En los nuevos folios que desea registrar para este titulo hay repetición, los folios no pueden repetirse entre ellos, asegurese además tambien de que estos folios no esten ya registrados en el sistema.</p>
-                    <button red onclick='close_second_window()'>Cerrar</button>`;
+                alert("FOLIOS REPETIDOS\n\nEn los nuevos folios que desea registrar para este titulo hay repetición, los folios no pueden repetirse entre ellos, asegurese además tambien de que estos folios no esten ya registrados en el sistema.");
 
                 return;
             }
@@ -442,12 +1108,12 @@ function register_title(formData){
         "temp_b2": folios
     }
     
-    send_query("<h1>Titulo registrado</h1><p>El titulo:</p><p><b class='temp_b1'></b></p><p>Se registro con éxito con los siguientes folios:</p><p><b class='temp_b2'></b>.</p><button type='cancel' onclick='return close_window()'>Cerrar</button>", formData, replacements);
+    send_query("<h1>Titulo registrado</h1><p>El titulo:</p><p><b class='temp_b1'></b></p><p>Se registro con éxito con los siguientes folios:</p><p><b class='temp_b2'></b>.</p><button red type='cancel' onclick='return close_two_window()'>Cerrar</button>", formData, replacements, true);
 }
 
 function search_query(){
     titulo = document.getElementById("title");
-    clasificacion_req = document.getElementById("clasification-selectized");
+    clasificacion_req = document.getElementById("clasification");
     autor_req = document.getElementById("author-selectized");
     idioma_req = document.getElementById("language-selectized");
 
@@ -463,7 +1129,7 @@ function search_query(){
         "lugar": document.getElementById("place").value,
         "titulo": titulo.value,
         "ISBN": document.getElementById("ISBN").value,
-        "codigo": clasification_combobox.getValue(),
+        "codigo": document.getElementById("clasification").value,
         "anio": document.getElementById("year").value,
         "idioma": language_combobox.getValue(),
         "edicion": document.getElementById("edition").value,
@@ -525,10 +1191,12 @@ function search_query(){
     .then(data => {
         book_data = JSON.parse(data.data);
         book_length = Object.keys(book_data).length;
-        book_max_page = Math.ceil(book_length/5);
+        book_max_page = Math.ceil(book_length/7);
         book_page = Math.min(1, book_max_page);
         
         update_search();
+
+        window.location.href = "#search_list";
     });
     
     return true;
@@ -548,13 +1216,13 @@ function change_page(direction){
 
 function update_search(){
     book_length = Object.keys(book_data).length;
-    book_max_page = Math.ceil(book_length/5);
+    book_max_page = Math.ceil(book_length/7);
     book_page = Math.min(book_page, book_max_page);
     
     result = document.getElementById("result_area");
     result.innerHTML = "";
     if (book_length > 0){
-        for (let i = 5*book_page - 5; i < Math.min(book_length, 5*book_page); i++){
+        for (let i = 7*book_page - 7; i < Math.min(book_length, 7*book_page); i++){
             item = book_data[i];
             color = "";
 
@@ -568,7 +1236,7 @@ function update_search(){
             result_div.className = "search_book_result";
             result_div.innerHTML += `<div class="search_content">
                     <p><b>Clasificacion: </b><b class="temp_b1">Titulo: </b><br>
-                    <b class="temp_b2">Autores: </b></p>
+                    <b class="temp_b3">Año: </b><b class="temp_b2">Autores: </b></p>
                 </div>
                 <div class="view_button" style="justify-content: center;">
                     <button class="button_temp">Ver</button>
@@ -578,10 +1246,12 @@ function update_search(){
                 </div>`;
             result_div.style = color;
             let temp = result_div.querySelector(".temp_b1");
-            temp.insertAdjacentText("beforebegin", item["Clasificacion"] + ", ");
+            temp.insertAdjacentText("beforebegin", ((item["Clasificacion"] === null) ? "---" : item["Clasificacion"]) + ", ");
             temp.insertAdjacentText("afterend", item["Titulo"]);
             temp = result_div.querySelector(".temp_b2");
-            temp.insertAdjacentText("afterend", item["Autores"]);
+            temp.insertAdjacentText("afterend", ((item["Autores"] === null) ? "---" : item["Autores"]));
+            temp = result_div.querySelector(".temp_b3");
+            temp.insertAdjacentText("afterend", ((item["AnioPublicacion"] === null) ? "---" : item["AnioPublicacion"]) + ", ");
             temp = result_div.querySelector(".button_temp");
             temp.IDTitulo = item["IDTitulo"];
             temp.addEventListener("click", function(){
@@ -591,6 +1261,13 @@ function update_search(){
             temp.value = i;
             result.appendChild(result_div);
         };
+    }else{
+        let result_div = document.createElement("div");
+        result_div.className = "search_book_result";
+        result_div.innerHTML += `<div class="search_content">
+                <p>Sin resultados...</p>
+            </div>`;
+        result.appendChild(result_div);
     }
     pages = document.getElementById("pages_available");
     pages.innerHTML = "";
@@ -647,7 +1324,7 @@ function delete_titles(){
                             let p = document.createElement("p");
                             p.innerHTML = "<b class='temp_b'></b>";
                             let temp = p.querySelector(".temp_b");
-                            temp.appendChild(document.createTextNode(item["Titulo"] + ", " + item["Clasificacion"] + ", por " + item["Autores"]));
+                            temp.appendChild(document.createTextNode(item["Titulo"] + ", " + ((item["Clasificacion"] === null) ? "---" : item["Clasificacion"]) + ", por " + item["Autores"]));
                             container.appendChild(p);
                             deleted = true;
                         }
@@ -655,12 +1332,12 @@ function delete_titles(){
                 }
             }
             if (titlesIds.length > 0){
-                container.innerHTML += "<p>Los siguientes titulos no pudieron ser elimimnados debido a que han sido prestados y aun no han sido resueltos sus prestamos, resuelvalos en las secciones correspondientes:</p>";
+                container.innerHTML += "<p>Los siguientes titulos NO pudieron ser elimimnados debido a que han sido prestados y aun no han sido resueltos sus prestamos, resuelvalos en las secciones correspondientes:</p>";
                 titlesIds.forEach((item) => {
                     let p = document.createElement("p");
                     p.innerHTML = "<b class='temp_b'></b>";
                     let temp = p.querySelector(".temp_b");
-                    temp.appendChild(document.createTextNode(item["Titulo"] + ", " + item["Clasificacion"] + ", por " + item["Autores"]));
+                    temp.appendChild(document.createTextNode(item["Titulo"] + ", " + ((item["Clasificacion"] === null) ? "---" : item["Clasificacion"]) + ", por " + item["Autores"]));
                     container.appendChild(p);
                 });
             }
@@ -684,7 +1361,11 @@ function delete_titles(){
 }
 
 function send_query(text, formData, replacements={}){
-    document.getElementById("container_overlay").innerHTML = `<h1>Procesando...</h1>
+    if (second_overlay == false){
+        open_second_overlayed_window();
+    }
+    container = document.getElementById("second_container_overlay");
+    container.innerHTML = `<h1>Procesando...</h1>
         <p>Por favor espere...</p>`;
     
     fetch("../php/admin_insert_queries.php", {
@@ -702,50 +1383,51 @@ function send_query(text, formData, replacements={}){
     })
     .then(data => {
         if (data.status === "user-not-authenticated"){
-            document.getElementById("container_overlay").innerHTML = `<h1>Usuario no autenticado</h1>
+            container.innerHTML = `<h1>Usuario no autenticado</h1>
                 <p>El usuario no ha iniciado sesión, solo el usuario administrador autenticado puede hacer estas operaciones.</p>
-                <button type="cancel" onclick="return close_window()">Cerrar</button>`;
+                <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
         }else if (data.status === "user-not-admin"){
-            document.getElementById("container_overlay").innerHTML = `<h1>Usuario no administrador</h1>
+            container.innerHTML = `<h1>Usuario no administrador</h1>
                 <p>El usuario con el que esta iniciado la sesión no tiene privilegios de administrador, por ende no puede realizar las siguientes acciones.</p>
-                <button type="cancel" onclick="return close_window()">Cerrar</button>`;
+                <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
         }else if (data.status === "folios-repeated"){
             array = JSON.parse(data.message);
-            document.getElementById("container_overlay").innerHTML = `<h1>Folios repetidos</h1>
+            container.innerHTML = `<h1>Folios repetidos</h1>
                 <p>Los siguientes folios ya se encuentran registrados en el sistema, use otros folios en lugar de los siguientes:</p>
                 <p><b id="temp_b"></b></p>
-                <button red type="cancel" onclick="return close_window()">Cerrar</button>`;
+                <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
             let temp = document.getElementById("temp_b");
             temp.appendChild(document.createTextNode(array));
         }else if (data.status === "duplicate-entry"){
-            document.getElementById("container_overlay").innerHTML = `<h1>Entrada duplicada</h1>
+            container.innerHTML = `<h1>Entrada duplicada</h1>
                 <p>El dato que intentaste registrar ya se encuentra registrado, si por alguna razón no lo puede visualizar intente refrescar la página.</p>
-                <button type="cancel" onclick="return close_window()">Cerrar</button>`;
+                <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
         }else if (data.status === "success"){
-            let container = document.getElementById("container_overlay")
             container.innerHTML = text;
             Object.keys(replacements).forEach((item) => {
                 let temp = container.querySelector("." + item);
                 temp.appendChild(document.createTextNode(replacements[item]));
-            })
+            });
+            search_data_combobox(editorial_combobox, "editorial");
+            search_data_combobox(author_combobox, "autores");
         }else if (data.status === "error"){
-            document.getElementById("container_overlay").innerHTML = `<h1>Error del servidor</h1>
+            container.innerHTML = `<h1>Error del servidor</h1>
                 <p id="temp_p">Ocurrio un error del lado del servidor, comuniquese con el Centro de Información al respecto o vuelva a intentarlo más tarde:<br><br></p>
-                <button type="cancel" onclick="return close_window()">Volver</button>`;
+                <button red type="cancel" onclick="return close_second_window()">Volver</button>`;
             let temp = document.getElementById("temp_p");
             temp.appendChild(document.createTextNode(data.message));
         }
     })
     .catch(error => {
-        document.getElementById("container_overlay").innerHTML = `<h1>Error del servidor</h1>
+        container.innerHTML = `<h1>Error del servidor</h1>
             <p id="temp_p">Ocurrio un error del lado del servidor, comuniquese con el Centro de Información al respecto o vuelva a intentarlo más tarde:<br><br></p>
-            <button type="cancel" onclick="return close_window()">Volver</button>`;
+            <button red type="cancel" onclick="return close_second_window()">Volver</button>`;
         let temp = document.getElementById("temp_p");
         temp.appendChild(document.createTextNode(error));
     });
 }
 
-function search_data_combobox(combobox, type_search){
+function search_data_combobox(combobox, type_search, permitir_nulo=true){
     var formData = new FormData();
     formData.append("type", type_search);
 
@@ -764,10 +1446,13 @@ function search_data_combobox(combobox, type_search){
     })
     .then(data => {
         if (data.status === "user-not-admin" || data.status === "user-not-authenticated"){
-            window.location.href = "../index";
+            window.location.href = "../index.html";
         }else if (data.status === "success"){
             combobox.clear();
             combobox.clearOptions();
+            if (permitir_nulo){
+                combobox.addOption({"value": "---", "text": "---"});
+            }
             switch (type_search){
                 case "editorial":
                     JSON.parse(data.data).forEach((item) => {
@@ -776,12 +1461,7 @@ function search_data_combobox(combobox, type_search){
                 break;
                 case "autores":
                     JSON.parse(data.data).forEach((item) => {
-                        combobox.addOption({"value": item["IDAutor"], "text": item["Nombre"] + " " + item["ApellidoPaterno"] + " " + item["ApellidoMaterno"]});
-                    });
-                break;
-                case "clasificacion":
-                    JSON.parse(data.data).forEach((item) => {
-                        combobox.addOption({"value": item["CodigoClasificacion"], "text": item["CodigoClasificacion"] + " - " + item["Nombre"]});
+                        combobox.addOption({"value": item["IDAutor"], "text": item["Nombre"]});
                     });
                 break;
             }
@@ -800,7 +1480,7 @@ function clear_data(){
     document.getElementById("title").value = "";
     editorial_combobox.clear();
     document.getElementById("place").value = "";
-    clasification_combobox.clear();
+    document.getElementById("clasification").value = "";
     document.getElementById("edition").value = "";
     author_combobox.clear();
     document.getElementById("folio").value = "";
@@ -823,18 +1503,16 @@ function open_overlayed_window(){
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    second_overlay = false;
     book_length = 0;
     book_page = 0;
 
+    document.getElementById("register_title").onclick = open_title;
     document.getElementById("register_author").onclick = open_author;
     document.getElementById("register_editor").onclick = open_editorial;
     document.getElementById("title_form").onsubmit = form_prevent;
 
     editorial_combobox = $('#editor').selectize({
-        sortField: 'text',
-        normalize: true
-    })[0].selectize;
-    clasification_combobox = $('#clasification').selectize({
         sortField: 'text',
         normalize: true
     })[0].selectize;
@@ -852,6 +1530,5 @@ document.addEventListener("DOMContentLoaded", () => {
     })[0].selectize;
 
     search_data_combobox(editorial_combobox, "editorial");
-    search_data_combobox(clasification_combobox, "clasificacion");
     search_data_combobox(author_combobox, "autores");
 });

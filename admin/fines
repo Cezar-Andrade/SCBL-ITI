@@ -55,7 +55,7 @@
                 <div id="book_rightside" class="book_rightside">
                     <h2 style="margin:0 auto;">Datos del préstamo</h2>
                     <div class="vertical_spacing" date-range>
-                        <label>Fecha Entregado: </label>
+                        <label>Fecha préstamo: </label>
                         <div class="date_container" style="width: 46%">
                             <input type="date" style="width:94%" id="FechaEntregaInicio">
                             <p style="margin:0;"><b>|</b></p>
@@ -63,7 +63,7 @@
                         </div>
                     </div>
                     <div class="vertical_spacing" date-range>
-                        <label>Fecha Devuelto: </label>
+                        <label>Fecha entregado: </label>
                         <div class="date_container" style="width: 50%">
                             <input type="date" style="width:94%" id="FechaDevolucionInicio">
                             <p style="margin:0;"><b>|</b></p>
@@ -80,7 +80,7 @@
                 </div>
                 <div id="book_leftside number_div" class="book_leftside">
                     <label for="numero">No. de control: </label>
-                    <input type="number" style="width:47%" id="numero" placeholder="########...">
+                    <input type="text" style="width:47%" id="numero" placeholder="########...">
                 </div>
                 <div id="book_rightside" class="book_rightside">
                     <label for="folio">Folio: </label>
@@ -94,7 +94,7 @@
             </form>
         </div>
         <div class="book_list">
-            <div class="search_loan_grid"> <!--La clase usada para este es la misma que la de los prestamos, para que crear otro nombre si funciona el mismo-->
+            <div class="search_loan_grid" id="search_list"> <!--La clase usada para este es la misma que la de los prestamos, para que crear otro nombre si funciona el mismo-->
                 <div class="search_title"><h1>Lista de multas</h1></div>
                 <div id="result_area" class="search_content"></div>
                 <div class="page_button_prev">

@@ -11,6 +11,11 @@
         <link rel="stylesheet" href="../stylesheets/style.css">
         <link rel="stylesheet" href="../stylesheets/menu_style.css">
 
+        <!--Selective.js, Combobox-->
+        <link rel="stylesheet" href="../stylesheets/selectize.css">
+        <script src="../javascripts/jquery.js"></script>
+        <script src="../javascripts/selectize.js"></script>
+
         <script>user_type = "admin";</script>
         <script src="../javascripts/authentication.js"></script>
         
@@ -20,10 +25,7 @@
         <div id="content_div" style="background-image: url('../images/UserCard.png');" class="user_menu">
             <div id="book_leftside" class="book_leftside"></div>
             <div id="book_rightside" class="book_rightside"></div>
-            <div class="horizontal_alignment">
-                <button id="contrasena" onclick="change_password()">Cambiar contraseña</button>
-                <button id="back" onclick="window.location.href = 'menu'">Volver</button>
-            </div>
+            <div id="buttons" class="horizontal_alignment"></div>
         </div>
     </body>
 </html>

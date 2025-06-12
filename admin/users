@@ -70,7 +70,7 @@
                     <h2>Datos estudiante</h2>
                     <div class="vertical_spacing" top>
                         <label for="nocontrol">No. de control: </label>
-                        <input type="number" style="width: 45%;" min="1" id="nocontrol" name="nocontrol" placeholder="########...">
+                        <input type="text" style="width: 45%;" min="1" id="nocontrol" name="nocontrol" placeholder="########...">
                     </div>
                     <div class="vertical_spacing">
                         <label for="career">Carrera: </label>
@@ -83,7 +83,7 @@
                     <h2>Datos docente</h2>
                     <div class="vertical_spacing">
                         <label for="nocard">No. de Tarjeta: </label>
-                        <input type="number" style="width: 45%;" min="1" id="nocard" name="nocard" placeholder="########...">
+                        <input type="text" style="width: 45%;" min="1" id="nocard" name="nocard" placeholder="########...">
                     </div>
                     <div class="vertical_spacing">
                         <label for="career">Departamento: </label>
@@ -97,7 +97,7 @@
             </form>
         </div>
         <div class="book_list">
-            <div class="search_user_grid">
+            <div class="search_user_grid" id="search_list">
                 <div class="search_title"><h1>Lista de Usuarios</h1></div>
                 <div class="delete_button">
                     <button red style="padding: 0.2vw; margin:0;" onclick="open_delete_search()">Borrar todos los buscados</button>

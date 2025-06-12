@@ -119,7 +119,14 @@ function open_fine_maker(){
     document.getElementById("multa_form").onsubmit = form_prevent;
     sancion_combobox = $('#sancion').selectize({
         sortField: 'text',
-        normalize: true
+        normalize: true,
+        onChange: function (value){
+            let text_area = document.getElementById("razon");
+            if (value === "Servicio social" && text_area.value === ""){
+                diff = Math.max(Math.ceil((today - limite) / (1000 * 3600 * 24)), 0);
+                text_area.value = "Por retraso de entrega del ejemplar de " + diff + " días, consistiendo en " + 4*diff + " horas de servicio social.";
+            }
+        }
     })[0].selectize;
 }
 
@@ -151,7 +158,8 @@ function perform_fine(){
         "razon": razon,
         "fecha": today.toISOString().split('T')[0],
         "deuda": deuda,
-        "update": update
+        "update": update,
+        "domicilio": datos["ADomicilio"]
     }
 
     var formData = new FormData();
@@ -186,6 +194,7 @@ function efectuar_return(){
     formData.append("type", "prestamo devuelto");
     formData.append("fecha", fecha.toISOString().split("T")[0]);
     formData.append("id", urlParams.get("id"));
+    formData.append("domicilio", datos["ADomicilio"]);
 
     send_query("<h1>Prestamo devuelto</h1><p>El prestamo a sido marcado como devuelto con éxito.</p><button onclick='close_reload()'>Cerrar</button>", formData);
 }
@@ -208,7 +217,8 @@ function update_page_data(){
     let book_leftside = document.getElementById("book_leftside");
     book_leftside.innerHTML = `<h2>Datos de usuario</h2>
         <p data><b class="temp_b"></b></p>
-        <p data class="temp_p" style="margin-bottom: 0; -webkit-line-clamp: 2; line-clamp: 2;"><b>Nombre: </b></p>`;
+        <p data class="temp_p" style="margin-bottom: 0; -webkit-line-clamp: 2; line-clamp: 2;"><b>Nombre: </b></p>
+        <p data style="margin-bottom: 0;"><b class="temp_b2"></b></p>`;
     let book_rightside = document.getElementById("book_rightside");
     book_rightside.innerHTML = `<h2>Datos de libro</h2>
         <p data class="temp_p1"><b>Folio: </b></p>
@@ -225,6 +235,9 @@ function update_page_data(){
     temp.insertAdjacentText("afterbegin", "No. de " + ((estudiante) ? "control" : "tarjeta") + ": ");
     temp.insertAdjacentText("afterend", ((estudiante) ? datos["NoControl"] : datos["NoTarjeta"]));
     book_leftside.querySelector(".temp_p").appendChild(document.createTextNode(datos["Nombre"]));
+    temp = book_leftside.querySelector(".temp_b2");
+    temp.insertAdjacentText("afterbegin", ((estudiante) ? "Carrera" : "Departamento") + ": ");
+    temp.insertAdjacentText("afterend", ((estudiante) ? datos["Carrera"] : datos["Departamento"]));
     book_rightside.querySelector(".temp_p1").appendChild(document.createTextNode(datos["Folio"]));
     book_rightside.querySelector(".temp_p2").appendChild(document.createTextNode(datos["Titulo"]));
     book_rightside.querySelector(".temp_p3").appendChild(document.createTextNode(datos["EstadoFisico"]));
@@ -232,11 +245,15 @@ function update_page_data(){
     last_part.querySelector(".temp_p2").appendChild(document.createTextNode(((datos["FechaLimite"] === null) ? "No aplica" : format_date(limite))));
     
     if (estado === "expirado"){
-        document.getElementById("last_part").innerHTML += "<p data style='color: #B50000'><b>EXPIRADO</b></p>";
+        let last = document.getElementById("last_part");
+        last.innerHTML += "<p data style='color: #B50000'><b class='temp_b'></b></p>";
+        last.querySelector(".temp_b").textContent = ((datos["ADomicilio"] == 0) ? "EN SALA" : "A DOMICILIO") + " - EXPIRADO";
         document.getElementById("confirm").disabled = true;
         document.getElementById("generate").disabled = false;
     }else if (estado === "pendiente"){
-        document.getElementById("last_part").innerHTML += "<p data style='opacity: 0'>a</p>";
+        let last = document.getElementById("last_part");
+        last.innerHTML += "<p data><b class='temp_b'></b></p>";
+        last.querySelector(".temp_b").textContent = ((datos["ADomicilio"] == 0) ? "EN SALA" : "A DOMICILIO");
         document.getElementById("confirm").disabled = false;
         document.getElementById("generate").disabled = false;
     }else{
@@ -247,13 +264,64 @@ function update_page_data(){
         document.getElementById("confirm").disabled = true;
         book_leftside2.querySelector(".temp_p").appendChild(document.createTextNode(format_date(devuelto)));
         book_rightside2.querySelector(".temp_p").style = ((estado === "multado") ? "color: #B50000" : "color: #46A506");
-        book_rightside2.querySelector(".temp_b").appendChild(document.createTextNode(((estado === "multado") ? "MULTADO" : ((estado === "devuelto") ? "ENTREGADO" : "SALDADO"))));
+        book_rightside2.querySelector(".temp_b").appendChild(document.createTextNode(((datos["ADomicilio"] == 0) ? "EN SALA - " : "A DOMICILIO - ") + ((estado === "multado") ? "MULTADO" : ((estado === "devuelto") ? "ENTREGADO" : "SALDADO"))));
         
         if (estado === "devuelto"){
             document.getElementById("generate").disabled = false;
         }else{
             document.getElementById("generate").disabled = true;
         }
+    }
+}
+
+function confirm_ticket(){
+    open_overlayed_window()
+    let container = document.getElementById("container_overlay");
+    container.innerHTML = `<h1>Confirmar acción</h1>
+        <p>Esta por imprimir el ticket de préstamo de este préstamo.</p>
+        <p>¿Desea continuar?</p>
+        <button onclick="print_ticket()">Confirmar</button>
+        <button onclick="close_window()">Cancelar</button>`;
+}
+
+async function print_ticket(){
+    let container = document.getElementById("container_overlay");
+    container.innerHTML = "<h1>Generando ticket...</h1>";
+
+    if (!qz.websocket.isActive()) {
+        await qz.websocket.connect();
+    }
+
+    try{
+        const config = qz.configs.create("Epson");
+        
+        const datos2 = [
+            "\x1B\x40",
+            " ___________________________________\n",
+            "         Firma de recibido\n\n",
+            "  Institituto Tecnologico de Iguala\n",
+            "         Ticket de prestamo\n\n",
+            "Telefono:\n\n",
+            "Datos del usuario:\n",
+            ((datos["NoControl"] !== null) ? "No. de Control: " + datos["NoControl"] : "No. de Tarjeta: " + datos["NoTarjeta"]) + "\n",
+            "Nombre: " + datos["Nombre"] + "\n",
+            ((datos["NoControl"] !== null) ? "Carrera: " + datos["Carrera"] : "Departamento: " + datos["Departamento"]) + "\n\n",
+            "Datos del libro:\n",
+            "Folio: " + datos["Folio"] + "\n",
+            "Titulo: " + datos["Titulo"] + "\n\n",
+            "Datos del prestamo:\n",
+            "Fecha de prestado: " + datos["FechaEntregado"] + "\n",
+            "Fecha de entrega limite: " + datos["FechaLimite"] + "\n\n\n\n\n\n\n\n",
+            "\x1D\x56\x00"
+        ];
+
+        await qz.print(config, datos2);
+
+        close_window();
+    }catch{
+        container.innerHTML = `<h1>Problema de impresión</h1>
+            <p>La impresora se desconecto, no esta respondiendo o no esta funcionando apropiadamente, arregle el problema e intentelo de nuevo.</p>
+            <button type="cancel" onclick="return close_window()">Cerrar</button>`;
     }
 }
 

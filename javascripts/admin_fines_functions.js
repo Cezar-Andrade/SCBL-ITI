@@ -41,10 +41,12 @@ function search_query(){
     .then(data => {
         prestamos_data = JSON.parse(data.data);
         prestamos_length = Object.keys(prestamos_data).length;
-        prestamos_max_page = Math.ceil(prestamos_length/5);
+        prestamos_max_page = Math.ceil(prestamos_length/7);
         prestamos_page = Math.min(1, prestamos_max_page);
         
         update_search();
+
+        window.location.href = "#search_list";
     });
     
     return true;
@@ -71,13 +73,13 @@ function format_date(today){
 
 function update_search(){
     prestamos_length = Object.keys(prestamos_data).length;
-    prestamos_max_page = Math.ceil(prestamos_length/5);
+    prestamos_max_page = Math.ceil(prestamos_length/7);
     prestamos_page = Math.min(prestamos_page, prestamos_max_page);
 
     result = document.getElementById("result_area");
     result.innerHTML = "";
     if (prestamos_length > 0){
-        for (let i = 5*prestamos_page - 5; i < Math.min(prestamos_length, 5*prestamos_page); i++){
+        for (let i = 7*prestamos_page - 7; i < Math.min(prestamos_length, 7*prestamos_page); i++){
             item = prestamos_data[i];
             fechaMulta = new Date(item["FechaMulta"] + "T00:00:00");
             estado = "";
@@ -119,6 +121,13 @@ function update_search(){
             });
             result.appendChild(result_div);
         };
+    }else{
+        let result_div = document.createElement("div");
+        result_div.className = "search_loan_result";
+        result_div.innerHTML += `<div class="search_content">
+                <p>Sin resultados...</p>
+            </div>`;
+        result.appendChild(result_div);
     }
     pages = document.getElementById("pages_available");
     pages.innerHTML = "";
@@ -148,6 +157,10 @@ function open_overlayed_window(){
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    urlParams = new URLSearchParams(window.location.search);
+    id = urlParams.get("id");
+    type = urlParams.get("type");
+
     loan_data = [];
 
     document.getElementById("fine_form").onsubmit = form_prevent;
@@ -157,11 +170,11 @@ document.addEventListener("DOMContentLoaded", () => {
     })[0].selectize;
     document.getElementById("student").addEventListener('change', function() {
         document.getElementById("book_leftside number_div").innerHTML = `<label for="numero">No. de control: </label>
-            <input type="number" style="width: 47%" id="numero" name="numero" placeholder="########...">`;
+            <input type="text" style="width: 47%" id="numero" name="numero" placeholder="########...">`;
     });
     document.getElementById("teacher").addEventListener('change', function() {
         document.getElementById("book_leftside number_div").innerHTML = `<label for="numero">No. de tarjeta: </label>
-            <input type="number" style="width: 49%;" id="numero" name="numero" placeholder="########...">`;
+            <input type="text" style="width: 49%;" id="numero" name="numero" placeholder="########...">`;
     });
     document.getElementById("FechaMultaInicio").addEventListener('change', function() {
         document.getElementById("FechaMultaFinal").min = document.getElementById("FechaMultaInicio").value;
@@ -181,4 +194,14 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("FechaDevolucionFinal").addEventListener('change', function() {
         document.getElementById("FechaDevolucionInicio").max = document.getElementById("FechaDevolucionFinal").value;
     });
+
+    if (id !== null && type !== null){
+        if (type === "d"){
+            document.getElementById("teacher").checked = true;
+            document.getElementById("book_leftside number_div").innerHTML = `<label for="numero">No. de tarjeta: </label>
+                <input type="text" style="width: 49%;" id="numero" name="numero" placeholder="########...">`;
+        }
+        document.getElementById("numero").value = id;
+        document.getElementById("search_active").click();
+    }
 });

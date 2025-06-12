@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Centro de Información en Línea</title>
+
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="../stylesheets/style.css">
+        <link rel="stylesheet" href="../stylesheets/menu_style.css">
+
+        <script>user_type = "admin";</script>
+        <script src="../javascripts/authentication.js"></script>
+
+        <script src="../javascripts/admin_statistics_functions.js"></script>
+    </head>
+    <body>
+        <div id="content_div" style="background-image: url('../images/Report.png'); width: 63%;" class="report_menu">
+            <div class="report_content">
+                <h1 style="width:80%; margin-bottom: 0;"><u>Estadisticas de la Biblioteca</u></h1>
+                <p style="margin-bottom: 0;">Selecciona un rango de fechas a usar:</p>
+                <div style="width: 80%;">
+                    <label for="fechainicio">Fecha inicio: </label>
+                    <input type="date" id="fechainicio" name="fechainicio" style="width:33.5%">
+                </div>
+                <div style="width: 80%;">
+                    <label for="fechainicio">Fecha final: </label>
+                    <input type="date" id="fechafinal" name="fechafinal" style="width:36%">
+                </div>
+                <div style="margin-top: 2vw; font-size: 10px">
+                    <label><b>Materiales consultados: </b><span id="material_consultado">--</span></label>
+                    <label style="margin-left: 2vw;"><b>No. de usuarios: </b><span id="no_usuarios">--</span></label><br>
+                    <label style="display: block;"><b>No. de usuarios inscritos: </b><span id="no_usuarios_inscritos">--</span></label><br>
+                    <div>
+                        <label><b>No. de préstamos - En sala: </b><span id="prestamos_sala">--</span></label>
+                        <label style="margin-left: 2vw;"><b>A domicilio: </b><span id="prestamos_domicilio">--</span></label><br>
+                    </div><br>
+                    <div>
+                        <label><b>No. de titulos</b></label><br>
+                        <label><b>Adquiridos: </b><span id="titulos_adquiridos">--</span></label>
+                        <label style="margin-left: 2vw;"><b>Existencia: </b><span id="titulos_existencia">--</span></label>
+                        <label style="margin-left: 2vw;"><b>Consultados: </b><span id="titulos_consultados">--</span></label>
+                    </div><br>
+                    <div>
+                        <label><b>No. de ejemplares</b></label><br>
+                        <label><b>Adquiridos: </b><span id="ejemplares_adquiridos">--</span></label>
+                        <label style="margin-left: 2vw;"><b>Existencia: </b><span id="ejemplares_existencia">--</span></label>
+                        <label style="margin-left: 2vw;"><b>Consultados: </b><span id="ejemplares_consultados">--</span></label>
+                    </div>
+                </div>
+                <div class="horizontal_alignment">
+                    <button id="generate" onclick="generate_report()" disabled>Generar</button>
+                    <button id="back" onclick="window.location.href = 'reports'">Volver</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

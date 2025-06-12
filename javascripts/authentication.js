@@ -58,7 +58,7 @@ function pass_send_query(text, confirm_password, formData){
     document.getElementById("pass_container_overlay").innerHTML = `<h1>Procesando...</h1>
         <p>Por favor espere...</p>`;
     
-    fetch("../php/user_insert_queries.php", {
+    fetch("../php/admin_insert_queries.php", {
         method: "POST",
         body: formData
     })
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
             numero = data.numero;
             change_password_forced();
         }else if (data.status === "not-valid"){
-            window.location.href = "../index";
+            window.location.href = "../index.html";
         }else if (data.status === "error"){
             let container = document.getElementById("content_div");
             container.innerHTML = "<h1 style='font-size: 34px;'>Error del Servidor</h1><p class='temp_p'>Parece que sucedio un error del lado del servidor, la siguiente información se recabo al respecto, favor de comunicarlo al Centro de Información:<br></p>";

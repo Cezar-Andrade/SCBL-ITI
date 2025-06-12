@@ -19,16 +19,22 @@
         <script src="../javascripts/jquery.js"></script>
         <script src="../javascripts/selectize.js"></script>
         
+        <script src="../javascripts/SHA.js"></script>
+        <script src="../javascripts/RSVP.js"></script>
+        <script src="../javascripts/jsrsasign.js"></script>
+        <script src="../javascripts/qz_tray.js"></script>
+        <script src="../javascripts/qz_tray_signing.js"></script>
         <script src="../javascripts/admin_loan_view_functions.js"></script>
     </head>
     <body>
         <div id="content_div" class="loan_menu">
-            <h1>Prestamo</h1>
+            <h1 style="margin-bottom:0">Prestamo</h1>
             <div id="book_leftside" class="book_leftside"></div>
             <div id="book_rightside" class="book_rightside"></div>
             <h2>Datos del prestamo</h2>
             <div id="last_part"></div>
             <div class="vertical_spacing">
+                <button id="ticket" onclick="confirm_ticket()">Generar<br>Ticket</button>
                 <button id="confirm" onclick="confirm_return()">Confirmar<br>Devolución</button>
                 <button id="generate" onclick="generate_fine()">Generar<br>Multa</button>
                 <button onclick="history.back()">Volver</button>

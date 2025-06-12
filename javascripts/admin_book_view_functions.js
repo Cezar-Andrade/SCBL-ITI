@@ -63,6 +63,7 @@ function cometer_guardado(){
     document.getElementById("second_container_overlay").innerHTML = `<h1>Procesando...</h1>
         <p>Por favor espere...</p>`;
     folios = [];
+    folios_og = [];
     states = [];
     first = [];
     deleted = [];
@@ -84,6 +85,7 @@ function cometer_guardado(){
         first.push(row.first);
         deleted.push(row.deleted);
         folios.push(folio);
+        folios_og.push(row.folio);
         states.push(row.cells[1].querySelector("select").value);
     }
 
@@ -91,6 +93,7 @@ function cometer_guardado(){
 
     var dict = {
         "folios": folios,
+        "folios_og": folios_og,
         "states": states,
         "first": first,
         "deleted": deleted,
@@ -193,7 +196,7 @@ function gestionar_ejemplares(){
     })
     .then(response => {
         const contentType = response.headers.get("content-type");
-            
+        
         if (contentType && contentType.includes("application/json")) {
             return response.json();
         } else {
@@ -207,13 +210,14 @@ function gestionar_ejemplares(){
         for (var i = 0; i < ejemplares_datos.length; i++){
             const row = table.insertRow(table.rows.length - 1);
             row.first = true;
+            row.folio = ejemplares_datos[i]["Folio"];
             row.deleted = false;
             const cell1 = row.insertCell(0);
             const cell2 = row.insertCell(1);
             const cell3 = row.insertCell(2);
             const cell4 = row.insertCell(3);
 
-            cell1.innerHTML = `<input class="temp_input" type="text" style="width:80%" disabled>`;
+            cell1.innerHTML = `<input class="temp_input" type="text" style="width:80%">`;
             cell2.innerHTML = `<div><select class="state" placeholder="Estado físico...">
                     <option value="">Selecciona una opción...</option>
                     <option value="Buena condicion">Buena condición</option>
@@ -223,9 +227,7 @@ function gestionar_ejemplares(){
                 </select></div>`;
             cell3.innerHTML = "<p class='temp_p'></p>";
                 
-            let temp = cell1.querySelector(".temp_input");
-            temp.value = ejemplares_datos[i]["Folio"];
-            temp = cell3.querySelector(".temp_p");
+            let temp = cell3.querySelector(".temp_p");
             temp.appendChild(document.createTextNode(ejemplares_datos[i]["EstadoDisponible"]));
 
             combobox = $(cell2.querySelector(".state")).selectize({
@@ -242,9 +244,17 @@ function gestionar_ejemplares(){
                 document.getElementById("guardado").disabled = false;
             });
 
+            temp = cell1.querySelector(".temp_input");
+            temp.value = row.folio;
+
             if (ejemplares_datos[i]["EstadoDisponible"] === "Disponible"){
+                temp.addEventListener("input", function (value){
+                    change_made = true;
+                    document.getElementById("guardado").disabled = false;
+                });
                 cell4.innerHTML = `<button red class='cross_button' onclick='delete_folio(this)'></button>`;
             }else{
+                temp.disabled = true;
                 cell4.innerHTML = `<button style='background-image: url("../images/Exclamation.png");' class='search_button' onclick='view_info(this)'></button>`;
                 combobox.disable();
             }
@@ -256,6 +266,7 @@ function add_folio(){
     const table = document.getElementById("table_folio");
     const row = table.insertRow(table.rows.length - 1);
     row.first = false;
+    row.folio = null;
     row.deleted = false;
     const cell1 = row.insertCell(0);
     const cell2 = row.insertCell(1);
@@ -359,10 +370,11 @@ function view_info(element){
             <p class="titulo_temp"><b>Titulo: </b></p>
             <p class="folio_temp"><b>Folio prestado: </b></p>
             <p class="tipo_usuario_temp"><b>Tipo de usuario: </b></p>
-            <p class="numero_temp"><b id="numero_extra_temp"></b></p>
+            <p class="numero_temp"><b class="numero_extra_temp"></b></p>
             <p class="nombre_temp"><b>Nombre: </b></p>
             <p class="genero_temp"><b>Genero: </b></p>
-            <button red onclick="close_second_window()">Cancelar</button>`;
+            <p class="domicilio_temp"><b>Tipo de prestamo: </b></p>
+            <button red onclick="close_second_window()">Cerrar</button>`;
         let temp = container.querySelector(".titulo_temp");
         temp.appendChild(document.createTextNode(datos["Titulo"]));
         temp = container.querySelector(".folio_temp");
@@ -377,6 +389,8 @@ function view_info(element){
         temp.appendChild(document.createTextNode(datos["Nombre"]));
         temp = container.querySelector(".genero_temp");
         temp.appendChild(document.createTextNode(datos["Genero"]));
+        temp = container.querySelector(".domicilio_temp");
+        temp.appendChild(document.createTextNode((datos["ADomicilio"] == 1) ? "A domicilio" : "En sala"));
     });
 }
 
@@ -462,7 +476,7 @@ function prestar_ejemplares(){
                 input.value = "Prestado...";
             }
             input.number = i;
-            input.addEventListener('change', function() {
+            input.addEventListener('input', function() {
                 button = document.getElementById("button" + this.number);
                 if (this.value === ""){
                     button.disabled = true;
@@ -472,7 +486,7 @@ function prestar_ejemplares(){
                         
                 if (button.getAttribute("style") !== null){
                     counter--;
-                            
+                    
                     if (counter == 0){
                         document.getElementById("prestamo").disabled = true;
                     }
@@ -484,30 +498,6 @@ function prestar_ejemplares(){
                 }
             });
         }
-    });
-
-    today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
-
-    var formData = new FormData();
-    formData.append("type", "reservaciones vigentes");
-    formData.append("id", urlParams.get("id"));
-    formData.append("Fecha", today.toISOString().split("T")[0]);
-
-    fetch("../php/admin_search_queries.php", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => {
-        const contentType = response.headers.get("content-type");
-        
-        if (contentType && contentType.includes("application/json")) {
-            return response.json();
-        } else {
-            return response.text().then(text => { throw new Error(text) });
-        }
-    })
-    .then(data => {
-        reservaciones = JSON.parse(data.data)[0];
     });
 }
 
@@ -544,6 +534,46 @@ function format_date(today){
     return dd + '/' + mm + '/' + yyyy;
 }
 
+async function print_ticket(datos){
+    try{
+        if (!qz.websocket.isActive()) {
+            await qz.websocket.connect();
+        }
+    }catch{
+        return -1;
+    }
+
+    try{
+        const config = qz.configs.create("Epson");
+        
+        const datos2 = [
+            "\x1B\x40",
+            " ___________________________________\n",
+            "         Firma de recibido\n\n",
+            "  Institituto Tecnologico de Iguala\n",
+            "         Ticket de prestamo\n\n",
+            "Telefono:\n\n",
+            "Datos del usuario:\n",
+            ((datos["NoControl"] !== null) ? "No. de Control: " + datos["NoControl"] : "No. de Tarjeta: " + datos["NoTarjeta"]) + "\n",
+            "Nombre: " + datos["Nombre"] + "\n",
+            ((datos["NoControl"] !== null) ? "Carrera: " + datos["Carrera"] : "Departamento: " + datos["Departamento"]) + "\n\n",
+            "Datos del libro:\n",
+            "Folio: " + datos["Folio"] + "\n",
+            "Titulo: " + datos["Titulo"] + "\n\n",
+            "Datos del prestamo:\n",
+            "Fecha de prestado: " + datos["FechaEntregado"] + "\n",
+            "Fecha de entrega limite: " + datos["FechaLimite"] + "\n\n\n\n\n\n\n\n",
+            "\x1D\x56\x00"
+        ];
+
+        await qz.print(config, datos2);
+
+        return 1;
+    }catch{
+        return 0;
+    }
+}
+
 async function efectuar_prestamos(){
     container = document.getElementById("second_container_overlay");
     container.innerHTML = `<h1>Procesando...</h1>
@@ -562,6 +592,8 @@ async function efectuar_prestamos(){
 
     smth_wrong = false;
     smth_good = false;
+    print_error = false;
+    software_error = false;
     
     for (var i = 0; i < ejemplares_datos.length; i++){
         button = document.getElementById("button" + i);
@@ -572,7 +604,8 @@ async function efectuar_prestamos(){
                 "Folio": ejemplares_datos[i]["Folio"],
                 "Fecha": fecha,
                 "FechaLimite": fechaLimite,
-                "estudiante": button.estudiante
+                "estudiante": button.estudiante,
+                "domicilio": button.domicilio
             };
             
             var formData = new FormData();
@@ -583,7 +616,7 @@ async function efectuar_prestamos(){
                 method: "POST",
                 body: formData
             })
-            .then(response => {
+            .then(async response => {
                 const contentType = response.headers.get("content-type");
                 
                 if (contentType && contentType.includes("application/json")) {
@@ -592,9 +625,20 @@ async function efectuar_prestamos(){
                     return response.text().then(text => { throw new Error(text) });
                 }
             })
-            .then(data => {
+            .then(async data => {
                 if (data.status === "success"){
                     smth_good = true;
+
+                    if (dict["domicilio"] == 1){
+                        await print_ticket(JSON.parse(data.message));
+                        impresion = await print_ticket(JSON.parse(data.message));
+
+                        if (impresion == 0){
+                            print_error = true;
+                        }else if (impresion == -1){
+                            software_error = true;
+                        }
+                    }
                 }else{
                     smth_wrong = true;
                 }
@@ -608,6 +652,8 @@ async function efectuar_prestamos(){
             <p>Verifique que tenga permisos de administrador en la cuenta y que se hayan escrito bien los numeros de control o tarjeta de los usuarios.</p>
             ` + ((smth_good) ? "Los prestamos que se lograron realizar han sido registrados con la fecha <b id='date2'></b> y tienen como fecha límite para su devolución <b id='date1'></b>" : "") + `
             <p>Si el problema persiste, consulte con el Centro de Información.</p>
+            ` + ((print_error) ? "<p><b>ADVERTENCIA:</b> La impresora se desconecto, no esta respondiendo o no esta funcionando correctamente, verifique que este en correcto funcionamiento, imprima los tickets visualizando los préstamos individualmente despues de haber verificado el funcionamiento de la impresora.</p>" : "")
+            + ((software_error) ? "<p><b>ADVERTENCIA:</b> El software QZ Tray usado para comunicarse con la impresora no responde o no esta presente, inicie el programa en el sistema para funcionar adecuadamente, después imprima los tickets visualizando los préstamos individualmente despues de haber verificado el funcionamiento del software.</p>" : "") + `
             <button yellow onclick="trigger_window()">Cerrar</button>`;
         if (smth_good){
             document.getElementById("date2").appendChild(document.createTextNode(format_date(today2)));
@@ -615,7 +661,10 @@ async function efectuar_prestamos(){
         }
     }else{
         container.innerHTML = `<h1>Prestamos registrados</h1>
-            <p>Los prestamos asignados han sido registrados con la fecha <b id="date2"></b> y tienen como fecha límite para su devolución <b id="date1"></b></p>
+            <p>Los prestamos a domicilio asignados han sido registrados con la fecha <b id="date2"></b> y tienen como fecha límite para su devolución <b id="date1"></b></p>
+            <p>Los prestamos en sala han quedado marcados como completados.</p>
+            ` + ((print_error) ? "<p><b>ADVERTENCIA:</b> La impresora se desconecto, no esta respondiendo o no esta funcionando correctamente, verifique que este en correcto funcionamiento, imprima los tickets visualizando los préstamos individualmente despues de haber verificado el funcionamiento de la impresora.</p>" : "")
+            + ((software_error) ? "<p><b>ADVERTENCIA:</b> El software QZ Tray usado para comunicarse con la impresora no responde o no esta presente, inicie el programa en el sistema para funcionar adecuadamente, después imprima los tickets visualizando los préstamos individualmente despues de haber verificado el funcionamiento del software.</p>" : "") + `
             <button yellow onclick="trigger_window()">Cerrar</button>`;
         document.getElementById("date2").appendChild(document.createTextNode(format_date(today2)));
         document.getElementById("date1").appendChild(document.createTextNode(format_date(today)));
@@ -630,7 +679,7 @@ function trigger_window(){
 
 function search_user(numero){
     open_second_overlayed_window();
-    
+
     if (disponibles - counter > reservaciones){
         document.getElementById("second_container_overlay").innerHTML = `<h1>Selecciona tipo de usuario</h1>
             <button id="student_button" yellow style="margin: 0; padding: 1vw;">Estudiante</button>
@@ -656,11 +705,16 @@ function search_user(numero){
 function search_student(numero){
     document.getElementById("second_container_overlay").innerHTML = `<h1>Procesando...</h1>
         <p>Por favor espere...</p>`;
-    original_user = document.getElementById("user" + numero).value;
+    today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
     
+    var dict = {
+        "nocontrol": document.getElementById("user" + numero).value,
+        "fecha": today.toISOString().split('T')[0]
+    }
+
     var formData = new FormData();
     formData.append("type", "estudiante por ID");
-    formData.append("data", JSON.stringify({"nocontrol": original_user}));
+    formData.append("data", JSON.stringify(dict));
     fetch("../php/admin_search_queries.php", {
         method: "POST",
         body: formData
@@ -680,54 +734,107 @@ function search_student(numero){
         needed = 0;
 
         for (var i = 1; i < table.rows.length; i++){
-            const style = table.rows[i].querySelector("button").getAttribute("style");
+            const button = table.rows[i].querySelector("button");
+            const style = button.getAttribute("style");
 
             if (style !== null){
                 const user = table.rows[i].querySelector("input").value;
 
-                if (user === original_user){
+                if (datos["IDUsuario"] === button.IDUsuario){
                     needed++;
                 }
             }
         }
 
+        let container = document.getElementById("second_container_overlay");
         if (data.data === "false"){
-            document.getElementById("second_container_overlay").innerHTML = `<h1>No encontrado...</h1>
+            container.innerHTML = `<h1>Usuario no encontrado...</h1>
                 <button red onclick="close_second_window()">Cerrar</button>`;
             
             return;
-        }else if (datos["PrestamosDisponibles"] <= needed){
-            document.getElementById("second_container_overlay").innerHTML = `<h1>Prestamos insuficientes</h1>
+        }else if (needed >= 1){
+            container.innerHTML = `<h1>Usuario repetido</h1>
+                <p>Los usuarios solo pueden llevarse solo un ejemplar de cada título a la vez.</p>
+                <button red onclick="close_second_window()">Cerrar</button>`;
+
+            return;
+        }else if (datos["YaPrestado"] == 1){
+            container.innerHTML = `<h1>Libro ya prestado</h1>
                 <p id="temp_text"></p>
-                <p>Asegurese que ya haya devuelto los libros que solicito prestado.</p>
                 <button red onclick="close_second_window()">Cerrar</button>`;
             let temp = document.getElementById("temp_text");
             temp.removeAttribute("id");
-            temp.appendChild(document.createTextNode("El usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"] + " carece de prestamos disponibles para asignar."));
+            temp.appendChild(document.createTextNode("El usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"] + " ya tiene el libro prestado, no puede llevarse más de uno."));
+            return;
+        }else if (datos["Multado"] == 1 || datos["Expirado"] == 1 || datos["Bloqueado"] == 1){
+            container.innerHTML = `<h1>Acción no permitida</h1>
+                <p id="temp_text"></p>
+                <p>Asegurese de que no tenga multas pendientes, prestamos expirados o que no este bloqueado para que pueda pedir un ejemplar prestado.</p>
+                <button red onclick="close_second_window()">Cerrar</button>`;
+            let temp = document.getElementById("temp_text");
+            temp.removeAttribute("id");
+            temp.appendChild(document.createTextNode("El usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"] + " tiene una multa no saldada, un prestamo expirado o esta bloqueado."));
             return;
         }
 
         button = document.getElementById("button" + numero);
-        button.style = "background-color: lime; background-image:url('../images/Check.png');";
-        button.onclick = "";
         button.estudiante = true;
         button.IDUsuario = datos["IDUsuario"];
         button.Nombre = datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"];
-        document.getElementById("prestamo").disabled = false;
 
-        counter++;
-
-        close_second_window();
+        container.innerHTML = `<h1>Tipo de prestamo</h1>
+            <p>Selecciona el tipo de prestamo que se hará con el usuario: <b class="temp_b"></b>.</p>
+            <button id="en_sala" yellow style="margin: 0; padding: 1vw;">En sala</button>
+            <button red style="margin: 0; padding-top: 0; padding-bottom: 0; padding-left: 1vw; padding-right: 1vw;" onclick="close_second_window()">Cancelar</button>
+            <button id="a_domicilio" yellow style="margin: 0; padding: 1vw;">A domicilio</button>`;
+        container.querySelector(".temp_b").textContent = button.Nombre;
+        let temp = document.getElementById("en_sala");
+        temp.addEventListener("click", function() {
+            select_type_loan(0, needed, button);
+        });
+        temp = document.getElementById("a_domicilio");
+        temp.addEventListener("click", function() {
+            select_type_loan(1, needed, button);
+        });
     });
+}
+
+function select_type_loan(domicilio, needed, button){
+    if (datos["PrestamosDisponibles"] <= needed && domicilio == 1){
+        let container = document.getElementById("second_container_overlay");
+        container.innerHTML = `<h1>Prestamos insuficientes</h1>
+            <p id="temp_text"></p>
+            <p>Asegurese que ya haya devuelto los libros que solicito prestado.</p>
+            <button red onclick="close_second_window()">Cerrar</button>`;
+        let temp = document.getElementById("temp_text");
+        temp.removeAttribute("id");
+        temp.appendChild(document.createTextNode("El usuario: " + button.Nombre + " carece de prestamos disponibles para asignar."));
+        return;
+    }
+
+    button.domicilio = domicilio;
+    button.style = "background-color: lime; background-image:url('../images/Check.png');";
+    button.onclick = "";
+    document.getElementById("prestamo").disabled = false;
+
+    counter++;
+
+    close_second_window();
 }
 
 function search_teacher(numero){
     document.getElementById("second_container_overlay").innerHTML = `<h1>Procesando...</h1>
         <p>Por favor espere...</p>`;
+    today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
+
+    var dict = {
+        "notarjeta": document.getElementById("user" + numero).value,
+        "fecha": today.toISOString().split('T')[0]
+    }
     
     var formData = new FormData();
     formData.append("type", "docente por ID");
-    formData.append("data", JSON.stringify({"notarjeta": document.getElementById("user" + numero).value}));
+    formData.append("data", JSON.stringify(dict));
     fetch("../php/admin_search_queries.php", {
         method: "POST",
         body: formData
@@ -744,24 +851,72 @@ function search_teacher(numero){
     .then(data => {
         datos = JSON.parse(data.data);
 
+        needed = 0;
+
+        for (var i = 1; i < table.rows.length; i++){
+            const button = table.rows[i].querySelector("button");
+            const style = button.getAttribute("style");
+
+            if (style !== null){
+                const user = table.rows[i].querySelector("input").value;
+
+                if (datos["IDUsuario"] === button.IDUsuario){
+                    needed++;
+                }
+            }
+        }
+
         if (data.data === "false"){
             document.getElementById("second_container_overlay").innerHTML = `<h1>No encontrado...</h1>
                 <button red onclick="close_second_window()">Cerrar</button>`;
             
             return;
+        }else if (needed >= 1){
+            container.innerHTML = `<h1>Usuario repetido</h1>
+                <p>Los usuarios solo pueden llevarse solo un ejemplar de cada título a la vez.</p>
+                <button red onclick="close_second_window()">Cerrar</button>`;
+
+            return;
+        }else if (datos["YaPrestado"] == 1){
+            container.innerHTML = `<h1>Libro ya prestado</h1>
+                <p id="temp_text"></p>
+                <button red onclick="close_second_window()">Cerrar</button>`;
+            let temp = document.getElementById("temp_text");
+            temp.removeAttribute("id");
+            temp.appendChild(document.createTextNode("El usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"] + " ya tiene el libro prestado, no puede llevarse más de uno."));
+            return;
+        }else if (datos["Multado"] == 1 || datos["Expirado"] == 1 || datos["Bloqueado"] == 1){
+            container.innerHTML = `<h1>Acción no permitida</h1>
+                <p id="temp_text"></p>
+                <p>Asegurese de que no tenga multas pendientes, prestamos expirados o que no este bloqueado para que pueda pedir un ejemplar prestado.</p>
+                <button red onclick="close_second_window()">Cerrar</button>`;
+            let temp = document.getElementById("temp_text");
+            temp.removeAttribute("id");
+            temp.appendChild(document.createTextNode("El usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"] + " tiene una multa no saldada, un prestamo expirado o esta bloqueado."));
+            return;
         }
 
         button = document.getElementById("button" + numero);
-        button.style = "background-color: lime; background-image:url('../images/Check.png');";
-        button.onclick = "";
         button.estudiante = false;
         button.IDUsuario = datos["IDUsuario"];
         button.Nombre = datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"];
-        document.getElementById("prestamo").disabled = false;
 
         counter++;
-
-        close_second_window();
+        
+        container.innerHTML = `<h1>Tipo de prestamo</h1>
+            <p>Selecciona el tipo de prestamo que se hará con el usuario: <b class="temp_b"></b>.</p>
+            <button id="en_sala" yellow style="margin: 0; padding: 1vw;">En sala</button>
+            <button red style="margin: 0; padding-top: 0; padding-bottom: 0; padding-left: 1vw; padding-right: 1vw;" onclick="close_second_window()">Cancelar</button>
+            <button id="a_domicilio" yellow style="margin: 0; padding: 1vw;">A domicilio</button>`;
+        container.querySelector(".temp_b").textContent = button.Nombre;
+        let temp = document.getElementById("en_sala");
+        temp.addEventListener("click", function() {
+            select_type_loan(0, 0, button);
+        });
+        temp = document.getElementById("a_domicilio");
+        temp.addEventListener("click", function() {
+            select_type_loan(1, 0, button);
+        });
     });
 }
 
@@ -879,11 +1034,11 @@ function update_page(){
     temp = document.getElementById("ubicacion_temp");
     temp.appendChild(document.createTextNode(datos["Ubicacion"] === null ? "---" : datos["Ubicacion"]));
     temp = document.getElementById("clasificacion_temp");
-    temp.appendChild(document.createTextNode(datos["Clasificacion"]));
+    temp.appendChild(document.createTextNode((datos["Clasificacion"] === null) ? "---" : datos["Clasificacion"]));
     temp = document.getElementById("edicion_temp");
     temp.appendChild(document.createTextNode(datos["Edicion"] === null ? "---" : datos["Edicion"]));
     temp = document.getElementById("autores_temp");
-    temp.appendChild(document.createTextNode(datos["Autores"]));
+    temp.appendChild(document.createTextNode((datos["Autores"] === null) ? "---" : datos["Autores"]));
     temp = document.getElementById("isbn_temp");
     temp.appendChild(document.createTextNode(datos["ISBN"] === null ? "---" : datos["ISBN"]));
     temp = document.getElementById("idioma_temp");
@@ -902,13 +1057,13 @@ function update_page(){
 
 async function modificar_titulo(){
     document.getElementById("book_leftside").innerHTML = `<h1>Datos del titulo</h1>
-        <div class="vertical_spacing"><p data style="display: inline"><b>Titulo: </b></p><input required style="width: 73%" id="titulo" type="text" placeholder="Titulo..."></div>
+        <div class="vertical_spacing"><p data style="display: inline"><b>Titulo: </b></p><input required style="width: 73%" id="titulo" type="text" placeholder="Titulo..." required></div>
         <div class="vertical_spacing"><p data style="display: inline"><b>Editorial: </b></p><div style="display: inline-block; width: 69%;"><select id="editorial" placeholder="Editorial..."></select></div></div>
         <div class="vertical_spacing"><p data id="ubicacion"><b>Lugar publicación: </b></p></div>
-        <div class="vertical_spacing"><p data style="display: inline"><b>Clasificación: </b></p><div style="display: inline-block; width: 56%;"><select id="clasificacion" placeholder="Clasificación..." required></select></div></div>
+        <div class="vertical_spacing"><p data style="display: inline"><b>Clasificación: </b></p><input style="width: 56%;" id="clasificacion" placeholder="Clasificación..."></select></div>
         <div class="vertical_spacing"><p data style="display: inline"><b>Edición: </b></p><input style="width: 68%" id="edicion" type="text" placeholder="Edición..."></div>
-        <div class="vertical_spacing"><p data style="display: inline; -webkit-line-clamp: 2; line-clamp: 2;"><b>Autores: </b></p><div style="display: inline-block; width: 70%;"><select id="autores" placeholder="Autores..." required multiple></select></div></div>
-        <button onclick="confirmar_cambios()">Guardar</button>`;
+        <div class="vertical_spacing"><p data style="display: inline; -webkit-line-clamp: 2; line-clamp: 2;"><b>Autores: </b></p><div style="display: inline-block; width: 70%;"><select id="autores" placeholder="Autores..." multiple></select></div></div>
+        <button onclick="return confirmar_cambios()">Guardar</button>`;
     document.getElementById("book_rightside").innerHTML = `<div class="vertical_spacing" style="margin-top: 2.5vw; margin-bottom: max(1.5vw, 9px)"><p data style="display: inline;"><b>ISBN: </b></p><input style="width: 76%" id="isbn" type="text" placeholder="###-###-###..."></div>
         <div class="vertical_spacing"><p data style="display: inline"><b>Idioma: </b></p><div style="display: inline-block; width: 72%;"><select id="idioma" placeholder="Idioma..." required>
             <option value="">Selecciona una opción...</option>
@@ -920,7 +1075,7 @@ async function modificar_titulo(){
         <div class="vertical_spacing"><p data style="display: inline"><b>Volumen: </b></p><input style="width: 15%" id="novolumen" type="number" placeholder="##..."><p style="display: inline"> - </p><input style="width: 35%" id="volumen" type="text" placeholder="Nombre del volumen..."></div>
         <p data id="nofolios_temp"><b>No. de ejemplares: </b></p>
         <p data id="folios_temp" style="-webkit-line-clamp: 2; line-clamp: 2;"><b>Folios: </b></p>
-        <button onclick="cancelar_cambios()">Cancelar</button>`;
+        <button onclick="return cancelar_cambios()">Cancelar</button>`;
     let temp = document.getElementById("titulo");
     temp.value = datos["Titulo"];
     temp = document.getElementById("ubicacion");
@@ -939,15 +1094,13 @@ async function modificar_titulo(){
     temp.value = ((datos["Tomo"] === null) ? "" : datos["Tomo"]);
     temp = document.getElementById("volumen");
     temp.value = ((datos["Volumen"] === null) ? "" : datos["Volumen"]);
+    temp = document.getElementById("clasificacion");
+    temp.value = ((datos["Clasificacion"] === null) ? "" : datos["Clasificacion"]);
     temp = document.getElementById("nofolios_temp");
     temp.appendChild(document.createTextNode(datos["NoFolios"]));
     temp = document.getElementById("folios_temp");
     temp.appendChild(document.createTextNode(datos["Folios"]));
     editorial_combobox = $("#editorial").selectize({
-        sortField: 'text',
-        normalize: true
-    })[0].selectize;
-    clasificacion_combobox = $("#clasificacion").selectize({
         sortField: 'text',
         normalize: true
     })[0].selectize;
@@ -962,12 +1115,12 @@ async function modificar_titulo(){
     idioma_combobox.setValue(datos["Idioma"]);
 
     await search_data_combobox(editorial_combobox, "editorial");
-    await search_data_combobox(clasificacion_combobox, "clasificacion");
     await search_data_combobox(autores_combobox, "autores");
         
     editorial_combobox.setValue(datos["IDEditorial"]);
-    clasificacion_combobox.setValue(datos["Clasificacion"].split(" - ")[0]);
-    autores_combobox.setValue(datos["IDAutores"].split(", "));
+    if (datos["IDAutores"] !== null){
+        autores_combobox.setValue(datos["IDAutores"].split(", "));
+    }
 }
 
 async function search_data_combobox(combobox, type_search){
@@ -989,7 +1142,7 @@ async function search_data_combobox(combobox, type_search){
     })
     .then(data => {
         if (data.status === "user-not-admin" || data.status === "user-not-authenticated"){
-            window.location.href = "../index";
+            window.location.href = "../index.html";
         }else if (data.status === "success"){
             combobox.clear();
             combobox.clearOptions();
@@ -1001,12 +1154,7 @@ async function search_data_combobox(combobox, type_search){
                 break;
                 case "autores":
                     JSON.parse(data.data).forEach((item) => {
-                        combobox.addOption({"value": item["IDAutor"], "text": item["Nombre"] + " " + item["ApellidoPaterno"] + " " + item["ApellidoMaterno"]});
-                    });
-                break;
-                case "clasificacion":
-                    JSON.parse(data.data).forEach((item) => {
-                        combobox.addOption({"value": item["CodigoClasificacion"], "text": item["CodigoClasificacion"] + " - " + item["Nombre"]});
+                        combobox.addOption({"value": item["IDAutor"], "text": item["Nombre"]});
                     });
                 break;
             }
@@ -1024,6 +1172,13 @@ async function search_data_combobox(combobox, type_search){
 }
 
 function confirmar_cambios(){
+    titulo = document.getElementById("titulo").value;
+    idioma = idioma_combobox.getValue();
+
+    if (titulo === "" || idioma === ""){
+        return true;
+    }
+
     open_overlayed_window();
     document.getElementById("container_overlay").innerHTML = `<h1>Confirmar accion</h1>
         <p>Esta por guardar los cambios que haya realizado sobre este titulo.</p>
@@ -1033,30 +1188,29 @@ function confirmar_cambios(){
 }
 
 function commit_cambios(){
-    titulo = document.getElementById("titulo").value;
-    clasificacion = clasificacion_combobox.getValue();
-    autores = autores_combobox.getValue();
-    idioma = idioma_combobox.getValue();
-
-    if (titulo === "" || clasificacion === "" || autores.length === 0 || idioma === ""){
+    if (titulo === "" || idioma === ""){
         return true;
     }
 
     var dict = {
         "editorial": editorial_combobox.getValue(),
-        "titulo": titulo,
+        "titulo": document.getElementById("titulo").value,
         "ISBN": document.getElementById("isbn").value,
-        "codigo": clasificacion,
+        "codigo": document.getElementById("clasificacion").value,
         "anio": document.getElementById("anio").value,
-        "idioma": idioma,
+        "idioma": idioma_combobox.getValue(),
         "edicion": document.getElementById("edicion").value,
         "notomo": document.getElementById("notomo").value,
         "nombretomo": document.getElementById("tomo").value,
         "novolumen": document.getElementById("novolumen").value,
         "nombrevolumen": document.getElementById("volumen").value,
-        "autores": autores,
+        "autores": autores_combobox.getValue(),
         "id": urlParams.get("id")
     };
+
+    if (dict["codigo"] === ""){
+        dict["codigo"] = null;
+    }
 
     if (dict["ISBN"] === ""){
         dict["ISBN"] = null;
@@ -1094,6 +1248,10 @@ function commit_cambios(){
         dict["nombrevolumen"] = null;
     }
 
+    if (dict["codigo"] === ""){
+        dict["codigo"] = null;
+    }
+
     var formData = new FormData();
     formData.append("type", "update titulo");
     formData.append("data", JSON.stringify(dict));
@@ -1112,6 +1270,8 @@ function cancelar_cambios(){
         <p>¿Seguro que desea continuar y deshacer todos los cambios que ha realizado?</p>
         <button onclick='close_and_update()'>Continuar</button>
         <button onclick='close_window()'>Cancelar</button>`;
+    
+    return false;
 }
 
 function close_and_update(){
@@ -1121,6 +1281,8 @@ function close_and_update(){
 
 document.addEventListener("DOMContentLoaded", () => {
     urlParams = new URLSearchParams(window.location.search);
+
+    document.getElementById("book_view_form").onsubmit = form_prevent;
 
     get_page_data();
 });

@@ -27,6 +27,8 @@ button {
 
 .second_container_overlay {
     width: 30%;
+    top: 15%;
+    position: absolute;
     min-width: min(346px, 92%);
     padding: 0 2vw;
     padding-bottom: 2vw;
@@ -39,6 +41,8 @@ button {
 
 .container_overlay {
     width: 40%;
+    top: 10%;
+    position: absolute;
     min-width: min(346px, 92%);
     padding: 0 2vw;
     padding-bottom: 2vw;
@@ -182,7 +186,7 @@ button {
     min-width: 500px;
     background-color: white;
     border-color: lightgray;
-    border-style:solid;
+    border-style: solid;
     border-width: 0.2vw;
 }
 
@@ -196,18 +200,20 @@ button {
     min-height: 330px;
 }
 
-.report_menu {
-    display: flex;
+.report_content {
+    display:flex;
     align-items: center;
-    justify-content: center;
     flex-direction: column;
+}
+
+.report_menu {
     background-size: cover;
-    margin: 3vw auto;
+    padding-top: 4vw;
+    margin: -1vw auto;
     width: 52vw;
-    height: 69vw;
     text-align: center;
     min-width: 300px;
-    min-height: 397px;
+    min-height: 47vw;
 }
 
 .student {
@@ -222,7 +228,8 @@ button {
 
 .result_table {
     width: 80%;
-    height: 28%;
+    max-height: 12vw;
+    min-height: 12vw;
     border-color: black;
     border-style: solid;
     border-width: 0.3vw;
@@ -355,10 +362,10 @@ p[data] {
 }
 
 .photo_user img {
-    width: 6vw;
-    height: 6vw;
-    min-width: 45px;
-    min-height: 45px;
+    width: 4vw;
+    height: 4vw;
+    min-width: 40px;
+    min-height: 40px;
 }
 
 .search_title {
@@ -425,7 +432,7 @@ p[data] {
     overflow: hidden;
     text-overflow: ellipsis;
     margin: 0;
-    font-size: 2vw;
+    font-size: 1.55vw;
 }
 
 .view_button {
@@ -494,8 +501,8 @@ p[data] {
     }
 
     .photo_user img {
-        width: 7.5vw;
-        height: 7.5vw;
+        width: 5.5vw;
+        height: 5.5vw;
     }
 
     .container_overlay {
@@ -571,9 +578,7 @@ p[data] {
 
     .report_menu {
         left: 5%;
-        top: calc(50% - 29.15vw);
         width: 59.5vw;
-        height: 78.4vw;
     }
 
     .book_list {
@@ -619,7 +624,7 @@ p[data] {
     }
 
     .search_content p {
-        font-size: max(2.8vw, 17px);;
+        font-size: max(1.8vw, 14px);
     }
 
     .selectize-dropdown .active, input, .selectize-dropdown [data-selectable].option, .selectize-control.multi .selectize-input [data-value].active, .selectize-control.single .selectize-input, .selectize-input>input, .selectize-control.multi .selectize-input [data-value] {

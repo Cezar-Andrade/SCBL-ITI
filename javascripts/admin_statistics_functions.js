@@ -1,19 +1,34 @@
 function generate_report(){
     document.getElementById("generate").textContent = "Generando...";
     document.getElementById("generate").disabled = true;
-    rows = [];
 
-    for (var i = 0; i < table.rows.length; i++) {
-        row = [];
-        for (var j = 0; j < table.rows[i].cells.length; j++) {
-            row.push(table.rows[i].cells[j].innerText);
-        }
-        rows.push(row);
-    }
+    inicio = document.getElementById("fechainicio").value;
+    final = document.getElementById("fechafinal").value;
+
+    rows = [
+        ["Fecha del reporte:", to_date(inicio), to_date(final)],
+        [],
+        ["Veces material consultado:", datos[0]],
+        ["Número de usuarios:", datos[1]],
+        ["Número de usuarios inscritos:", datos[2]],
+        [],
+        ["Número de préstamos"],
+        ["En sala:", datos[3]],
+        ["A domicilio:", datos[4]],
+        [],
+        ["Número de titulos adquiridos:", datos[5]],
+        ["Número de titulos en existencia:", datos[6]],
+        ["Número de titulos consultados:", datos[7]],
+        [],
+        ["Número de ejemplares adquiridos:", datos[8]],
+        ["Número de ejemplares en existencia:", datos[9]],
+        ["Número de ejemplares consultados:", datos[10]]
+    ];
+
     var formData = new FormData();
-    formData.append("type", "deudores");
-    formData.append("inicio", document.getElementById("fechainicio").value);
-    formData.append("final", document.getElementById("fechafinal").value);
+    formData.append("type", "estadisticas");
+    formData.append("inicio", inicio);
+    formData.append("final", final);
     formData.append("data", JSON.stringify(rows));
 
     fetch("../php/admin_report_queries.php", {
@@ -62,9 +77,14 @@ function generate_report(){
 
         let link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = "Tabla_de_deudores_" + document.getElementById("fechainicio").value + "_" + document.getElementById("fechafinal").value + ".xlsx";
+        link.download = "Estadisticas_Sistema_Bibliotecario_ITI_" + inicio + "_" + final + ".xlsx";
         link.click();
     });
+}
+
+function to_date(date){
+    let datos = date.split("-");
+    return datos[2] + "/" + datos[1] + "/" + datos[0];
 }
 
 function close_window(){
@@ -80,11 +100,9 @@ function open_overlayed_window(){
     document.body.appendChild(overlay);
 }
 
-function update_table(inicio, final){
-    clear_table();
-
+function update_data(inicio, final){
     var formData = new FormData();
-    formData.append("type", "deudores");
+    formData.append("type", "estadisticas");
     formData.append("inicio", inicio);
     formData.append("final", final);
 
@@ -102,47 +120,38 @@ function update_table(inicio, final){
         }
     })
     .then(data => {
-        deudores_data = JSON.parse(data.data);
-        deudores_length = Object.keys(deudores_data).length;
-
-        document.getElementById("generate").disabled = (deudores_length <= 0);
+        datos = JSON.parse(data.data);
         
-        for (var i=0; i<deudores_length; i++){
-            item = deudores_data[i];
-            row = table.insertRow(table.rows.length);
+        document.getElementById("material_consultado").textContent = datos[0];
+        document.getElementById("no_usuarios").textContent = datos[1];
+        document.getElementById("no_usuarios_inscritos").textContent = datos[2];
+        document.getElementById("prestamos_sala").textContent = datos[3];
+        document.getElementById("prestamos_domicilio").textContent = datos[4];
+        document.getElementById("titulos_adquiridos").textContent = datos[5];
+        document.getElementById("titulos_existencia").textContent = datos[6];
+        document.getElementById("titulos_consultados").textContent = datos[7];
+        document.getElementById("ejemplares_adquiridos").textContent = datos[8];
+        document.getElementById("ejemplares_existencia").textContent = datos[9];
+        document.getElementById("ejemplares_consultados").textContent = datos[10];
 
-            cell1 = row.insertCell(0);
-            cell2 = row.insertCell(1);
-            cell3 = row.insertCell(2);
-            cell4 = row.insertCell(3);
-
-            cell1.innerHTML = "<p class='temp_p1'></p>";
-            cell2.innerHTML = "<p class='temp_p2'></p>";
-            cell3.innerHTML = "<p class='temp_p3'></p>";
-            cell4.innerHTML = "<p class='temp_p4'></p>";
-            let temp = cell1.querySelector(".temp_p1");
-            temp.appendChild(document.createTextNode((item["NoControl"] === null) ? "Docente" : "Estudiante"));
-            temp = cell2.querySelector(".temp_p2");
-            temp.appendChild(document.createTextNode((item["NoControl"] === null) ? item["NoTarjeta"] : item["NoControl"]));
-            temp = cell3.querySelector(".temp_p3");
-            temp.appendChild(document.createTextNode(item["Nombre"]));
-            temp = cell4.querySelector(".temp_p4");
-            temp.appendChild(document.createTextNode(item["DiasAtrasados"]));
-        }
+        document.getElementById("generate").disabled = false;
     });
 }
 
-function clear_table(){
-    for (var i=table.rows.length - 1; i>0; i--){
-        table.rows[i].parentNode.removeChild(table.rows[i]);
-    }
+function clear_data(){
+    document.getElementById("material_consultado").textContent = "--";
+    document.getElementById("no_usuarios").textContent = "--";
+    document.getElementById("no_usuarios_inscritos").textContent = "--";
+    document.getElementById("prestamos_sala").textContent = "--";
+    document.getElementById("prestamos_domicilio").textContent = "--";
+    document.getElementById("titulos_adquiridos").textContent = "--";
+    document.getElementById("titulos_existencia").textContent = "--";
+    document.getElementById("titulos_consultados").textContent = "--";
+    document.getElementById("ejemplares_adquiridos").textContent = "--";
+    document.getElementById("ejemplares_existencia").textContent = "--";
+    document.getElementById("ejemplares_consultados").textContent = "--";
 
     document.getElementById("generate").disabled = true;
-}
-
-function to_date(date){ //Unused, will leave it in case it's used in the future
-    datos = date.split("-");
-    return datos[2] + "/" + datos[1] + "/" + datos[0];
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -152,9 +161,9 @@ document.addEventListener("DOMContentLoaded", () => {
         final = document.getElementById("fechafinal");
         final.min = inicio.value;
         if (inicio.value !== "" && final.value !== ""){
-            update_table(inicio.value, final.value);
+            update_data(inicio.value, final.value);
         }else{
-            clear_table();
+            clear_data();
         }
     });
     document.getElementById("fechafinal").addEventListener('change', function() {
@@ -162,9 +171,9 @@ document.addEventListener("DOMContentLoaded", () => {
         final = document.getElementById("fechafinal");
         inicio.max = final.value;
         if (inicio.value !== "" && final.value !== ""){
-            update_table(inicio.value, final.value);
+            update_data(inicio.value, final.value);
         }else{
-            clear_table();
+            clear_data();
         }
     });
 });

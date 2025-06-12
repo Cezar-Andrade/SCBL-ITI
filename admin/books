@@ -46,13 +46,7 @@
                     </div>
                     <div class="vertical_spacing">
                         <label for="clasification">Clasificación:</label>
-                        <div style="display:inline-block; width: 56%;">
-                            <select id="clasification" placeholder="Clasificación...">
-                                <option value="">Selecciona una opción...</option>
-                                <option value="a">A</option>
-                                <option value="b">B</option>
-                            </select>
-                        </div>
+                        <input type="text" style="width: 52%;" id="clasification" name="clasification" placeholder="Clasificación...">
                     </div>
                     <div class="vertical_spacing">
                         <label for="edition">Edición: </label>
@@ -121,7 +115,7 @@
                         </div>
                     </div>
                     <div class="horizontal_alignment">
-                        <button yellow type="submit" style="margin: 0; padding: 0 1vw;" id="register_title" onclick="return title_register()">Registrar<br>títulos</button></a>
+                        <button yellow type="submit" style="margin: 0; padding: 0 1vw;" id="register_title">Registrar<br>títulos</button></a>
                         <button yellow type="cancel" style="margin: 0; padding: 0 1vw;" id="register_author">Registrar<br>autores</button></a>
                         <button yellow type="cancel" style="margin: 0; padding: 0 1vw;" id="register_editor">Registrar<br>editoriales</button></a>
                     </div>
@@ -129,7 +123,7 @@
             </form>
         </div>
         <div class="book_list">
-            <div class="search_grid">
+            <div class="search_grid" id="search_list">
                 <div class="search_title"><h1>Lista de Libros</h1></div>
                 <div class="trash_button">
                     <button red style="margin:0; height:4.5vw;" onclick="open_delete_titles()"></button>

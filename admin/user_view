@@ -25,6 +25,7 @@
         <div id="content_div" style="background-image: url('../images/UserCard.png');" class="user_menu">
             <div id="book_leftside" class="book_leftside"></div>
             <div id="book_rightside" class="book_rightside"></div>
+            <div id="buttons" style="display: inline-flex; align-items: center" class="horizontal_alignment"></div>
         </div>
     </body>
 </html>

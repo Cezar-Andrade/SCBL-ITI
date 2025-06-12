@@ -19,6 +19,11 @@
         <script src="../javascripts/jquery.js"></script>
         <script src="../javascripts/selectize.js"></script>
         
+        <script src="../javascripts/SHA.js"></script>
+        <script src="../javascripts/RSVP.js"></script>
+        <script src="../javascripts/jsrsasign.js"></script>
+        <script src="../javascripts/qz_tray.js"></script>
+        <script src="../javascripts/qz_tray_signing.js"></script>
         <script src="../javascripts/admin_loans_functions.js"></script>
     </head>
     <body>
@@ -37,7 +42,7 @@
                     </div>
                     <div id="number_div" class="vertical_spacing">
                         <label for="numero">No. de control: </label>
-                        <input type="number" style="width: 44%;" min="1" id="numero" name="numero" placeholder="########...">
+                        <input type="text" style="width: 44%;" min="1" id="numero" name="numero" placeholder="########...">
                     </div>
                     <div class="vertical_spacing">
                         <label for="nombre">Nombre: </label>
@@ -82,15 +87,25 @@
                     </div>
                 </div>
                 <div class="horizontal_alignment">
+                    <div>
+                        <label for="state">Tipo de prestamo:</label>
+                        <div style="display:inline-block; width: 25%;">
+                            <select id="domicilio" placeholder="Tipo de prestamo...">
+                                <option value="">Selecciona una opción...</option>
+                                <option value="0">En sala</option>
+                                <option value="1">A domicilio</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="vertical_spacing">
                         <div>
-                            <label for="FechaEntregaInicio">Rango fecha de entregado: </label><input type="date" style="width:19%" id="FechaEntregaInicio"><label> - </label><input type="date" style="width:22%" id="FechaEntregaFinal">
+                            <label for="FechaEntregaInicio">Rango fecha de préstamo: </label><input type="date" style="width:19%" id="FechaEntregaInicio"><label> - </label><input type="date" style="width:22%" id="FechaEntregaFinal">
                         </div>
                         <div>
                             <label for="FechaLimiteInicio">Rango fecha de límite: </label><input type="date" style="width:24.8%" id="FechaLimiteInicio"><label> - </label><input type="date" style="width:22%" id="FechaLimiteFinal">
                         </div>
                         <div>
-                            <label for="FechaDevolucionInicio">Rango fecha de devolución: </label><input type="date" style="width:18%" id="FechaDevolucionInicio"><label> - </label><input type="date" style="width:22%" id="FechaDevolucionFinal">
+                            <label for="FechaDevolucionInicio">Rango fecha de entregado: </label><input type="date" style="width:18%" id="FechaDevolucionInicio"><label> - </label><input type="date" style="width:22%" id="FechaDevolucionFinal">
                         </div>
                     </div>
                     <div class="horizontal_alignment" style="display:flex; justify-content: center; align-items: center;">
@@ -104,7 +119,7 @@
             </form>
         </div>
         <div class="book_list">
-            <div class="search_loan_grid">
+            <div class="search_loan_grid" id="search_list">
                 <div class="search_title"><h1>Lista de prestamos</h1></div>
                 <div id="result_area" class="search_content"></div>
                 <div class="page_button_prev">

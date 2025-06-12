@@ -1,15 +1,24 @@
 <?php
     require '../includes/SimpleCache/CacheInterface.php';
     require '../includes/Pcre/Preg.php';
+    require '../includes/PHPSpreadsheet/Reader/Xlsx/AutoFilter.php';
+    require '../includes/PHPSpreadsheet/Worksheet/CellIterator.php';
+    require '../includes/PHPSpreadsheet/Worksheet/RowCellIterator.php';
+    require '../includes/PHPSpreadsheet/Worksheet/Row.php';
+    require '../includes/PHPSpreadsheet/Worksheet/RowIterator.php';
     require '../includes/PHPSpreadsheet/IOFactory.php';
     require '../includes/PHPSpreadsheet/Shared/File.php';
+    require '../includes/PHPSpreadsheet/Exception.php';
+    require '../includes/PHPSpreadsheet/Reader/Exception.php';
     require '../includes/PHPSpreadsheet/Reader/IReader.php';
     require '../includes/PHPSpreadsheet/Reader/IReadFilter.php';
     require '../includes/PHPSpreadsheet/Reader/DefaultReadFilter.php';
     require '../includes/PHPSpreadsheet/Reader/BaseReader.php';
+    require '../includes/PHPSpreadsheet/Reader/XlsBase.php';
+    require '../includes/PHPSpreadsheet/Reader/Xls.php';
     require '../includes/PHPSpreadsheet/Reader/Xlsx/Namespaces.php';
     require '../includes/PHPSpreadsheet/ReferenceHelper.php';
-    require '../includes/PhpSpreadsheet/Reader/Security/XmlScanner.php';
+    require '../includes/PHPSpreadsheet/Reader/Security/XmlScanner.php';
     require '../includes/PHPSpreadsheet/Reader/Xlsx.php';
     require '../includes/PHPSpreadsheet/Reader/Csv.php';
     require '../includes/PHPSpreadsheet/Spreadsheet.php';
@@ -104,7 +113,6 @@
     require '../includes/PHPSpreadsheet/Worksheet/Iterator.php';
     require '../includes/PHPSpreadsheet/Worksheet/ColumnIterator.php';
     require '../includes/PHPSpreadsheet/Worksheet/Column.php';
-    require '../includes/PHPSpreadsheet/Worksheet/CellIterator.php';
     require '../includes/PHPSpreadsheet/Worksheet/ColumnCellIterator.php';
     require '../includes/PHPSpreadsheet/Worksheet/AutoFit.php';
     require '../includes/PHPSpreadsheet/Shared/XMLWriter.php';
@@ -128,4 +136,11 @@
     require '../includes/ZipStream/EndOfCentralDirectory.php';
     require '../includes/PHPSpreadsheet/Writer/ZipStream0.php';
     require '../includes/PHPSpreadsheet/Writer/ZipStream3.php';
+    require '../includes/PHPSpreadsheet/Shared/OLERead.php';
+    require '../includes/PHPSpreadsheet/Reader/Xml.php';
+    require '../includes/PHPSpreadsheet/Reader/Ods.php';
+    require '../includes/PHPSpreadsheet/Reader/Slk.php';
+    require '../includes/PHPSpreadsheet/Reader/Gnumeric.php';
+    require '../includes/PHPSpreadsheet/Reader/Html.php';
+    require '../includes/PHPSpreadsheet/Reader/Csv/Delimiter.php';
 ?>

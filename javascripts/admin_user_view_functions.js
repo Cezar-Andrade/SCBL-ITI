@@ -40,6 +40,11 @@ function close_two_window(update=false){
     }
 }
 
+function close_and_update(){
+    close_window();
+    get_page_data();
+}
+
 function close_window(){
     overlay.remove();
     return false;
@@ -129,20 +134,20 @@ function modify_user(){
                 <option value="F">Femenino</option>
             </select>
         </div></div>
-        <p data id="prestamos_disponibles"><b>No. prestamos disponibles: </b></p>
-        <button style="margin: 0 max(1vw, 5.5px)" onclick="guardar_cambios()">Guardar</button>`;
+        <p data id="prestamos_disponibles"><b>No. prestamos disponibles: </b></p>`;
     document.getElementById("book_rightside").innerHTML = `<button style="padding-left:1vw; padding-right:1vw; margin-top: 1em; opacity: 0;" onclick="restaurar_contrasena()" disabled>Restaurar contraseña</button>
         <h1 class="student2"><b id="tipo_usuario"></b></h1>
         <p data style="margin: max(1.5vw, 9px) 0 0 0"><b id="numero_texto"></b></p>
-        <input style="wdith:72%" type="number" id="numero">
+        <input style="wdith:72%" type="text" id="numero">
         <p data style="margin: max(1.5vw, 9px) 0 0 0"><b id="tipo_carrera"></b></p>
         <input style="wdith:72%" type="text" id="carrera">
         <p data id="semestre_texto"><b>Semestre: </b><input style="width:40%" type="number" id="semestre">
-        <p data id="prestados"><b>Libros prestados: </b></p>
+        <p data id="prestados"><b>Libros prestados: </b></p>`;
+    document.getElementById("buttons").innerHTML = `<button style="margin: 0 max(1vw, 5.5px)" onclick="guardar_cambios()">Guardar</button>
         <button style="margin: 0 max(1vw, 5.5px)" onclick="update_page_data()">Cancelar</button>`;
     let temp = document.getElementById("user_image");
     temp.src = "../images/profile" + datos["Genero"] + ".png";
-    if (bloqueado){
+    if (!bloqueado){
         temp = document.getElementById("bloqueado_p");
         temp.style = "opacity: 0";
     }
@@ -151,11 +156,15 @@ function modify_user(){
     temp = document.getElementById("nombre");
     temp.value = datos["Nombre"];
     temp = document.getElementById("apeP");
-    temp.value = ddatos["ApellidoPaterno"];
+    temp.value = datos["ApellidoPaterno"];
     temp = document.getElementById("apeM");
     temp.value = datos["ApellidoMaterno"];
-    temp = document.getElementById("prestamos_disponibles");
-    temp.appendChild(document.createTextNode(datos["PrestamosDisponibles"]));
+    if (estudiante){
+        temp = document.getElementById("prestamos_disponibles");
+        temp.appendChild(document.createTextNode(datos["PrestamosDisponibles"]));
+    }else{
+        document.getElementById("book_leftside").removeChild(document.getElementById("prestamos_disponibles"));
+    }
     temp = document.getElementById("tipo_usuario");
     temp.textContent = ((estudiante) ? "ESTUDIANTE" : "DOCENTE");
     temp = document.getElementById("numero_texto");
@@ -218,30 +227,23 @@ function efectuar_cambios(){
     send_query("<h1>Cambios guardados</h1><p>Los cambios hechos en el usuario han sido guardados exitosamente.</p><button type='cancel' onclick='return close_and_update()'>Cerrar</button>", formData);
 }
 
-function close_and_update(){
-    close_window();
-    get_page_data();
-}
-
-function delete_user(){
+function activate_user(){
     open_overlayed_window();
     let container = document.getElementById("container_overlay");
     container.innerHTML = `<h1>Confirmar acción</h1>
         <p class="temp_p"></p>
         <p>¿Desea continuar?</p>
-        <button onclick="proceed_delete()">Continuar</button>
+        <button onclick="proceed_activation()">Continuar</button>
         <button onclick="close_window()">Cancelar</button>`;
-    container.querySelector(".temp_p").textContent = "Esta por borrar al usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"];
+    container.querySelector(".temp_p").textContent = "Esta por marcar como cuenta activa al usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"];
 }
 
-function proceed_delete(){
-    ids = [urlParams.get("id")];
-    
+function proceed_activation(){
     var formData = new FormData();
-    formData.append("type", "user");
-    formData.append("ids", JSON.stringify(ids));
+    formData.append("type", "activate_user");
+    formData.append("id", urlParams.get("id"));
 
-    fetch("../php/admin_delete_queries.php", {
+    fetch("../php/admin_insert_queries.php", {
         method: "POST",
         body: formData
     })
@@ -264,17 +266,9 @@ function proceed_delete(){
                 <p>El usuario con el que esta iniciado la sesión no tiene privilegios de administrador, por ende no puede realizar las siguientes acciones.</p>
                 <button type="cancel" onclick="return close_window()">Cerrar</button>`;
         }else if (data.status === "success"){
-            titlesDeletedIds = JSON.parse(data.usersDeleted);
-            
-            if (titlesDeletedIds.length > 0){
-                document.getElementById("container_overlay").innerHTML = `<h1>Usuario eliminado</h1>
-                    <p>El usuario fue eliminado con éxito.</p>
-                    <button type='cancel' onclick='window.location.href="users"'>Salir</button>`;
-            }else{
-                document.getElementById("container_overlay").innerHTML = `<h1>Usuario NO eliminado</h1>
-                    <p>El usuario no se puede eliminar debido a que tiene prestamos pendientes o multas pendientes, hasta que sean resueltas el usuario no puede borrarse.</p>
-                    <button type='cancel' onclick='close_window()'>Salir</button>`;
-            }
+            document.getElementById("container_overlay").innerHTML = `<h1>Usuario activado</h1>
+                <p>El usuario esta activo por el semestre actual.</p>
+                <button type='cancel' onclick='return close_and_update()'>Cerrar</button>`;
         }else if (data.status === "error"){
             let container = document.getElementById("container_overlay");
             container.innerHTML = `<h1>Error del servidor</h1>
@@ -290,6 +284,40 @@ function proceed_delete(){
             <button type="cancel" onclick="return close_window()">Volver</button>`;
         container.querySelector(".temp_p").appendChild(document.createTextNode(error));
     });
+}
+
+function make_admin(){
+    open_overlayed_window();
+    let container = document.getElementById("container_overlay");
+    if (datos["Administrador"] === null){
+        container.innerHTML = `<h1>Confirmar acción</h1>
+            <p>Esta por asignar como asistente de biblioteca al usuario: <b class="temp_b0"></b> para que acceda al sistema y pueda realizar diversas acciones de administrador pero no borrar, desbloquear o saldar multas.</p>
+            <p>¿Desea continuar?</p>
+            <button type="submit" onclick="return proceed_admin()">Continuar</button>
+            <button type="cancel" onclick="return close_window()">Cancelar</button>`;
+    }else{
+        container.innerHTML = `<h1>Confirmar acción</h1>
+            <p>Esta por remove de los asistentes de biblioteca al usuario: <b class="temp_b0"></b> para que ya no tenga acceso al sistema alguno.</p>
+            <p>¿Desea continuar?</p>
+            <button type="submit" onclick="return proceed_admin()">Continuar</button>
+            <button type="cancel" onclick="return close_window()">Cancelar</button>`;
+    }
+    container.querySelector(".temp_b0").textContent = datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"];
+}
+
+function proceed_admin(){
+    var formData = new FormData();
+    formData.append("id", urlParams.get("id"));
+    
+    if (datos["Administrador"] === null){
+        formData.append("type", "asign admin");
+        
+        send_query("<h1>Asistente asignado</h1><p>El usuario ha sido asignado como asistente que puede acceder al sistema.</p><button type='cancel' onclick='return close_and_update()'>Cerrar</button>", formData);
+    }else{
+        formData.append("type", "remove admin");
+
+        send_query("<h1>Asistente removido</h1><p>El usuario ha sido removido de los asistentes que pueden acceder al sistema.</p><button type='cancel' onclick='return close_and_update()'>Cerrar</button>", formData);
+    }
 }
 
 function user_block(){
@@ -462,6 +490,52 @@ function autenticar(){
     send_query("<h1>Contraseña restaurada</h1><p>La contraseña del usuario: <b class='temp_b1'></b></p><p>La nueva contraseña del usuario es su número de " + ((estudiante) ? "control" : "tarjeta") + " el cual es: <b class='temp_b2'></b></p><p>El usuario tendar que cambiar la contraseña al momento de iniciar sesión.</p><button onclick='close_window()'>Cerrar</button>", formData, replacements);
 }
 
+function show_bloqueo(){
+    open_overlayed_window();
+    let container = document.getElementById("container_overlay");
+    container.innerHTML = `<h1>Procesando...</h1>
+        <p>Por favor espere...</p>`;
+
+    var formData = new FormData();
+    formData.append("type", "bloqueo");
+    formData.append("id", urlParams.get("id"));
+
+    fetch("../php/admin_search_queries.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => {
+        const contentType = response.headers.get("content-type");
+        
+        if (contentType && contentType.includes("application/json")) {
+            return response.json();
+        } else {
+            return response.text().then(text => { throw new Error(text) });
+        }
+    })
+    .then(data => {
+        datos = JSON.parse(data.data);
+        
+        let container = document.getElementById("container_overlay");
+        container.innerHTML = `<h1>Usuario bloqueado</h1>
+            <p class="temp_p1"><b>Fecha bloqueado: </b></p>
+            <p class="temp_p2"><b>Fecha de desbloqueo: </b></p>
+            <p class="temp_p3"><b>Razón: </b></p>
+            <button onclick="close_window()">Cerrar</button>`;
+        container.querySelector(".temp_p1").appendChild(document.createTextNode(to_date(datos["FechaInicio"])));
+        container.querySelector(".temp_p2").appendChild(document.createTextNode(to_date(datos["FechaFin"])));
+        container.querySelector(".temp_p3").appendChild(document.createTextNode(datos["Razon"]));
+    })
+    .catch((error) => {
+        document.getElementById("content_div").innerHTML = error;
+    });
+}
+
+function to_date(date){
+    let datos = date.split("-");
+    return datos[2] + "/" + datos[1] + "/" + datos[0];
+}
+
 function update_page_data(){
     if (bloqueado){
         document.getElementById("content_div").style = "background-image: url('../images/UserCardRed.png');";
@@ -469,16 +543,14 @@ function update_page_data(){
         document.getElementById("content_div").style = "background-image: url('../images/UserCard.png');";
     }
     let leftside = document.getElementById("book_leftside");
-    leftside.innerHTML = `<p class="temp_p1">BLOQUEADO</p>
+    leftside.innerHTML = `<div class="vertical_spacing"><b><p style="display: inline" class="temp_p1">a</p></b></div>
         <image style="margin-top: 0;" class="user_image">
         <p data class="temp_p2"><b>Nombre de usuario: </b></p>
         <p data class="temp_p3"><b>Nombre: </b></p>
         <p data class="temp_p4"><b>Apellido Paterno: </b></p>
         <p data class="temp_p5"><b>Apellido Materno: </b></p>
         <p data class="temp_p6"><b>Genero: </b></p>
-        <p data class="temp_p7"><b>No. prestamos disponibles: </b></p>
-        <button style="padding-left:1vw; padding-right:1vw; margin: 0 max(1vw, 5.5px)" onclick="modify_user()">Modificar</button>
-        <button class="temp_button" style="padding-left:1vw; padding-right:1vw; margin: 0 max(1vw, 5.5px)" onclick="user_block()"></button>`;
+        <p data style="margin-bottom:0" class="temp_p7"><b>No. prestamos disponibles: </b></p>`;
     let rightside = document.getElementById("book_rightside");
     rightside.innerHTML = `<button class="temp_button" style="padding-left:1vw; padding-right:1vw; margin-top: 1em" onclick="restaurar_contrasena()">Restaurar contraseña</button>
         <h1 class="student2"><b class="temp_b1"></b></h1>
@@ -488,12 +560,41 @@ function update_page_data(){
         <p data class="temp_p2" style="margin: 0 0 max(1.5vw, 9px) 0"></p>
         <p data class="temp_p3"><b>Semestre: </b></p>
         <p data class="temp_p4"><b>Libros prestados: </b></p>
-        <button style="padding-left:1vw; padding-right:1vw; margin: 0 max(1vw, 5.5px)" onclick="delete_user()">Eliminar</button>
+        <p data style="color:#00B000; margin-bottom:0"><b class="temp_b4"></b></p>`;
+    let buttons = document.getElementById("buttons");
+    buttons.innerHTML = `<button style="padding-left:1vw; padding-right:1vw; margin: 0 max(1vw, 5.5px)" onclick="modify_user()">Modificar</button>
+        <button class="temp_button" style="padding-left:1vw; padding-right:1vw; margin: 0 max(1vw, 5.5px)" onclick="user_block()"></button>
+        <button class="temp_active" style="padding-left:1vw; padding-right:1vw; margin: 0 max(1vw, 5.5px)" onclick="activate_user()">Activar<br>Usuario</button>
+        <button class="admin_button" style="padding-left:1vw; padding-right:1vw; margin: 0 max(1vw, 5.5px)" onclick="make_admin()"></button>
         <button style="padding-left:1vw; padding-right:1vw; margin: 0 max(1vw, 5.5px)" onclick="history.back()">Volver</button>`;
+    let texto = leftside.querySelector(".temp_p1");
     if (bloqueado){
         rightside.querySelector(".temp_button").disabled = true;
+        texto.textContent = "BLOQUEADO";
+        let button = document.createElement("button");
+        button.textContent = "Ver";
+        button.addEventListener("click", function(){
+            show_bloqueo();
+        })
+        texto.insertAdjacentElement("afterend", button);
+        buttons.querySelector(".temp_active").disabled = true;
+        buttons.querySelector(".admin_button").disabled = true;
+    }else if (datos["Multado"] == 1){
+        texto.textContent = "MULTADO";
+        texto.style = "display: inline; color: red";
+        let button = document.createElement("button");
+        button.numero = ((estudiante) ? datos["NoControl"] : datos["NoTarjeta"]);
+        button.textContent = "Ver";
+        button.addEventListener("click", function(){
+            window.location.href = "fines?id=" + this.numero + "&type=" + ((estudiante) ? "e" : "d");
+        })
+        texto.insertAdjacentElement("afterend", button);
+        buttons.querySelector(".temp_active").disabled = true;
+    }else if (datos["FechaInscrito"] === null){
+        texto.textContent = "INACTIVO";
     }else{
-        leftside.querySelector(".temp_p1").style = "opacity: 0;";
+        texto.style = "opacity: 0";
+        buttons.querySelector(".temp_active").disabled = true;
     }
     leftside.querySelector(".user_image").src = "../images/profile" + datos["Genero"] + ".png";
     leftside.querySelector(".temp_p2").appendChild(document.createTextNode(datos["NombreUsuario"]));
@@ -501,19 +602,31 @@ function update_page_data(){
     leftside.querySelector(".temp_p4").appendChild(document.createTextNode(datos["ApellidoPaterno"]));
     leftside.querySelector(".temp_p5").appendChild(document.createTextNode(datos["ApellidoMaterno"]));
     leftside.querySelector(".temp_p6").appendChild(document.createTextNode(((datos["Genero"] === "M") ? "Masculino" : "Femenino")));
-    leftside.querySelector(".temp_p7").appendChild(document.createTextNode(datos["PrestamosDisponibles"]));
-    leftside.querySelector(".temp_button").textContent = ((bloqueado) ? "Desbloquear" : "Bloquear");
+    if (estudiante){
+        leftside.querySelector(".temp_p7").appendChild(document.createTextNode(datos["PrestamosDisponibles"]));
+    }else{
+        leftside.removeChild(leftside.querySelector(".temp_p7"));
+    }
+    buttons.querySelector(".temp_button").textContent = ((bloqueado) ? "Desbloquear" : "Bloquear");
+    let temp = buttons.querySelector(".admin_button")
+    temp.innerHTML = ((datos["Administrador"] === null) ? "Hacer<br>Asistente" : "Remover<br>Asistente");
     rightside.querySelector(".temp_b1").textContent = ((estudiante) ? "ESTUDIANTE" : "DOCENTE");
     rightside.querySelector(".temp_b2").textContent = "No. de " + ((estudiante) ? "control" : "tarjeta") + ":";
     rightside.querySelector(".temp_p1").textContent = ((estudiante) ? datos["NoControl"] : datos["NoTarjeta"]);
     rightside.querySelector(".temp_b3").textContent = ((estudiante) ? "Carrera" : "Departamento") + ":";
     rightside.querySelector(".temp_p2").textContent = ((estudiante) ? datos["Carrera"] : datos["Departamento"]);
-    let temp = rightside.querySelector(".temp_p3");
+    if ((datos["Administrador"] !== null)){
+        rightside.querySelector(".temp_b4").textContent = "ASISTENTE";
+    }
+    temp = rightside.querySelector(".temp_p3");
     if (!estudiante){
         temp.style = "opacity: 0";
     }
     temp.appendChild(document.createTextNode(datos["Semestre"]));
     rightside.querySelector(".temp_p4").appendChild(document.createTextNode(datos["Prestados"]));
+    if (datos["FechaInscrito"] !== null){
+        buttons.querySelector(".temp_active").disbled = true;
+    }
 }
 
 function get_page_data(){
@@ -552,6 +665,9 @@ function get_page_data(){
         }
 
         update_page_data();
+    })
+    .catch((error) => {
+        document.getElementById("content_div").innerHTML = error;
     });
 }
 

@@ -7,6 +7,19 @@ function close_window(){
     return false;
 }
 
+function close_second_window(){
+    second_overlay.remove();
+    return false;
+}
+
+function open_second_overlayed_window(){
+    second_overlay = document.createElement("div");
+    second_overlay.setAttribute("id", "second_overlayed_window");
+    second_overlay.setAttribute("class", "overlayed_window");
+    second_overlay.innerHTML = "<div id='second_container_overlay' class='second_container_overlay'></div>";
+    document.body.appendChild(second_overlay);
+}
+
 function user_register(){
     open_overlayed_window();
     document.getElementById("container_overlay").innerHTML = `<h1>Registrar usuario</h1>
@@ -43,7 +56,7 @@ function user_register(){
             </div>
             <div id="part_one" class="vetical_spacing">
                 <label for="user_nocontrol">No. de control:</label>
-                <input type="number" min="1" style="width:25%;" id="user_nocontrol" name="user_nocontrol" placeholder="########..." required>
+                <input type="text" style="width:25%;" id="user_nocontrol" name="user_nocontrol" placeholder="########..." required>
                 <label for="user_semester"> Semestre:</label>
                 <input type="number" min="1" style="width:10%;" id="user_semester" name="user_semester" placeholder="Semestre..." required>
             </div>
@@ -62,7 +75,7 @@ function user_register(){
     })[0].selectize;
     document.getElementById("student").addEventListener('change', function() {
         document.getElementById("part_one").innerHTML = `<label for="user_nocontrol">No. de control:</label>
-            <input type="number" min="1" style="width:25%;" id="user_nocontrol" name="user_nocontrol" placeholder="########..." required>
+            <input type="text" style="width:25%;" id="user_nocontrol" name="user_nocontrol" placeholder="########..." required>
             <label for="user_semester"> Semestre:</label>
             <input type="number" min="1" style="width:10%;" id="user_semester" name="user_semester" placeholder="Semestre..." required>`;
         document.getElementById("part_two").innerHTML = `<label for="user_career">Carrera:</label>
@@ -70,7 +83,7 @@ function user_register(){
     });
     document.getElementById("teacher").addEventListener('change', function() {
         document.getElementById("part_one").innerHTML = `<label for="user_nocard">No. de tarjeta:</label>
-            <input type="number" min="1" style="width:40%;" id="user_nocard" name="user_nocard" placeholder="########..." required>`;
+            <input type="text" style="width:40%;" id="user_nocard" name="user_nocard" placeholder="########..." required>`;
         document.getElementById("part_two").innerHTML = `<label for="user_department">Departamento:</label>
             <input type="text" style="width:60%;" id="user_department" name="user_department" placeholder="Departamento..." required>`;
     });
@@ -79,37 +92,59 @@ function user_register(){
 
 function excel_load(){
     open_overlayed_window();
-    document.getElementById("container_overlay").innerHTML = `<h1>Registrar usuarios</h1>
-        <p>Carga un archivo .xlsx de Excel para registrar a multiples usuarios, la tabla debe de seguir el formato siguiente:</p>
-        <p>Para los estudiantes debe tener las columnas: <b>Nombre, Apellido paterno, Apellido materno, Nombre de usuario, Genero, No. de control, Carrera, Semestre</b></p>
-        <p>Para los docentes debe tener las columnas: <b>Nombre, Apellido paterno, Apellido materno, Nombre de usuario, Genero, No. de tarjeta, Departamento</b></p>
+    document.getElementById("container_overlay").style = "top: 0%";
+    document.getElementById("container_overlay").innerHTML = `<h1>Cargar excel</h1>
+        <p>Para cargar usuarios, el archivo excel debe tener las columnas: <b>No. de control/tarjeta, Nombre, Apellido paterno, Apellido materno, Genero, Carrera/Departamento, Semestre (este es ignorado si son docentes)</b></p>
+        <p>Los nombres de usuario de cada uno de los usuarios se toma desde su número de control o número de tarjeta.</p>
+        <p style="color:red">Para dar de baja solo se requiere la columna del No. de control o No. de tarjeta, obligatoriamente solo esa columna, las demas son ignoradas.</p>
         <input type="file" id="excel_form" accept=".xlsx">
         <div class="horizontal_alignment" style="display:flex; align-items:center; justify-content:center;">
-            <button type="submit" onclick="return register_users('student')" style="margin:0.5vw;">Registrar<br>alumnos</button>
+            <button type="submit" onclick="return excel_action('register')" style="margin:0.5vw;">Registrar</button>
+            <button type="cancel" onclick="return excel_action('eliminate')" style="margin:0.5vw;">Dar de baja</button>
             <button type="cancel" onclick="return close_window()" style="margin:0.5vw;">Cerrar</button>
-            <button type="cancel" onclick="return register_users('teacher')" style="margin:0.5vw;">Registrar<br>docentes</button>
         </div>`;
 }
 
-function register_users(text){
-    const fileInput = document.getElementById("excel_form");
+function excel_action(text){
+    fileInput = document.getElementById("excel_form");
     if (fileInput.files.length === 0) {
-        document.getElementById("container_overlay").innerHTML = `<h1>Registrar usuarios</h1>
-            <p>Carga un archivo .xlsx de Excel para registrar a multiples usuarios, la tabla debe de seguir el formato siguiente:</p>
-            <p>Para los estudiantes debe tener las columnas: <b>Nombre, Apellido paterno, Apellido materno, Nombre de usuario, Genero, No. de control, Carrera, Semestre</b></p>
-            <p>Para los docentes debe tener las columnas: <b>Nombre, Apellido paterno, Apellido materno, Nombre de usuario, Genero, No. de tarjeta, Departamento</b></p>
+        document.getElementById("container_overlay").innerHTML = `<h1>Cargar excel</h1>
+            <p>Para cargar usuarios, el archivo excel debe tener las columnas: <b>No. de control/tarjeta, Nombre, Apellido paterno, Apellido materno, Genero, Carrera/Departamento, Semestre (este es ignorado si son docentes)</b></p>
+            <p>Los nombres de usuario de cada uno de los usuarios se toma desde su número de control o número de tarjeta.</p>
+            <p style="color:red">Para dar de baja solo se requiere la columna del No. de control o No. de tarjeta, obligatoriamente solo esa columna, las demas son ignoradas.</p>
             <input type="file" id="excel_form" accept=".xlsx">
             <p style="color:red;">Selecciona un archivo .xlsx</p>
             <div class="horizontal_alignment" style="display:flex; align-items:center; justify-content:center;">
-            <button type="submit" onclick="return register_users('student')" style="margin:0.5vw;">Registrar<br>alumnos</button>
-            <button type="cancel" onclick="return close_window()" style="margin:0.5vw;">Cerrar</button>
-            <button type="cancel" onclick="return register_users('teacher')" style="margin:0.5vw;">Registrar<br>docentes</button>
+                <button type="submit" onclick="return excel_action('register')" style="margin:0.5vw;">Registrar</button>
+                <button type="cancel" onclick="return excel_action('eliminate')" style="margin:0.5vw;">Dar de baja</button>
+                <button type="cancel" onclick="return close_window()" style="margin:0.5vw;">Cerrar</button>
             </div>`;
         return;
     }
 
+    open_second_overlayed_window();
+    if (text == "register"){
+        document.getElementById("second_container_overlay").innerHTML = `<h1>Registrar usuarios</h1>
+            <p>Selecciona el tipo de usuarios con los que se hará la operación de registro de usuarios.</p>
+            <div class="horizontal_alignment" style="display:flex; align-items:center; justify-content:center;">
+                <button yellow type="submit" onclick="return excel_perform('student', 'register')" style="margin:0 0.5vw;">Alumnos</button>
+                <button yellow type="cancel" onclick="return excel_perform('teacher', 'register')" style="margin:0 0.5vw;">Docentes</button>
+                <button red type="cancel" onclick="return close_second_window()" style="margin:0.5vw;">Cerrar</button>
+            </div>`;
+    }else{
+        document.getElementById("second_container_overlay").innerHTML = `<h1>Eliminar usuarios</h1>
+            <p>Selecciona el tipo de usuarios con los que se hará la operación de eliminar usuarios.</p>
+            <div class="horizontal_alignment" style="display:flex; align-items:center; justify-content:center;">
+                <button yellow type="submit" onclick="return excel_perform('student', 'eliminate')" style="margin:0 0.5vw;">Alumnos</button>
+                <button yellow type="cancel" onclick="return excel_perform('teacher', 'eliminate')" style="margin:0 0.5vw;">Docentes</button>
+                <button red type="cancel" onclick="return close_second_window()" style="margin:0.5vw;">Cerrar</button>
+            </div>`;
+    }
+}
+
+function excel_perform(text, type){
     var formData = new FormData();
-    formData.append("type", text + "_file");
+    formData.append("type", text + "_file_" + type);
     for (const file of fileInput.files) {
         formData.append('files[]', file);
     }
@@ -255,6 +290,7 @@ function delete_users(idselected=false){
         }else if (data.status === "success"){
             titlesIds = JSON.parse(data.usersLeft); //Me dio flojera de cambiar los nombres de las variables xd
             titlesDeletedIds = JSON.parse(data.usersDeleted);
+            final_count = parseInt(data.selfuser);
             titlesLeft = "";
             titlesDeleted = "";
             let container = document.getElementById("container_overlay");
@@ -290,10 +326,35 @@ function delete_users(idselected=false){
                 }
             }
             if (titlesIds.length > 0){
+                if (final_count >= 0){
+                    let p = document.createElement("p");
+                    p.textContent = "ESTAS TRATANDO DE ELIMINARTE A TI MISMO, NO PUEDES, SIMPLEMENTE NO:";
+                    button.insertAdjacentElement("beforebegin", p);
+                    let item = titlesIds[final_count];
+                    p = document.createElement("p");
+                    p.innerHTML = '<b class="temp_b1"></b>, <b class="temp_b2"></b>, <b class="temp_b3">Nombre: </b>, <b class="temp_b4">Genero: </b>';
+                    let temp = p.querySelector(".temp_b1");
+                    temp.textContent = ((item["NoControl"] === null) ? "No. de Tarjeta: " : "No. de Control: ");
+                    temp.insertAdjacentText("afterend", ((item["NoControl"] === null) ? item["NoTarjeta"] : item["NoControl"]));
+                    temp = p.querySelector(".temp_b2");
+                    temp.textContent = ((item["NoControl"] === null) ? "Departamento: " : "Carrera: ");
+                    temp.insertAdjacentText("afterend", ((item["NoControl"] === null) ? item["Departamento"] : item["Carrera"]));
+                    temp = p.querySelector(".temp_b3");
+                    temp.insertAdjacentText("afterend", item["Nombre"]);
+                    temp = p.querySelector(".temp_b4");
+                    temp.insertAdjacentText("afterend", ((item["Genero"] === "F") ? "Femenino" : "Masculino"));
+                    button.insertAdjacentElement("beforebegin", p);
+                }
                 let p = document.createElement("p");
-                p.textContent = "Los siguientes usuarios no pudieron ser elimimnados debido a que tienen prestamos o multas pendientes y aun no han sido resueltos, resuelvalos en las secciones correspondientes:";
+                p.textContent = "Los siguientes usuarios NO pudieron ser elimimnados debido a que tienen prestamos o multas pendientes y aun no han sido resueltos, resuelvalos en las secciones correspondientes:";
                 button.insertAdjacentElement("beforebegin", p);
+                count = 0;
                 titlesIds.forEach((item) => {
+                    if (count === final_count){
+                        count++;
+                        return;
+                    }
+                    count++;
                     p = document.createElement("p");
                     p.innerHTML = '<b class="temp_b1"></b>, <b class="temp_b2"></b>, <b class="temp_b3">Nombre: </b>, <b class="temp_b4">Genero: </b>';
                     let temp = p.querySelector(".temp_b1");
@@ -383,10 +444,12 @@ function search_query(){
     .then(data => {
         usuario_data = JSON.parse(data.data);
         usuario_length = Object.keys(usuario_data).length;
-        usuario_max_page = Math.ceil(usuario_length/5);
+        usuario_max_page = Math.ceil(usuario_length/6);
         usuario_page = Math.min(1, usuario_max_page);
         
         update_search();
+
+        window.location.href = "#search_list";
     });
     
     return true;
@@ -406,13 +469,13 @@ function change_page(direction){
 
 function update_search(){
     usuario_length = Object.keys(usuario_data).length;
-    usuario_max_page = Math.ceil(usuario_length/5);
+    usuario_max_page = Math.ceil(usuario_length/6);
     usuario_page = Math.min(usuario_page, usuario_max_page);
 
     let result = document.getElementById("result_area");
     result.innerHTML = "";
     if (usuario_length > 0){
-        for (let i = 5*usuario_page - 5; i < Math.min(usuario_length, 5*usuario_page); i++){
+        for (let i = 6*usuario_page - 6; i < Math.min(usuario_length, 6*usuario_page); i++){
             item = usuario_data[i];
             inicio = new Date(item["FechaInicio"] + "T00:00:00");
             fin = new Date(item["FechaFin"] + "T23:59:59");
@@ -422,6 +485,10 @@ function update_search(){
             result_div.className = "search_user_result";
             if (!(item["FechaInicio"] === null || today > fin)){
                 result_div.style = "background-color: #FFA8A8";
+            }else if (item["Multado"] == 1){
+                result_div.style = "background-color:rgb(255, 224, 139)";
+            }else if (item["FechaInscrito"] === null){
+                result_div.style = "background-color:rgb(194, 194, 194)";
             }
             result_div.innerHTML = `<div class="photo_user" style="justify-content: center;">
                     <img class="temp_photo">
@@ -457,6 +524,13 @@ function update_search(){
             temp.value = i;
             result.appendChild(result_div);
         };
+    }else{
+        let result_div = document.createElement("div");
+        result_div.className = "search_user_result";
+        result_div.innerHTML += `<div class="search_content">
+                <p>Sin resultados...</p>
+            </div>`;
+        result.appendChild(result_div);
     }
     document.getElementById("pages_available").textContent = "Página " + usuario_page + " de " + usuario_max_page;
 }
@@ -507,6 +581,10 @@ function perform_deletion(){
 }
 
 function send_query(text, formData, replacements={}){
+    if (second_overlay !== null){
+        close_second_window();
+        second_overlay = null;
+    }
     document.getElementById("container_overlay").innerHTML = `<h1>Procesando...</h1>
         <p>Por favor espere...</p>`;
     
@@ -536,6 +614,87 @@ function send_query(text, formData, replacements={}){
             document.getElementById("container_overlay").innerHTML = `<h1>Entrada duplicada</h1>
                 <p>El dato que intentaste registrar ya se encuentra registrado, si por alguna razón no lo puede visualizar intente refrescar la página.</p>
                 <button type="cancel" onclick="return close_window()">Cerrar</button>`;
+        }else if (data.status === "success-delete"){
+            container = document.getElementById("container_overlay");
+            container.style = "font-size: 1.25vw";
+            datos = JSON.parse(data.message);
+
+            if (datos.length > 0){
+                inserted = datos[0];
+                excepted = datos[1];
+                notFound = datos[2];
+                
+                if (inserted.length > 0){
+                    let p = document.createElement("p");
+                    for (let i = 0; i < inserted.length; i++) {
+                        let b1 = document.createElement("b");
+                        b1.textContent = "Nombre: ";
+                        let b2 = document.createElement("b");
+                        b2.textContent = "No. de " + text[1] + ": ";
+                        
+                        p.appendChild(b1);
+                        p.appendChild(document.createTextNode(inserted[i]["Nombre"]));
+                        p.appendChild(document.createTextNode(", "));
+                        p.appendChild(b2);
+                        p.appendChild(document.createTextNode(inserted[i]["No" + text[1]]));
+                        p.appendChild(document.createElement("br"));
+                    }
+                    container.innerHTML = "<h1>Usuarios eliminados</h1>";
+                    let temp = document.createElement("p");
+                    temp.textContent = "Los siguientes usuarios fueron eliminados con éxito sin ningun problema.";
+                    container.appendChild(temp);
+                    container.appendChild(p);
+                }else if (excepted.length > 0){
+                    container.innerHTML = "<h1>Usuarios no eliminados</h1>";
+                }else{
+                    container.innerHTML = "<h1>Usuarios no encontrados</h1>"
+                }
+                
+                if (excepted.length > 0){
+                    let p = document.createElement("p");
+                    for (let i = 0; i < excepted.length; i++) {
+                        let b1 = document.createElement("b");
+                        b1.textContent = "Nombre: ";
+                        let b2 = document.createElement("b");
+                        b2.textContent = "No. de " + text[1] + ": ";
+                        
+                        p.appendChild(b1);
+                        p.appendChild(document.createTextNode(excepted[i]["Nombre"]));
+                        p.appendChild(document.createTextNode(", "));
+                        p.appendChild(b2);
+                        p.appendChild(document.createTextNode(excepted[i]["No" + text[1]]));
+                        p.appendChild(document.createElement("br"));
+                    }
+                    let temp = document.createElement("p");
+                    temp.textContent = "Los siguientes usuarios no pudieron eliminarse, verifique que no tenga multas no saldadas o prestamos no entregados, vaya a los menus correspondientes para resolver eso:";
+                    container.appendChild(temp);
+                    container.appendChild(p);
+                }
+
+                if (notFound.length > 0){
+                    let p = document.createElement("p");
+                    for (let i = 0; i < notFound.length; i++) {
+                        p.appendChild(document.createTextNode(notFound[i]));
+                        p.appendChild(document.createElement("br"));
+                    }
+                    let temp = document.createElement("p");
+                    temp.textContent = "Los siguientes números de " + text[1] + " no se encontraron en la base de datos, verifique que esten escritos bien o puede que sea uno repetido:";
+                    container.appendChild(temp);
+                    container.appendChild(p);
+                }
+            }else{
+                container.innerHTML = text;
+                Object.keys(replacements).forEach((item) => {
+                    container.querySelector("." + item).textContent = replacements[item];
+                })
+            }
+            let button = document.createElement("button");
+            button.type = "cancel";
+            button.addEventListener("click", function (){
+                return close_window();
+            });
+            button.textContent = "Cerrar";
+            container.appendChild(button);
         }else if (data.status === "success"){
             container = document.getElementById("container_overlay");
             datos = JSON.parse(data.message);
@@ -629,6 +788,7 @@ function open_overlayed_window(){
 document.addEventListener("DOMContentLoaded", () => {
     usuario_data = [];
     filtered = false;
+    second_overlay = null;
 
     document.getElementById("user_form").onsubmit = form_prevent;
 
