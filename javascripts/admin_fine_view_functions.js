@@ -95,7 +95,7 @@ function update_page_data(){
         <p data id="temp_p4"><b>Genero: </b></p>`;
     document.getElementById("book_rightside").innerHTML = `<h2>Datos del libro</h2>
         <p data id="temp_p5"><b>Folio: </b></p>
-        <p data id="temp_p6" style="-webkit-line-clamp: 2; line-clamp: 2;"><b>Titulo: </b></p>
+        <p data id="temp_p6" style="-webkit-line-clamp: 2; line-clamp: 2;"><b>Título: </b></p>
         <p data style='opacity: 0;'>a</p>
         <p data id="temp_p7"><b>Fecha prestado: </b></p>
         <p data id="temp_p8"><b>Fecha devuelto: </b></p>`;

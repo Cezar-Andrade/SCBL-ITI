@@ -587,12 +587,15 @@
                         AND b.FechaFin > :fecha) AS Bloqueado,
                     EXISTS(SELECT p3.IDPrestamo FROM usuarios u4
                         INNER JOIN prestamos p3 ON u4.IDUsuario = p3.IDUsuario
+                        INNER JOIN ejemplares e1 ON p3.Folio = e1.Folio
                         WHERE u4.IDUsuario = u.IDUsuario
-                        AND p3.FechaDevuelto IS NULL) AS YaPrestado
+                        AND p3.FechaDevuelto IS NULL
+                        AND e1.IDTitulo IN (SELECT e2.IDTitulo FROM ejemplares e2 WHERE e2.Folio = :folio)) AS YaPrestado
                     FROM usuarios u
                     INNER JOIN alumnos a ON u.IDUsuario = a.IDUsuario
                     WHERE a.NoControl = :nocontrol");
                 $stmt->bindParam(":nocontrol", $data["nocontrol"]);
+                $stmt->bindParam(":folio", $data["folio"]);
                 $stmt->bindParam(":fecha", $data["fecha"]);
                 $stmt->execute();
                 $array = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -616,8 +619,10 @@
                         AND b.FechaFin > :fecha) AS Bloqueado,
                     EXISTS(SELECT p3.IDPrestamo FROM usuarios u4
                         INNER JOIN prestamos p3 ON u4.IDUsuario = p3.IDUsuario
+                        INNER JOIN ejemplares e1 ON p3.Folio = e1.Folio
                         WHERE u4.IDUsuario = u.IDUsuario
-                        AND p3.FechaDevuelto IS NULL) AS YaPrestado
+                        AND p3.FechaDevuelto IS NULL
+                        AND e1.IDTitulo IN (SELECT e2.IDTitulo FROM ejemplares e2 WHERE e2.Folio = :folio)) AS YaPrestado
                     FROM usuarios u
                     INNER JOIN docentes d ON u.IDUsuario = d.IDUsuario
                     WHERE d.NoTarjeta = :notarjeta");

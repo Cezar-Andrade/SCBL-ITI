@@ -67,7 +67,7 @@
                         <input type="text" style="width: 76%;" id="folio" name="folio" placeholder="########...">
                     </div>
                     <div class="vertical_spacing">
-                        <label for="titulo">Titulo: </label>
+                        <label for="titulo">Título: </label>
                         <input type="text" style="width: 73%;" id="titulo" name="titulo" disabled>
                     </div>
                     <div class="vertical_spacing">
@@ -88,9 +88,9 @@
                 </div>
                 <div class="horizontal_alignment">
                     <div>
-                        <label for="state">Tipo de prestamo:</label>
+                        <label for="state">Tipo de préstamo:</label>
                         <div style="display:inline-block; width: 25%;">
-                            <select id="domicilio" placeholder="Tipo de prestamo...">
+                            <select id="domicilio" placeholder="Tipo de préstamo...">
                                 <option value="">Selecciona una opción...</option>
                                 <option value="0">En sala</option>
                                 <option value="1">A domicilio</option>
@@ -111,7 +111,7 @@
                     <div class="horizontal_alignment" style="display:flex; justify-content: center; align-items: center;">
                         <button id="search_active" type="submit" style="padding-left:1vw; padding-right:1vw" onclick="return search_query(true)">Buscar<br>Pendientes</button>
                         <button id="search_all" type="submit" style="padding-left:1vw; padding-right:1vw" onclick="return search_query(false)">Buscar<br>Todos</button>
-                        <button id="registrar_prestamo" type="submit" style="padding-left:1vw; padding-right:1vw" onclick="return open_loan_window()">Realizar<br>Prestamo</button>
+                        <button id="registrar_prestamo" type="submit" style="padding-left:1vw; padding-right:1vw" onclick="return open_loan_window()">Realizar<br>Préstamo</button>
                         <button id="clear" type="cancel" style="padding-left:1vw; padding-right:1vw" onclick="return clear_data()">Limpiar</button>
                         <button id="back" type="cancel" style="padding-left:1vw; padding-right:1vw" onclick="window.location.href = 'menu'">Volver</button>
                     </div>
@@ -120,7 +120,7 @@
         </div>
         <div class="book_list">
             <div class="search_loan_grid" id="search_list">
-                <div class="search_title"><h1>Lista de prestamos</h1></div>
+                <div class="search_title"><h1>Lista de préstamos</h1></div>
                 <div id="result_area" class="search_content"></div>
                 <div class="page_button_prev">
                     <button onclick="change_page(-1)">Anterior</button>

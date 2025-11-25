@@ -452,11 +452,11 @@ function borrar_editorial(){
             if (Deleted.length > 0){
                 document.getElementById("second_container_overlay").innerHTML = `<h1>Editoriales eliminados</h1>
                     <p>Los editoriales seleccionados han sido eliminados.</p>
-                    ` + ((Left.length > 0) ? "<p>Algunos editoriales no pueden ser borrados porque el titulo al que estan vinculados ha sido préstado, resuelva el préstamo.</p>" : "") + `
+                    ` + ((Left.length > 0) ? "<p>Algunos editoriales no pueden ser borrados porque el título al que estan vinculados ha sido préstado, resuelva el préstamo.</p>" : "") + `
                     <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
             }else{
                 document.getElementById("second_container_overlay").innerHTML = `<h1>Editoriales NO eliminados</h1>
-                    <p>Los editoriales seleccionados no han podido ser eliminados porque el titulo al que estan vinculados ha sido préstado, resuelva el préstamo.</p>
+                    <p>Los editoriales seleccionados no han podido ser eliminados porque el título al que estan vinculados ha sido préstado, resuelva el préstamo.</p>
                     <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
             }
             update_editorial_search(document.getElementById("editorial_name").value, document.getElementById("editorial_location").value);
@@ -579,11 +579,11 @@ function borrar_author(){
             if (Deleted.length > 0){
                 document.getElementById("second_container_overlay").innerHTML = `<h1>Autores eliminados</h1>
                     <p>Los autores seleccionados han sido eliminados.</p>
-                    ` + ((Left.length > 0) ? "<p>Algunos autores no pueden ser borrados porque el titulo al que estan vinculados ha sido préstado, resuelva el préstamo.</p>" : "") + `
+                    ` + ((Left.length > 0) ? "<p>Algunos autores no pueden ser borrados porque el título al que estan vinculados ha sido préstado, resuelva el préstamo.</p>" : "") + `
                     <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
             }else{
                 document.getElementById("second_container_overlay").innerHTML = `<h1>Autores NO eliminados</h1>
-                    <p>Los autores seleccionados no han podido ser eliminados porque el titulo al que estan vinculados ha sido préstado, resuelva el préstamo.</p>
+                    <p>Los autores seleccionados no han podido ser eliminados porque el título al que estan vinculados ha sido préstado, resuelva el préstamo.</p>
                     <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
             }
             update_autores_search(document.getElementById("author_name").value);
@@ -734,8 +734,8 @@ function open_delete_titles(){
 
     if (checked.length > 0){
         container = document.getElementById("container_overlay");
-        container.innerHTML = `<h1>Borrar titulos</h1>
-            <p>Esta por borrar los siguientes titulos:</p>`;
+        container.innerHTML = `<h1>Borrar títulos</h1>
+            <p>Esta por borrar los siguientes títulos:</p>`;
         for (let i = 0; i < checked.length; i++){
             item = book_data[checked[i]];
 
@@ -752,8 +752,8 @@ function open_delete_titles(){
             <button red onclick="delete_titles()">Borrar</button>
             <button onclick="close_window()">Cerrar</button>`;
     }else{
-        document.getElementById("container_overlay").innerHTML = `<h1>No ha seleccionado titulos.</h1>
-        <p>Selecciona los titulos a borrar marcandolos en la casilla a la derecha de los titulos que haya buscado.</p>
+        document.getElementById("container_overlay").innerHTML = `<h1>No ha seleccionado títulos.</h1>
+        <p>Selecciona los títulos a borrar marcandolos en la casilla a la derecha de los títulos que haya buscado.</p>
         <button onclick="close_window()">Cerrar</button>`;
     }
 }
@@ -914,7 +914,7 @@ function create_samples(state, formData){
         container.style = "width:40%; top:0%;"
         container.innerHTML = `<h1>Creación de ejemplares</h1>
             <div class="vertical_spacing">
-                <label for="book_title">Titulo: </label>
+                <label for="book_title">Título: </label>
                 <input style="width:70%" id="book_title" name="book_title" disabled><br>
             </div>
             <div class="vertical_spacing">
@@ -929,7 +929,7 @@ function create_samples(state, formData){
                 <label for="book_ISBN">ISBN: </label>
                 <input style="width:72.5%" id="book_ISBN" name="book_ISBN" disabled>
             </div>
-            <p>El titulo debe de tener minimo un ejemplar que viene siendo las copias de los libros.</p>
+            <p>El título debe de tener minimo un ejemplar que viene siendo las copias de los libros.</p>
             <form method="POST" id="folio_form">
                 <div class="vertical_spacing">
                     <table id="table_folio">
@@ -1089,7 +1089,7 @@ function register_title(formData){
 
         for (var j = 0; j < folios.length; j++){
             if (folio == folios[j]){
-                alert("FOLIOS REPETIDOS\n\nEn los nuevos folios que desea registrar para este titulo hay repetición, los folios no pueden repetirse entre ellos, asegurese además tambien de que estos folios no esten ya registrados en el sistema.");
+                alert("FOLIOS REPETIDOS\n\nEn los nuevos folios que desea registrar para este título hay repetición, los folios no pueden repetirse entre ellos, asegurese además tambien de que estos folios no esten ya registrados en el sistema.");
 
                 return;
             }
@@ -1108,7 +1108,7 @@ function register_title(formData){
         "temp_b2": folios
     }
     
-    send_query("<h1>Titulo registrado</h1><p>El titulo:</p><p><b class='temp_b1'></b></p><p>Se registro con éxito con los siguientes folios:</p><p><b class='temp_b2'></b>.</p><button red type='cancel' onclick='return close_two_window()'>Cerrar</button>", formData, replacements, true);
+    send_query("<h1>Título registrado</h1><p>El título:</p><p><b class='temp_b1'></b></p><p>Se registro con éxito con los siguientes folios:</p><p><b class='temp_b2'></b>.</p><button red type='cancel' onclick='return close_two_window()'>Cerrar</button>", formData, replacements, true);
 }
 
 function search_query(){
@@ -1235,7 +1235,7 @@ function update_search(){
             let result_div = document.createElement("div");
             result_div.className = "search_book_result";
             result_div.innerHTML += `<div class="search_content">
-                    <p><b>Clasificacion: </b><b class="temp_b1">Titulo: </b><br>
+                    <p><b>Clasificacion: </b><b class="temp_b1">Título: </b><br>
                     <b class="temp_b3">Año: </b><b class="temp_b2">Autores: </b></p>
                 </div>
                 <div class="view_button" style="justify-content: center;">
@@ -1315,7 +1315,7 @@ function delete_titles(){
             container = document.getElementById("container_overlay");
             container.innerHTML = "<h1>Resultado</h1>";
             if (titlesDeletedIds.length > 0){
-                container.innerHTML += "<p>Los siguientes titulos fueron eliminados de la base de datos:</p>";
+                container.innerHTML += "<p>Los siguientes títulos fueron eliminados de la base de datos:</p>";
                 for (let i = checked.length - 1; i >= 0; i--) {
                     deleted = false;
                     titlesDeletedIds.forEach((item) => {
@@ -1332,7 +1332,7 @@ function delete_titles(){
                 }
             }
             if (titlesIds.length > 0){
-                container.innerHTML += "<p>Los siguientes titulos NO pudieron ser elimimnados debido a que han sido prestados y aun no han sido resueltos sus prestamos, resuelvalos en las secciones correspondientes:</p>";
+                container.innerHTML += "<p>Los siguientes títulos NO pudieron ser elimimnados debido a que han sido prestados y aun no han sido resueltos sus prestamos, resuelvalos en las secciones correspondientes:</p>";
                 titlesIds.forEach((item) => {
                     let p = document.createElement("p");
                     p.innerHTML = "<b class='temp_b'></b>";

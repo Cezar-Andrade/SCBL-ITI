@@ -70,7 +70,7 @@ function generate_fine(){
     open_overlayed_window();
     if (estado === "pendiente" || estado === "expirado"){
         document.getElementById("container_overlay").innerHTML = `<h1>Advertencia</h1>
-            <p>Esto marcará el prestamo como <b>devuelto</b>.</p>
+            <p>Esto marcará el préstamo como <b>devuelto</b>.</p>
             <p>¿Desea continuar?</p>
             <button onclick='open_fine_maker()'>Continuar</button>
             <button onclick='close_window()'>Cerrar</button>`;
@@ -89,7 +89,7 @@ function open_fine_maker(){
         </div>
         <div class="vertical_spacing">
             <p style="margin: 0" class="temp_p2"><b>Folio: </b></p>
-            <p style="margin: 0" class="temp_p3"><b>Titulo: </b></p>
+            <p style="margin: 0" class="temp_p3"><b>Título: </b></p>
         </div>
         <form id="multa_form" method="POST">
             <p style="display: inline">Sanción: </p>
@@ -172,7 +172,7 @@ function perform_fine(){
     }
 
     if (deuda){
-        replacements["temp_p"] = ["afterend", "La multa siendo justificada esta automaticamente ya saldada y no representa problema alguno en cuanto al prestamo y al alumno.", "p"];
+        replacements["temp_p"] = ["afterend", "La multa siendo justificada esta automaticamente ya saldada y no representa problema alguno en cuanto al préstamo y al alumno.", "p"];
     }
 
     send_query("<h1>Multa efectuada</h1><p class='temp_p'>La multa se realizo correctamente bajo la sanción: <b class='temp_b1'></b> y la razón:</p><p><b class='temp_b2'></b></p><button onclick='close_reload()'>Cerrar</button>", formData, replacements);
@@ -181,7 +181,7 @@ function perform_fine(){
 function confirm_return(){
     open_overlayed_window()
     document.getElementById("container_overlay").innerHTML = `<h1>Confirmar acción</h1>
-        <p>Esta por marcar el prestamo como devuelto en tiempo y forma sin ningun problema.</p>
+        <p>Esta por marcar el préstamo como devuelto en tiempo y forma sin ningun problema.</p>
         <p>¿Desea continuar?</p>
         <button onclick="efectuar_return()">Confirmar</button>
         <button onclick="close_window()">Cancelar</button>`;
@@ -196,7 +196,7 @@ function efectuar_return(){
     formData.append("id", urlParams.get("id"));
     formData.append("domicilio", datos["ADomicilio"]);
 
-    send_query("<h1>Prestamo devuelto</h1><p>El prestamo a sido marcado como devuelto con éxito.</p><button onclick='close_reload()'>Cerrar</button>", formData);
+    send_query("<h1>Préstamo devuelto</h1><p>El préstamo a sido marcado como devuelto con éxito.</p><button onclick='close_reload()'>Cerrar</button>", formData);
 }
 
 function close_reload(){
@@ -222,7 +222,7 @@ function update_page_data(){
     let book_rightside = document.getElementById("book_rightside");
     book_rightside.innerHTML = `<h2>Datos de libro</h2>
         <p data class="temp_p1"><b>Folio: </b></p>
-        <p data class="temp_p2" style="-webkit-line-clamp: 2; line-clamp: 2;"><b>Titulo: </b></p>
+        <p data class="temp_p2" style="-webkit-line-clamp: 2; line-clamp: 2;"><b>Título: </b></p>
         <p data class="temp_p3" style="margin-bottom: 0;"><b>Estado físico: </b></p>`;
     let last_part = document.getElementById("last_part");
     last_part.innerHTML = `<div id="book_leftside2" class="book_leftside">

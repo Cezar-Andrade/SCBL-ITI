@@ -22,7 +22,7 @@ function close_window_warning(){
     if (change_made){
         open_second_overlayed_window();
         document.getElementById("second_container_overlay").innerHTML = `<h1>Confirmar acción</h1>
-            <p>Esta por cancelar todos los cambios que haya hecho en el titulo y sus ejemplares.</p>
+            <p>Esta por cancelar todos los cambios que haya hecho en el título y sus ejemplares.</p>
             <p>¿Desea continuar?</p>
             <button yellow onclick="close_two_window()">Continuar</button>
             <button red onclick="close_second_window()">Cancelar</button>`;
@@ -134,7 +134,7 @@ function modify_user(){
                 <option value="F">Femenino</option>
             </select>
         </div></div>
-        <p data id="prestamos_disponibles"><b>No. prestamos disponibles: </b></p>`;
+        <p data id="prestamos_disponibles"><b>No. préstamos disponibles: </b></p>`;
     document.getElementById("book_rightside").innerHTML = `<button style="padding-left:1vw; padding-right:1vw; margin-top: 1em; opacity: 0;" onclick="restaurar_contrasena()" disabled>Restaurar contraseña</button>
         <h1 class="student2"><b id="tipo_usuario"></b></h1>
         <p data style="margin: max(1.5vw, 9px) 0 0 0"><b id="numero_texto"></b></p>
@@ -550,7 +550,7 @@ function update_page_data(){
         <p data class="temp_p4"><b>Apellido Paterno: </b></p>
         <p data class="temp_p5"><b>Apellido Materno: </b></p>
         <p data class="temp_p6"><b>Genero: </b></p>
-        <p data style="margin-bottom:0" class="temp_p7"><b>No. prestamos disponibles: </b></p>`;
+        <p data style="margin-bottom:0" class="temp_p7"><b>No. préstamos disponibles: </b></p>`;
     let rightside = document.getElementById("book_rightside");
     rightside.innerHTML = `<button class="temp_button" style="padding-left:1vw; padding-right:1vw; margin-top: 1em" onclick="restaurar_contrasena()">Restaurar contraseña</button>
         <h1 class="student2"><b class="temp_b1"></b></h1>

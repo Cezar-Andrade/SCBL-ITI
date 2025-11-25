@@ -57,15 +57,15 @@ async function search_sample_data(){
     }
 }
 
-async function get_data_user(){
+async function get_data_user(folio=""){
     var formData = new FormData();
 
     if (document.getElementById("student").checked){
         formData.append("type", "estudiante por ID");
-        formData.append("data", JSON.stringify({"nocontrol": document.getElementById("numero").value}));
+        formData.append("data", JSON.stringify({"nocontrol": document.getElementById("numero").value, "folio": folio}));
     }else{
         formData.append("type", "docente por ID");
-        formData.append("data", JSON.stringify({"notarjeta": document.getElementById("numero").value}));
+        formData.append("data", JSON.stringify({"notarjeta": document.getElementById("numero").value, "folio": folio}));
     }
 
     return await fetch("../php/admin_search_queries.php", {
@@ -120,7 +120,7 @@ async function open_loan_window(window=false){
         return true;
     }
 
-    user = await get_data_user();
+    user = await get_data_user(folio.value);
     sample = await get_data_folio();
 
     if (!window){
@@ -133,8 +133,8 @@ async function open_loan_window(window=false){
             <p>El número de control que se ingreso no corresponde a algun usuario, verifique que lo haya escrito bien y que el usuario tenga ese número de control asignado.</p>
             <button type="cancel" onclick="close_window()">Cerrar</button>`;
     }else if (sample["Titulo"] === undefined){
-        container.innerHTML = `<h1>Titulo no encontrado...</h1>
-            <p>El folio que se ingreso no corresponde a algun titulo, verifique que lo haya escrito bien y que el titulo tenga ese folio asignado.</p>
+        container.innerHTML = `<h1>Título no encontrado...</h1>
+            <p>El folio que se ingreso no corresponde a algun título, verifique que lo haya escrito bien y que el título tenga ese folio asignado.</p>
             <button type="cancel" onclick="close_window()">Cerrar</button>`;
     }else if (user["YaPrestado"] == 1){
         container.innerHTML = `<h1>Libro ya prestado</h1>
@@ -142,25 +142,25 @@ async function open_loan_window(window=false){
             <button onclick="close_window()">Cerrar</button>`;
         let temp = document.getElementById("temp_text");
         temp.removeAttribute("id");
-        temp.appendChild(document.createTextNode("El usuario: " + user["Nombre"] + " " + user["ApellidoPaterno"] + " " + user["ApellidoMaterno"] + " ya tiene el libro prestado, no puede llevarse más de uno."));
+        temp.appendChild(document.createTextNode("El usuario: " + user["Nombre"] + " " + user["ApellidoPaterno"] + " " + user["ApellidoMaterno"] + " ya tiene ese mismo titulo prestado, no puede llevarse otro ejemplar del mismo titulo."));
     }else if (sample["EstadoDisponible"] !== "Disponible"){
         container.innerHTML = `<h1>Ejemplar no disponible</h1>
-            <p>El folio que se ingreso se encuentra actualmente no disponible, verifique si hay otro ejemplar disponible para el mismo titulo, o cheque en los prestamos o gestión de libros el estado de este folio en especifico.</p>
+            <p>El folio que se ingreso se encuentra actualmente no disponible, verifique si hay otro ejemplar disponible para el mismo título, o cheque en los préstamos o gestión de libros el estado de este folio en especifico.</p>
             <button type="cancel" onclick="close_window()">Cerrar</button>`;
     }else if (user["Multado"] == 1 || user["Expirado"] == 1 || user["Bloqueado"] == 1){
         container.innerHTML = `<h1>Acción no permitida</h1>
             <p id="temp_text"></p>
-            <p>Asegurese de que no tenga multas pendientes, prestamos expirados o que no este bloqueado para que pueda pedir un ejemplar prestado.</p>
+            <p>Asegurese de que no tenga multas pendientes, préstamos expirados o que no este bloqueado para que pueda pedir un ejemplar prestado.</p>
             <button onclick="close_window()">Cerrar</button>`;
         let temp = document.getElementById("temp_text");
         temp.removeAttribute("id");
-        temp.appendChild(document.createTextNode("El usuario: " + user["Nombre"] + " " + user["ApellidoPaterno"] + " " + user["ApellidoMaterno"] + " tiene una multa no saldada, un prestamo expirado o esta bloqueado."));
+        temp.appendChild(document.createTextNode("El usuario: " + user["Nombre"] + " " + user["ApellidoPaterno"] + " " + user["ApellidoMaterno"] + " tiene una multa no saldada, un préstamo expirado o esta bloqueado."));
     }else{
         folio = folio.value;
-        container.innerHTML = `<h1>Registrar prestamo</h1>
+        container.innerHTML = `<h1>Registrar préstamo</h1>
             <p>Esta por asignar el ejemplar:</p>
             <p><b class="folio">Folio: </b><br>
-            <b class="titulo">Titulo: </b><br>
+            <b class="titulo">Título: </b><br>
             <b class="isbn">ISBN: </b><br>
             <b class="autores">Autores: </b></p>
             <p>Al usuario con los siguientes datos:</p>
@@ -188,7 +188,7 @@ async function open_loan_window(window=false){
 function tipo_prestamo(){
     domicilio = 0;
     let container = document.getElementById("container_overlay");
-    container.innerHTML = `<h1>Tipo de prestamo</h1>
+    container.innerHTML = `<h1>Tipo de préstamo</h1>
         <p>Seleccione el tipo de préstamo que esta realizando.</p>
         <button onclick="realizar_prestamo(0)">En sala</button>
         <button onclick="realizar_prestamo(1)">A domicilio</button>
@@ -234,7 +234,7 @@ function realizar_prestamo(domicilio){
         replacements["temp_b5"] = format_date(today);
     }
 
-    send_query("<h1>Prestamo realizado</h1><p>El usuario: <b class='temp_b1'></b>.</p><p>Se le asigno prestado el ejemplar con folio: <b class='temp_b2'></b> del titulo: <b class='temp_b3'></b>.</p><p>" + ((domicilio == 1) ? "Con fecha de entregado siendo: <b class='temp_b4'></b> para ser devuelto a más tardar la fecha: <b class='temp_b5'></b>." : "Ya se encuentra registrado con éxito.") + "</p><button type='cancel' onclick='return close_window()'>Cerrar</button>", formData, domicilio, estudiante, replacements);
+    send_query("<h1>Préstamo realizado</h1><p>El usuario: <b class='temp_b1'></b>.</p><p>Se le asigno prestado el ejemplar con folio: <b class='temp_b2'></b> del título: <b class='temp_b3'></b>.</p><p>" + ((domicilio == 1) ? "Con fecha de entregado siendo: <b class='temp_b4'></b> para ser devuelto a más tardar la fecha: <b class='temp_b5'></b>." : "Ya se encuentra registrado con éxito.") + "</p><button type='cancel' onclick='return close_window()'>Cerrar</button>", formData, domicilio, estudiante, replacements);
 }
 
 function search_query(active){
@@ -347,7 +347,7 @@ function update_search(){
             result_div.className = "search_loan_result";
             result_div.style = estado;
             result_div.innerHTML = `<div class="search_content">
-                    <p><b class="temp_b1">Entregado: </b>, <b class="temp_b2">Folio: </b>, <b class="temp_b3">Titulo: </b><br>
+                    <p><b class="temp_b1">Entregado: </b>, <b class="temp_b2">Folio: </b>, <b class="temp_b3">Título: </b><br>
                     <b class="temp_b4">Limite: </b>, <b class="temp_b5"></b>, <b class="temp_b6">Nombre: </b></p>
                 </div>
                 <div class="view_button"style="justify-content: center;">
@@ -434,18 +434,18 @@ function send_query(text, formData, domicilio, estudiante, replacements={}){
                 <p>El usuario con el que esta iniciado la sesión no tiene privilegios de administrador, por ende no puede realizar las siguientes acciones.</p>
                 <button type="cancel" onclick="return close_window()">Cerrar</button>`;
         }else if (data.status === "user-cant"){
-            document.getElementById("container_overlay").innerHTML = `<h1>Prestamos insuficientes</h1>
-                <p>El usuario que ingreso, no tiene prestamos disponibles para llevarse el libro ya que ya se llevo otros 3 libros, solicite que devuelva algún libro que se haya llevado o si ya lo hizo, busquelo y resuelvalo.</p>
+            document.getElementById("container_overlay").innerHTML = `<h1>Préstamos insuficientes</h1>
+                <p>El usuario que ingreso, no tiene préstamos disponibles para llevarse el libro ya que ya se llevo otros 3 libros, solicite que devuelva algún libro que se haya llevado o si ya lo hizo, busquelo y resuelvalo.</p>
                 <button type="cancel" onclick="return close_window()">Cerrar</button>`;
         }else if (data.status === "book-ran-out"){
-            document.getElementById("container_overlay").innerHTML = `<h1>Titulo no disponible</h1>
-                <p>No hay ejemplares disponibles para prestar este titulo.</p>
-                <p>Si crees que es un error, verifique el titulo en cuestión para gestionar los ejemplares que se encuentran registrados en el sistema y verifique que se hayan marcado como devuelto los prestamos adecuadamente.</p>
+            document.getElementById("container_overlay").innerHTML = `<h1>Título no disponible</h1>
+                <p>No hay ejemplares disponibles para prestar este título.</p>
+                <p>Si crees que es un error, verifique el título en cuestión para gestionar los ejemplares que se encuentran registrados en el sistema y verifique que se hayan marcado como devuelto los préstamos adecuadamente.</p>
                 <button type="cancel" onclick="return close_window()">Cerrar</button>`;
         }else if (data.status === "book-unavailable"){
-            document.getElementById("container_overlay").innerHTML = `<h1>Titulo perdido</h1>
-                <p>El titulo solicitado no tiene libros disponibles ya que los registrados se encuentran marcados como perdidos, por lo cual el préstamo no puede ser efectuado.</p>
-                <p>Revise los ejemplares del titulo y corriga o elimine del sistema los ejemplares perdidos de dicho titulo para evitar más problemas.</p>
+            document.getElementById("container_overlay").innerHTML = `<h1>Título perdido</h1>
+                <p>El título solicitado no tiene libros disponibles ya que los registrados se encuentran marcados como perdidos, por lo cual el préstamo no puede ser efectuado.</p>
+                <p>Revise los ejemplares del título y corriga o elimine del sistema los ejemplares perdidos de dicho título para evitar más problemas.</p>
                 <button type="cancel" onclick="return close_window()">Cerrar</button>`;
         }else if (data.status === "duplicate-entry"){
             document.getElementById("container_overlay").innerHTML = `<h1>Entrada duplicada</h1>
@@ -507,7 +507,7 @@ async function print_ticket(datos){
             ((datos["NoControl"] !== null) ? "Carrera: " + datos["Carrera"] : "Departamento: " + datos["Departamento"]) + "\n\n",
             "Datos del libro:\n",
             "Folio: " + datos["Folio"] + "\n",
-            "Titulo: " + datos["Titulo"] + "\n\n",
+            "Título: " + datos["Titulo"] + "\n\n",
             "Datos del prestamo:\n",
             "Fecha de prestado: " + datos["FechaEntregado"] + "\n",
             "Fecha de entrega limite: " + datos["FechaLimite"] + "\n\n\n\n\n\n\n\n",

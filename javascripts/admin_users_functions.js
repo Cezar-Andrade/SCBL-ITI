@@ -346,7 +346,7 @@ function delete_users(idselected=false){
                     button.insertAdjacentElement("beforebegin", p);
                 }
                 let p = document.createElement("p");
-                p.textContent = "Los siguientes usuarios NO pudieron ser elimimnados debido a que tienen prestamos o multas pendientes y aun no han sido resueltos, resuelvalos en las secciones correspondientes:";
+                p.textContent = "Los siguientes usuarios NO pudieron ser elimimnados debido a que tienen préstamos o multas pendientes y aun no han sido resueltos, resuelvalos en las secciones correspondientes:";
                 button.insertAdjacentElement("beforebegin", p);
                 count = 0;
                 titlesIds.forEach((item) => {
@@ -666,7 +666,7 @@ function send_query(text, formData, replacements={}){
                         p.appendChild(document.createElement("br"));
                     }
                     let temp = document.createElement("p");
-                    temp.textContent = "Los siguientes usuarios no pudieron eliminarse, verifique que no tenga multas no saldadas o prestamos no entregados, vaya a los menus correspondientes para resolver eso:";
+                    temp.textContent = "Los siguientes usuarios no pudieron eliminarse, verifique que no tenga multas no saldadas o préstamos no entregados, vaya a los menus correspondientes para resolver eso:";
                     container.appendChild(temp);
                     container.appendChild(p);
                 }

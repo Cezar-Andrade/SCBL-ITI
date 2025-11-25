@@ -24,7 +24,7 @@ function get_menu_data(){
         document.getElementById("user_greet").textContent = "¡Bienvenid" + ((datos[5] === "M") ? "o" : "a") + " " + datos[4] + "!";
         document.getElementById("bloqueados").textContent = "Usuarios bloqueados: " + datos[0];
         let container = document.getElementById("conteo");
-        container.textContent = "Prestamos expirados: " + datos[1];
+        container.textContent = "Préstamos expirados: " + datos[1];
         container.appendChild(document.createElement("br"));
         container.appendChild(document.createTextNode("Reservaciones expiradas: " + datos[2]));
         container.appendChild(document.createElement("br"));

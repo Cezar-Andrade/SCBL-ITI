@@ -92,7 +92,7 @@ function update_search(){
             result_div.className = "search_loan_result";
             result_div.innerHTML += `<div class="search_content">
                     <p><b class="temp_b1"></b>, <b class="temp_b2">Folio: </b>, <b class="temp_b3">Fecha multa: </b><br>
-                    <b class="temp_b4">Nombre: </b>, <b class="temp_b5">Titulo: </b></p>
+                    <b class="temp_b4">Nombre: </b>, <b class="temp_b5">Título: </b></p>
                 </div>
                 <div class="view_button"style="justify-content: center;">
                     <button class="button_temp">Ver</button>

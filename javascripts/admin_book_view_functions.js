@@ -22,7 +22,7 @@ function close_window_warning(){
     if (change_made){
         open_second_overlayed_window();
         document.getElementById("second_container_overlay").innerHTML = `<h1>Confirmar acción</h1>
-            <p>Esta por cancelar todos los cambios que haya hecho en el titulo y sus ejemplares.</p>
+            <p>Esta por cancelar todos los cambios que haya hecho en el título y sus ejemplares.</p>
             <p>¿Desea continuar?</p>
             <button yellow onclick="close_two_window()">Continuar</button>
             <button red onclick="close_second_window()">Cancelar</button>`;
@@ -53,7 +53,7 @@ function close_second_window(){
 function hacer_guardado(){
     open_second_overlayed_window();
     document.getElementById("second_container_overlay").innerHTML = `<h1>Confirmar acción</h1>
-        <p>Esta por guardar los cambios realizados al titulo.</p>
+        <p>Esta por guardar los cambios realizados al título.</p>
         <p>¿Desea continuar?</p>
         <button yellow onclick="cometer_guardado()">Continuar</button>
         <button red onclick="close_second_window()">Cancelar</button>`;
@@ -138,7 +138,7 @@ function cometer_guardado(){
             temp.appendChild(document.createTextNode(array));
         }else if (data.status === "insufficient-books"){
             document.getElementById("second_container_overlay").innerHTML = `<h1>Ejemplares insuficientes</h1>
-                <p>No hay suficientes ejemplares disponibles para las reservaciones y prestamos que los usuarios ya han realizado en el sistema.</p>
+                <p>No hay suficientes ejemplares disponibles para las reservaciones y préstamos que los usuarios ya han realizado en el sistema.</p>
                 <p>Cree más ejemplares para cubrir las reservaciones o cancele las reservaciones de los usuarios en la gestión de reservaciones y vuelva a intentarlo.</p>
                 <button red type="cancel" onclick="return close_second_window()">Cerrar</button>`;
         }else if (data.status === "success"){
@@ -367,13 +367,13 @@ function view_info(element){
         open_second_overlayed_window();
         let container = document.getElementById("second_container_overlay");
         container.innerHTML = `<h1>Ejemplar prestado</h1>
-            <p class="titulo_temp"><b>Titulo: </b></p>
+            <p class="titulo_temp"><b>Título: </b></p>
             <p class="folio_temp"><b>Folio prestado: </b></p>
             <p class="tipo_usuario_temp"><b>Tipo de usuario: </b></p>
             <p class="numero_temp"><b class="numero_extra_temp"></b></p>
             <p class="nombre_temp"><b>Nombre: </b></p>
             <p class="genero_temp"><b>Genero: </b></p>
-            <p class="domicilio_temp"><b>Tipo de prestamo: </b></p>
+            <p class="domicilio_temp"><b>Tipo de préstamo: </b></p>
             <button red onclick="close_second_window()">Cerrar</button>`;
         let temp = container.querySelector(".titulo_temp");
         temp.appendChild(document.createTextNode(datos["Titulo"]));
@@ -465,8 +465,9 @@ function prestar_ejemplares(){
             temp = cell4.querySelector(".search_button");
             temp.id = "button" + i;
             temp.number = i;
+            temp.folio = ejemplares_datos[i]["Folio"];
             temp.onclick = function(){
-                search_user(this.number);
+                search_user(this.number, this.folio);
             };
 
             input = cell3.querySelector(".temp_user");
@@ -493,7 +494,7 @@ function prestar_ejemplares(){
 
                     button.removeAttribute("style");
                     button.onclick = function(){
-                        search_user(this.number);
+                        search_user(this.number, this.folio);
                     };
                 }
             });
@@ -559,7 +560,7 @@ async function print_ticket(datos){
             ((datos["NoControl"] !== null) ? "Carrera: " + datos["Carrera"] : "Departamento: " + datos["Departamento"]) + "\n\n",
             "Datos del libro:\n",
             "Folio: " + datos["Folio"] + "\n",
-            "Titulo: " + datos["Titulo"] + "\n\n",
+            "Título: " + datos["Titulo"] + "\n\n",
             "Datos del prestamo:\n",
             "Fecha de prestado: " + datos["FechaEntregado"] + "\n",
             "Fecha de entrega limite: " + datos["FechaLimite"] + "\n\n\n\n\n\n\n\n",
@@ -648,9 +649,9 @@ async function efectuar_prestamos(){
 
     if (smth_wrong){
         container.innerHTML = `<h1>Algo paso...</h1>
-            <p>` + ((smth_good) ? "Algunos" : "Todos los") + ` prestamos que se intentaron asignar no fueron posible de registrar debido a información incorrecta o falta de privilegios.</p>
+            <p>` + ((smth_good) ? "Algunos" : "Todos los") + ` préstamos que se intentaron asignar no fueron posible de registrar debido a información incorrecta o falta de privilegios.</p>
             <p>Verifique que tenga permisos de administrador en la cuenta y que se hayan escrito bien los numeros de control o tarjeta de los usuarios.</p>
-            ` + ((smth_good) ? "Los prestamos que se lograron realizar han sido registrados con la fecha <b id='date2'></b> y tienen como fecha límite para su devolución <b id='date1'></b>" : "") + `
+            ` + ((smth_good) ? "Los préstamos que se lograron realizar han sido registrados con la fecha <b id='date2'></b> y tienen como fecha límite para su devolución <b id='date1'></b>" : "") + `
             <p>Si el problema persiste, consulte con el Centro de Información.</p>
             ` + ((print_error) ? "<p><b>ADVERTENCIA:</b> La impresora se desconecto, no esta respondiendo o no esta funcionando correctamente, verifique que este en correcto funcionamiento, imprima los tickets visualizando los préstamos individualmente despues de haber verificado el funcionamiento de la impresora.</p>" : "")
             + ((software_error) ? "<p><b>ADVERTENCIA:</b> El software QZ Tray usado para comunicarse con la impresora no responde o no esta presente, inicie el programa en el sistema para funcionar adecuadamente, después imprima los tickets visualizando los préstamos individualmente despues de haber verificado el funcionamiento del software.</p>" : "") + `
@@ -660,9 +661,9 @@ async function efectuar_prestamos(){
             document.getElementById("date1").appendChild(document.createTextNode(format_date(today)));
         }
     }else{
-        container.innerHTML = `<h1>Prestamos registrados</h1>
-            <p>Los prestamos a domicilio asignados han sido registrados con la fecha <b id="date2"></b> y tienen como fecha límite para su devolución <b id="date1"></b></p>
-            <p>Los prestamos en sala han quedado marcados como completados.</p>
+        container.innerHTML = `<h1>Préstamos registrados</h1>
+            <p>Los préstamos a domicilio asignados han sido registrados con la fecha <b id="date2"></b> y tienen como fecha límite para su devolución <b id="date1"></b></p>
+            <p>Los préstamos en sala han quedado marcados como completados.</p>
             ` + ((print_error) ? "<p><b>ADVERTENCIA:</b> La impresora se desconecto, no esta respondiendo o no esta funcionando correctamente, verifique que este en correcto funcionamiento, imprima los tickets visualizando los préstamos individualmente despues de haber verificado el funcionamiento de la impresora.</p>" : "")
             + ((software_error) ? "<p><b>ADVERTENCIA:</b> El software QZ Tray usado para comunicarse con la impresora no responde o no esta presente, inicie el programa en el sistema para funcionar adecuadamente, después imprima los tickets visualizando los préstamos individualmente despues de haber verificado el funcionamiento del software.</p>" : "") + `
             <button yellow onclick="trigger_window()">Cerrar</button>`;
@@ -677,7 +678,7 @@ function trigger_window(){
     prestar_ejemplares();
 }
 
-function search_user(numero){
+function search_user(numero, folio=""){
     open_second_overlayed_window();
 
     if (disponibles - counter > reservaciones){
@@ -687,13 +688,15 @@ function search_user(numero){
             <button id="teacher_button" yellow style="margin: 0; padding: 1vw;">Docente</button>`;
         let temp = document.getElementById("student_button");
         temp.numero = numero;
+        temp.folio = folio;
         temp.addEventListener("click", function() {
-            search_student(this.numero);
+            search_student(this.numero, this.folio);
         });
         temp = document.getElementById("teacher_button");
         temp.numero = numero;
+        temp.folio = folio;
         temp.addEventListener("click", function() {
-            search_teacher(this.numero);
+            search_teacher(this.numero, this.folio);
         });
     }else{
         document.getElementById("second_container_overlay").innerHTML = `<h1>Libros insuficientes</h1>
@@ -702,13 +705,14 @@ function search_user(numero){
     }
 }
 
-function search_student(numero){
+function search_student(numero, folio=""){
     document.getElementById("second_container_overlay").innerHTML = `<h1>Procesando...</h1>
         <p>Por favor espere...</p>`;
     today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
     
     var dict = {
         "nocontrol": document.getElementById("user" + numero).value,
+        "folio": folio,
         "fecha": today.toISOString().split('T')[0]
     }
 
@@ -764,16 +768,16 @@ function search_student(numero){
                 <button red onclick="close_second_window()">Cerrar</button>`;
             let temp = document.getElementById("temp_text");
             temp.removeAttribute("id");
-            temp.appendChild(document.createTextNode("El usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"] + " ya tiene el libro prestado, no puede llevarse más de uno."));
+            temp.appendChild(document.createTextNode("El usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"] + " ya tiene ese mismo titulo prestado, no puede llevarse otro ejemplar del mismo titulo."));
             return;
         }else if (datos["Multado"] == 1 || datos["Expirado"] == 1 || datos["Bloqueado"] == 1){
             container.innerHTML = `<h1>Acción no permitida</h1>
                 <p id="temp_text"></p>
-                <p>Asegurese de que no tenga multas pendientes, prestamos expirados o que no este bloqueado para que pueda pedir un ejemplar prestado.</p>
+                <p>Asegurese de que no tenga multas pendientes, préstamos expirados o que no este bloqueado para que pueda pedir un ejemplar prestado.</p>
                 <button red onclick="close_second_window()">Cerrar</button>`;
             let temp = document.getElementById("temp_text");
             temp.removeAttribute("id");
-            temp.appendChild(document.createTextNode("El usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"] + " tiene una multa no saldada, un prestamo expirado o esta bloqueado."));
+            temp.appendChild(document.createTextNode("El usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"] + " tiene una multa no saldada, un préstamo expirado o esta bloqueado."));
             return;
         }
 
@@ -782,8 +786,8 @@ function search_student(numero){
         button.IDUsuario = datos["IDUsuario"];
         button.Nombre = datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"];
 
-        container.innerHTML = `<h1>Tipo de prestamo</h1>
-            <p>Selecciona el tipo de prestamo que se hará con el usuario: <b class="temp_b"></b>.</p>
+        container.innerHTML = `<h1>Tipo de préstamo</h1>
+            <p>Selecciona el tipo de préstamo que se hará con el usuario: <b class="temp_b"></b>.</p>
             <button id="en_sala" yellow style="margin: 0; padding: 1vw;">En sala</button>
             <button red style="margin: 0; padding-top: 0; padding-bottom: 0; padding-left: 1vw; padding-right: 1vw;" onclick="close_second_window()">Cancelar</button>
             <button id="a_domicilio" yellow style="margin: 0; padding: 1vw;">A domicilio</button>`;
@@ -802,13 +806,13 @@ function search_student(numero){
 function select_type_loan(domicilio, needed, button){
     if (datos["PrestamosDisponibles"] <= needed && domicilio == 1){
         let container = document.getElementById("second_container_overlay");
-        container.innerHTML = `<h1>Prestamos insuficientes</h1>
+        container.innerHTML = `<h1>Préstamos insuficientes</h1>
             <p id="temp_text"></p>
             <p>Asegurese que ya haya devuelto los libros que solicito prestado.</p>
             <button red onclick="close_second_window()">Cerrar</button>`;
         let temp = document.getElementById("temp_text");
         temp.removeAttribute("id");
-        temp.appendChild(document.createTextNode("El usuario: " + button.Nombre + " carece de prestamos disponibles para asignar."));
+        temp.appendChild(document.createTextNode("El usuario: " + button.Nombre + " carece de préstamos disponibles para asignar."));
         return;
     }
 
@@ -822,13 +826,14 @@ function select_type_loan(domicilio, needed, button){
     close_second_window();
 }
 
-function search_teacher(numero){
+function search_teacher(numero, folio=""){
     document.getElementById("second_container_overlay").innerHTML = `<h1>Procesando...</h1>
         <p>Por favor espere...</p>`;
     today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
 
     var dict = {
         "notarjeta": document.getElementById("user" + numero).value,
+        "folio": folio,
         "fecha": today.toISOString().split('T')[0]
     }
     
@@ -883,16 +888,16 @@ function search_teacher(numero){
                 <button red onclick="close_second_window()">Cerrar</button>`;
             let temp = document.getElementById("temp_text");
             temp.removeAttribute("id");
-            temp.appendChild(document.createTextNode("El usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"] + " ya tiene el libro prestado, no puede llevarse más de uno."));
+            temp.appendChild(document.createTextNode("El usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"] + " ya tiene ese mismo titulo prestado, no puede llevarse otro ejemplar del mismo titulo."));
             return;
         }else if (datos["Multado"] == 1 || datos["Expirado"] == 1 || datos["Bloqueado"] == 1){
             container.innerHTML = `<h1>Acción no permitida</h1>
                 <p id="temp_text"></p>
-                <p>Asegurese de que no tenga multas pendientes, prestamos expirados o que no este bloqueado para que pueda pedir un ejemplar prestado.</p>
+                <p>Asegurese de que no tenga multas pendientes, préstamos expirados o que no este bloqueado para que pueda pedir un ejemplar prestado.</p>
                 <button red onclick="close_second_window()">Cerrar</button>`;
             let temp = document.getElementById("temp_text");
             temp.removeAttribute("id");
-            temp.appendChild(document.createTextNode("El usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"] + " tiene una multa no saldada, un prestamo expirado o esta bloqueado."));
+            temp.appendChild(document.createTextNode("El usuario: " + datos["Nombre"] + " " + datos["ApellidoPaterno"] + " " + datos["ApellidoMaterno"] + " tiene una multa no saldada, un préstamo expirado o esta bloqueado."));
             return;
         }
 
@@ -903,8 +908,8 @@ function search_teacher(numero){
 
         counter++;
         
-        container.innerHTML = `<h1>Tipo de prestamo</h1>
-            <p>Selecciona el tipo de prestamo que se hará con el usuario: <b class="temp_b"></b>.</p>
+        container.innerHTML = `<h1>Tipo de préstamo</h1>
+            <p>Selecciona el tipo de préstamo que se hará con el usuario: <b class="temp_b"></b>.</p>
             <button id="en_sala" yellow style="margin: 0; padding: 1vw;">En sala</button>
             <button red style="margin: 0; padding-top: 0; padding-bottom: 0; padding-left: 1vw; padding-right: 1vw;" onclick="close_second_window()">Cancelar</button>
             <button id="a_domicilio" yellow style="margin: 0; padding: 1vw;">A domicilio</button>`;
@@ -1009,8 +1014,8 @@ function get_page_data(){
 }
 
 function update_page(){
-    document.getElementById("book_leftside").innerHTML = `<h1>Datos del titulo</h1>
-        <p data id="titulo_temp"><b>Titulo: </b></p>
+    document.getElementById("book_leftside").innerHTML = `<h1>Datos del título</h1>
+        <p data id="titulo_temp"><b>Título: </b></p>
         <p data id="editorial_temp"><b>Editorial: </b></p>
         <p data id="ubicacion_temp"><b>Lugar publicación: </b></p>
         <p data id="clasificacion_temp"><b>Clasificación: </b></p>
@@ -1056,8 +1061,8 @@ function update_page(){
 }
 
 async function modificar_titulo(){
-    document.getElementById("book_leftside").innerHTML = `<h1>Datos del titulo</h1>
-        <div class="vertical_spacing"><p data style="display: inline"><b>Titulo: </b></p><input required style="width: 73%" id="titulo" type="text" placeholder="Titulo..." required></div>
+    document.getElementById("book_leftside").innerHTML = `<h1>Datos del título</h1>
+        <div class="vertical_spacing"><p data style="display: inline"><b>Título: </b></p><input required style="width: 73%" id="titulo" type="text" placeholder="Título..." required></div>
         <div class="vertical_spacing"><p data style="display: inline"><b>Editorial: </b></p><div style="display: inline-block; width: 69%;"><select id="editorial" placeholder="Editorial..."></select></div></div>
         <div class="vertical_spacing"><p data id="ubicacion"><b>Lugar publicación: </b></p></div>
         <div class="vertical_spacing"><p data style="display: inline"><b>Clasificación: </b></p><input style="width: 56%;" id="clasificacion" placeholder="Clasificación..."></select></div>
@@ -1181,7 +1186,7 @@ function confirmar_cambios(){
 
     open_overlayed_window();
     document.getElementById("container_overlay").innerHTML = `<h1>Confirmar accion</h1>
-        <p>Esta por guardar los cambios que haya realizado sobre este titulo.</p>
+        <p>Esta por guardar los cambios que haya realizado sobre este título.</p>
         <p>¿Desea continuar?</p>
         <button onclick='commit_cambios()'>Continuar</button>
         <button onclick='close_window()'>Cancelar</button>`;

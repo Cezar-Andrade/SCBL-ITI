@@ -1,7 +1,7 @@
 function generate_report(){
     document.getElementById("generate").textContent = "Generando...";
     document.getElementById("generate").disabled = true;
-    rows = [["Rank", "Titulo", "Autores", "ISBN", "Editorial", "Clasificacion", "Total"]];
+    rows = [["Rank", "Título", "Autores", "ISBN", "Editorial", "Clasificacion", "Total"]];
 
     for (var i = 0; i < deudores_length; i++) {
         row = [];

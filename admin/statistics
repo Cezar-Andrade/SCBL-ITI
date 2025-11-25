@@ -38,7 +38,7 @@
                         <label style="margin-left: 2vw;"><b>A domicilio: </b><span id="prestamos_domicilio">--</span></label><br>
                     </div><br>
                     <div>
-                        <label><b>No. de titulos</b></label><br>
+                        <label><b>No. de títulos</b></label><br>
                         <label><b>Adquiridos: </b><span id="titulos_adquiridos">--</span></label>
                         <label style="margin-left: 2vw;"><b>Existencia: </b><span id="titulos_existencia">--</span></label>
                         <label style="margin-left: 2vw;"><b>Consultados: </b><span id="titulos_consultados">--</span></label>

@@ -94,7 +94,7 @@
             </form>
         </div>
         <div class="book_list">
-            <div class="search_loan_grid" id="search_list"> <!--La clase usada para este es la misma que la de los prestamos, para que crear otro nombre si funciona el mismo-->
+            <div class="search_loan_grid" id="search_list"> <!--La clase usada para este es la misma que la de los préstamos, para que crear otro nombre si funciona el mismo-->
                 <div class="search_title"><h1>Lista de multas</h1></div>
                 <div id="result_area" class="search_content"></div>
                 <div class="page_button_prev">
